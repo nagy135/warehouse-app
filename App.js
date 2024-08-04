@@ -1,20 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import { withExpoSnack } from 'nativewind';
+
+import { Text, View } from 'react-native';
+import { styled } from 'nativewind';
+
+//import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+
+const StyledView = styled(View)
+const StyledText = styled(Text)
+
+const App = () => {
+	const [name, setName] = useState('Warehouse-App');
+	return (
+		<StyledView className="flex-1 items-center justify-center">
+			<StyledText className="text-slate-800">
+				{`Welcome to ${name}!`}
+			</StyledText>
+			<StatusBar style="auto" />
+		</StyledView>
+	);
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default withExpoSnack(App);
