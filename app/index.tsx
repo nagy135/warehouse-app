@@ -22,8 +22,9 @@ const GITHUB_AVATAR_URI =
 	'https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg';
 
 export default function Screen() {
-	const [progress, setProgress] = React.useState(78);
+	const [progress, setProgress] = React.useState(0);
 	const [showPassword, setShowPassword] = React.useState(false);
+	const [loggingIn, setLoggingIn] = React.useState(false);
 
 	const [email, setEmail] = React.useState('user@user.com');
 	const [password, setPassword] = React.useState('user');
@@ -32,10 +33,23 @@ export default function Screen() {
 	function updateProgressValue() {
 		setProgress(Math.floor(Math.random() * 100));
 	}
-	const handleLogInPress = React.useCallback(() => {
-		signIn(email, password);
 
-		router.replace('/logged-in');
+	React.useEffect(() => {
+		if (!loggingIn) return;
+		if (progress >= 100) {
+			signIn(email, password);
+
+			router.replace('/logged-in');
+		} else {
+			setTimeout(() => {
+				setProgress(progress + 10);
+			}, 100);
+		}
+
+	}, [progress, setProgress, loggingIn])
+
+	const handleLogInPress = React.useCallback(() => {
+		setLoggingIn(true);
 	}, [email, password]);
 	return (
 		<View className='flex-1 justify-center items-center gap-5 p-6 bg-secondary/30'>
@@ -77,7 +91,11 @@ export default function Screen() {
 					</View>
 				</CardContent>
 				<CardFooter className='flex-col gap-3 pb-0'>
-					<Progress value={progress} className='h-2' indicatorClassName='bg-sky-600' />
+					{progress > 0 ? <Progress
+						value={progress}
+						className='h-2'
+						indicatorClassName='bg-sky-600'
+					/> : null}
 					<View />
 					<Button
 						variant='outline'
