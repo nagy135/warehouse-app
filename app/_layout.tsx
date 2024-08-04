@@ -68,7 +68,16 @@ export default function RootLayout() {
 				<Stack.Screen
 					name='index'
 					options={{
+						animation: 'slide_from_bottom',
 						title: 'Warehouse App',
+						headerRight: () => <ThemeToggle />,
+					}}
+				/>
+				<Stack.Screen
+					name='logged-in/index'
+					options={{
+						animation: 'slide_from_bottom',
+						title: 'Logged ',
 						headerRight: () => <ThemeToggle />,
 					}}
 				/>
