@@ -1,24 +1,20 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { Info } from '~/lib/icons/Info';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
-	CardTitle,
 } from '~/components/ui/card';
 import { Progress } from '~/components/ui/progress';
 import { Text } from '~/components/ui/text';
-import { Tooltip, TooltipContent, TooltipTrigger } from '~/components/ui/tooltip';
 import { useSession } from '~/ctx';
 import { router } from 'expo-router';
 import { Input } from '~/components/ui/input';
 
-const GITHUB_AVATAR_URI =
+const AVATAR_URI =
 	'https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg';
 
 export default function Screen() {
@@ -29,10 +25,6 @@ export default function Screen() {
 	const [email, setEmail] = React.useState('user@user.com');
 	const [password, setPassword] = React.useState('user');
 	const { signIn } = useSession();
-
-	function updateProgressValue() {
-		setProgress(Math.floor(Math.random() * 100));
-	}
 
 	React.useEffect(() => {
 		if (!loggingIn) return;
@@ -56,7 +48,7 @@ export default function Screen() {
 			<Card className='w-full max-w-sm p-6 rounded-2xl'>
 				<CardHeader className='items-center'>
 					<Avatar alt="Rick Sanchez's Avatar" className='w-24 h-24'>
-						<AvatarImage source={{ uri: GITHUB_AVATAR_URI }} />
+						<AvatarImage source={{ uri: AVATAR_URI }} />
 						<AvatarFallback>
 							<Text>RS</Text>
 						</AvatarFallback>
@@ -97,13 +89,6 @@ export default function Screen() {
 						indicatorClassName='bg-sky-600'
 					/> : null}
 					<View />
-					<Button
-						variant='outline'
-						className='shadow shadow-foreground/5'
-						onPress={updateProgressValue}
-					>
-						<Text>Update</Text>
-					</Button>
 
 					<Button
 						variant='outline'
