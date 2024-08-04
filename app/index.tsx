@@ -32,11 +32,11 @@ export default function Screen() {
 	function updateProgressValue() {
 		setProgress(Math.floor(Math.random() * 100));
 	}
-	function handleLogInPress() {
-		signIn();
+	const handleLogInPress = React.useCallback(() => {
+		signIn(email, password);
 
 		router.replace('/logged-in');
-	}
+	}, [email, password]);
 	return (
 		<View className='flex-1 justify-center items-center gap-5 p-6 bg-secondary/30'>
 			<Card className='w-full max-w-sm p-6 rounded-2xl'>
