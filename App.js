@@ -2,24 +2,20 @@ import { StatusBar } from 'expo-status-bar';
 
 import { withExpoSnack } from 'nativewind';
 
-import { Text, View } from 'react-native';
-import { styled } from 'nativewind';
-
-//import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Text, View } from 'react-native';
 import React, { useState } from 'react';
 
-const StyledView = styled(View)
-const StyledText = styled(Text)
 
 const App = () => {
 	const [name, setName] = useState('Warehouse-App');
 	return (
-		<StyledView className="flex-1 items-center justify-center">
-			<StyledText className="text-slate-800">
+		<View className="flex-1 items-center justify-center">
+			<Text className="text-slate-800">
 				{`Welcome to ${name}!`}
-			</StyledText>
+			</Text>
+			<Button onPress={(prev) => setName(`|${prev}|`)} title="Reset" />
 			<StatusBar style="auto" />
-		</StyledView>
+		</View>
 	);
 }
 
