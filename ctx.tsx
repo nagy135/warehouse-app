@@ -1,10 +1,12 @@
 import { useContext, createContext, type PropsWithChildren } from 'react';
-import { useStorageState } from './utils/use-storage-state';
+import { SessionData, useStorageState } from './utils/use-storage-state';
+
+const apiRoot = process.env.EXPO_PUBLIC_API_URL;
 
 const AuthContext = createContext<{
 	signIn: (email: string, password: string) => void;
 	signOut: () => void;
-	session?: string | null;
+	session?: SessionData | null;
 	isLoading: boolean;
 }>({
 	signIn: () => null,
@@ -31,9 +33,26 @@ export function SessionProvider({ children }: PropsWithChildren) {
 	return (
 		<AuthContext.Provider
 			value={{
-				signIn: (email, password) => {
-					// Perform sign-in logic here
-					setSession(email);
+				signIn: async (email, password) => {
+					const response = await fetch(`${apiRoot}/log-in`,
+						{
+							method: 'POST',
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({ email, password }),
+						}
+					);
+					if (response.status !== 200) {
+						throw new Error('Invalid credentials');
+					}
+					const body = await response.json();
+
+					setSession({
+						accessToken: body.accessToken,
+						refreshToken: body.refreshToken,
+						email
+					});
 				},
 				signOut: () => {
 					setSession(null);
