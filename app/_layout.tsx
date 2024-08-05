@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Theme, ThemeProvider } from '@react-navigation/native';
 import { SplashScreen, Stack } from 'expo-router';
 import { View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { Text } from '~/components/ui/text';
 import * as React from 'react';
 import { Platform } from 'react-native';
@@ -15,6 +14,13 @@ import { ThemeToggle } from '~/components/theme-toggle';
 import { SessionProvider, useSession } from '~/ctx';
 import { Button } from '~/components/ui/button';
 import { useColorScheme } from '~/lib/useColorScheme';
+
+import {
+	QueryClient,
+	QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 const LIGHT_THEME: Theme = {
 	dark: false,
@@ -69,24 +75,27 @@ export default function RootLayout() {
 	return (
 		<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
 			<SessionProvider>
-				<Stack>
-					<Stack.Screen
-						name='index'
-						options={{
-							animation: 'slide_from_left',
-							title: 'Warehouse App',
-							headerRight: () => <ThemeToggle />,
-						}}
-					/>
-					<Stack.Screen
-						name='logged-in'
-						options={{
-							animation: 'slide_from_right',
-							title: 'Actions',
-							headerRight: () => <ThemeProfile />,
-						}}
-					/>
-				</Stack>
+
+				<QueryClientProvider client={queryClient}>
+					<Stack>
+						<Stack.Screen
+							name='index'
+							options={{
+								animation: 'slide_from_left',
+								title: 'Warehouse App',
+								headerRight: () => <ThemeToggle />,
+							}}
+						/>
+						<Stack.Screen
+							name='logged-in'
+							options={{
+								animation: 'slide_from_right',
+								title: 'Actions',
+								headerRight: () => <ThemeProfile />,
+							}}
+						/>
+					</Stack>
+				</QueryClientProvider>
 			</SessionProvider>
 			<PortalHost />
 		</ThemeProvider>

@@ -4,12 +4,12 @@ import { SessionData, useStorageState } from './utils/use-storage-state';
 const apiRoot = process.env.EXPO_PUBLIC_API_URL;
 
 const AuthContext = createContext<{
-	signIn: (email: string, password: string) => void;
+	signIn: (email: string, password: string) => Promise<void>;
 	signOut: () => void;
 	session?: SessionData | null;
 	isLoading: boolean;
 }>({
-	signIn: () => null,
+	signIn: () => Promise.resolve(),
 	signOut: () => null,
 	session: null,
 	isLoading: false,
