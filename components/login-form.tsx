@@ -30,9 +30,10 @@ export default function LoginForm() {
 	React.useEffect(() => {
 		if (!loggingIn) return;
 		if (progress >= 100) {
-			signIn(email, password);
+			signIn(email, password).then(() => {
+				router.replace('/logged-in');
+			});
 
-			router.replace('/logged-in');
 		} else {
 			setTimeout(() => {
 				setProgress(progress + 10);
