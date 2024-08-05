@@ -19,9 +19,9 @@ export default function EntriesPage() {
 	};
 
 	const query = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
-	if (!query.data?.users) return <Text>Loading...</Text>;
+	if (!query.data?.entries) return <Text>Loading...</Text>;
 
-	return query.data.users.map((user: any, i: number) => (
+	return query.data.entries.map((user: any, i: number) => (
 		<View key={`user-${i}`}>
 			<Text>{user.name}</Text>
 		</View>

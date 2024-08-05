@@ -22,5 +22,21 @@ export default function ActionLayout() {
 	// This layout can be deferred because it's not the root layout.
 	return <Stack screenOptions={{
 		headerShown: false,
-	}} />;
+	}}>
+		<Stack.Screen
+			name='entries'
+			options={{
+				animation: 'slide_from_right',
+				title: 'Entries',
+			}}
+		/>
+		<Stack.Screen
+			name='index'
+			options={{
+				animation: 'slide_from_right',
+				title: 'Index',
+			}}
+		/>
+	</Stack>
 }
+

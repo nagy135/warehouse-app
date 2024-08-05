@@ -12,7 +12,7 @@ export default function LoggedInPage() {
 			<Text className='color-white font-bold text-xl'>{session?.accessToken ?? '-'}</Text>
 			<Text className='color-white font-bold text-xl'>{session?.refreshToken ?? '-'}</Text>
 			<View className="flex-1 justify-center w-full gap-5 p-3">
-				<Button onPress={() => router.push('/logged-in/entries')}><Text>Entry</Text></Button>
+				<Button onPress={() => router.push('/entries')}><Text>Entry</Text></Button>
 				<Button><Text>Exit</Text></Button>
 			</View>
 		</View>
