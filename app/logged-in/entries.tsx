@@ -8,7 +8,7 @@ const apiRoot = process.env.EXPO_PUBLIC_API_URL;
 export default function EntriesPage() {
 	const { session } = useSession();
 
-	const fetchUsers = async () => {
+	const fetchEntries = async () => {
 		const res = await fetch(`${apiRoot}/entries`, {
 			headers: {
 				'Authorization': `Bearer ${session?.accessToken}`
@@ -18,7 +18,7 @@ export default function EntriesPage() {
 		return data;
 	};
 
-	const query = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
+	const query = useQuery({ queryKey: ['entries'], queryFn: fetchEntries });
 	if (!query.data?.entries) return <Text>Loading...</Text>;
 
 	return query.data.entries.map((user: any, i: number) => (
