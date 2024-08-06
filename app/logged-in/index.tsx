@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { View } from 'react-native';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
@@ -12,7 +12,11 @@ export default function LoggedInPage() {
 			<Text className='color-white font-bold text-xl'>{session?.accessToken ?? '-'}</Text>
 			<Text className='color-white font-bold text-xl'>{session?.refreshToken ?? '-'}</Text>
 			<View className="flex-1 justify-center w-full gap-5 p-3">
-				<Button onPress={() => router.push('/entries')}><Text>Entry</Text></Button>
+				<Link href="/logged-in/entries" asChild>
+					<Button>
+						<Text>Entry</Text>
+					</Button>
+				</Link>
 				<Button><Text>Exit</Text></Button>
 			</View>
 		</View>
