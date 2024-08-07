@@ -1,4 +1,4 @@
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
 import { View } from 'react-native';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
@@ -8,16 +8,18 @@ export default function LoggedInPage() {
 	const { session } = useSession();
 	return (
 		<View className='flex-1 justify-center items-center gap-5 p-6 bg-secondary/30'>
-			<Text className='color-white font-bold text-xl'>Logged In {session?.email ?? '-'}</Text>
-			<Text className='color-white font-bold text-xl'>{session?.accessToken ?? '-'}</Text>
-			<Text className='color-white font-bold text-xl'>{session?.refreshToken ?? '-'}</Text>
+			<Text className='font-bold text-2xl'>Welcome!</Text>
+			<Text className='text-md'>{session?.email ?? '-'}</Text>
 			<View className="flex-1 justify-center w-full gap-5 p-3">
+				{/* @ts-ignore */}
 				<Link href="/logged-in/entries" asChild>
-					<Button>
+					<Button className="text-2xl font-bold" size="lg">
 						<Text>Entry</Text>
 					</Button>
 				</Link>
-				<Button><Text>Exit</Text></Button>
+				<Button className="text-2xl font-bold" size="lg">
+					<Text>Exit</Text>
+				</Button>
 			</View>
 		</View>
 	)
