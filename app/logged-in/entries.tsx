@@ -1,30 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
-import { View } from "react-native";
-import { useSession } from "~/ctx";
+import { ScrollView } from "react-native";
+import EntryCard from "~/components/entry-card";
 import { Text } from '~/components/ui/text';
-
-const apiRoot = process.env.EXPO_PUBLIC_API_URL;
+import useGetEntries from "~/lib/api/use-get-entries";
+import { Entry } from "~/lib/types";
 
 export default function EntriesPage() {
-	const { session } = useSession();
 
-	const fetchEntries = async () => {
-		const res = await fetch(`${apiRoot}/entries`, {
-			headers: {
-				'Authorization': `Bearer ${session?.accessToken}`
+	const query = useGetEntries();
+	if (query.status !== "success") return <Text>Loading...</Text>;
+
+	return (
+		<ScrollView className="flex m-3 gap-3">
+			{
+				query.data.entries.map((entry: Entry, i: number) => (
+					<EntryCard key={`entry-card-${i}`} entry={entry} />
+				))
 			}
-		});
-		const data = await res.json();
-		return data;
-	};
-
-	const query = useQuery({ queryKey: ['entries'], queryFn: fetchEntries });
-	if (!query.data?.entries) return <Text>Loading...</Text>;
-
-	return query.data.entries.map((user: any, i: number) => (
-		<View key={`user-${i}`}>
-			<Text>{user.name}</Text>
-		</View>
+		</ScrollView>
 	)
-	);
 }
