@@ -1,17 +1,12 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
-import { Entry } from "../types";
 import { API_ROOT } from "../constants";
 
-type EntryWrap = {
-	entries: Entry[];
-}
-
-export default function useGetEntries(): UseQueryResult<EntryWrap> {
+export default function useGetRecords<T>(apiKey: string): UseQueryResult<T[]> {
 	const { session } = useSession();
 
-	const fetchEntries = async () => {
-		const res = await fetch(`${API_ROOT}/entries`, {
+	const fetchRecords = async () => {
+		const res = await fetch(`${API_ROOT}/${apiKey}`, {
 			headers: {
 				'Authorization': `Bearer ${session?.accessToken}`
 			}
@@ -20,7 +15,7 @@ export default function useGetEntries(): UseQueryResult<EntryWrap> {
 		return data;
 	};
 
-	const query = useQuery({ queryKey: ['entries'], queryFn: fetchEntries });
+	const query = useQuery({ queryKey: [apiKey], queryFn: fetchRecords });
 
 	return query;
 }
