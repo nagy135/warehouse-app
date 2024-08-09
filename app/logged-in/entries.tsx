@@ -11,6 +11,7 @@ export default function EntriesPage() {
 
 	const entries = useGetRecords<Entry>('entries', searchValue);
 	if (entries.status !== "success") return <Text>Loading...</Text>;
+	if (!Array.isArray(entries.data)) return <Text>error</Text>;
 
 	return (
 		<View className="m-3">
