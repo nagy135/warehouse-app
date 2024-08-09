@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
-import EntryCard from "~/components/entry-card";
+import ExitCard from "~/components/exit-card";
 import { Input } from "~/components/ui/input";
 import { Text } from '~/components/ui/text';
 import useGetRecords from "~/lib/api/use-get-records";
-import { Entry } from "~/lib/types";
+import { Exit } from "~/lib/types";
 
-export default function EntriesPage() {
+export default function ExitsPage() {
 	const [searchValue, setSearchValue] = useState('');
 
-	const entries = useGetRecords<Entry>('entries', searchValue);
+	const entries = useGetRecords<Exit>('exits', searchValue);
 	if (entries.status !== "success") return <Text>Loading...</Text>;
 
 	return (
@@ -17,15 +17,13 @@ export default function EntriesPage() {
 			<Input
 				placeholder='Search by name...'
 				value={searchValue}
-				onChangeText={(val) => {
-					setSearchValue(val);
-				}}
+				onChangeText={setSearchValue}
 			/>
 			<ScrollView className="flex">
 				{
-					entries.data.map((entry: Entry, i: number) => (
+					entries.data.map((exit: Exit, i: number) => (
 						<View key={`exit-card-${i}`} className="my-1">
-							<EntryCard entry={entry} />
+							<ExitCard exit={exit} />
 						</View>
 					))
 				}

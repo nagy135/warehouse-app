@@ -7,14 +7,14 @@ import {
 	CardTitle,
 } from '~/components/ui/card';
 import { Text } from '~/components/ui/text';
-import { type Entry } from '~/lib/types';
+import { type Exit } from '~/lib/types';
 
-export default function EntryCard({ entry }: { entry: Entry }) {
+export default function ExitCard({ exit }: { exit: Exit }) {
 	return (
 		<Card className='w-full'>
 			<CardHeader>
-				<CardTitle>{entry.name}</CardTitle>
-				<CardDescription>entry number #{entry.id}</CardDescription>
+				<CardTitle>{exit.name}</CardTitle>
+				<CardDescription>entry number #{exit.id}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<Text>Content</Text>

@@ -4,6 +4,7 @@ import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { useSession } from '~/ctx';
 export default function LoggedInPage() {
+	console.log('logged in page')
 
 	const { session } = useSession();
 	return (
@@ -14,12 +15,15 @@ export default function LoggedInPage() {
 				{/* @ts-ignore */}
 				<Link href="/logged-in/entries" asChild>
 					<Button className="text-2xl font-bold" size="lg">
-						<Text>Entry</Text>
+						<Text>Entries</Text>
 					</Button>
 				</Link>
-				<Button className="text-2xl font-bold" size="lg">
-					<Text>Exit</Text>
-				</Button>
+				{/* @ts-ignore */}
+				<Link href="/logged-in/exits" asChild>
+					<Button className="text-2xl font-bold" size="lg">
+						<Text>Exits</Text>
+					</Button>
+				</Link>
 			</View>
 		</View>
 	)
