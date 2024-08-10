@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import EntryCard from "~/components/entry-card";
 import { Input } from "~/components/ui/input";
 import { Text } from '~/components/ui/text';
@@ -9,19 +9,24 @@ import { Entry } from "~/lib/types";
 export default function EntriesPage() {
 	const [searchValue, setSearchValue] = useState('');
 
-	const entries = useGetRecords<Entry>('entries', searchValue);
+	const [entries, isWaiting] = useGetRecords<Entry>('entries', searchValue);
 	if (entries.status !== "success") return <Text>Loading...</Text>;
 	if (!Array.isArray(entries.data)) return <Text>error</Text>;
 
 	return (
 		<View className="m-3">
-			<Input
-				placeholder='Search by name...'
-				value={searchValue}
-				onChangeText={(val) => {
-					setSearchValue(val);
-				}}
-			/>
+
+			<View className="flex-row">
+				<Input
+					className="flex-1"
+					placeholder='Search by name...'
+					value={searchValue}
+					onChangeText={(val) => {
+						setSearchValue(val);
+					}}
+				/>
+				{isWaiting && <ActivityIndicator color="#666666" />}
+			</View>
 			<ScrollView className="flex">
 				{
 					entries.data.map((entry: Entry, i: number) => (

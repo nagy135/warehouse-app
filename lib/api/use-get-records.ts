@@ -1,12 +1,13 @@
 import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "../constants";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 
-export default function useGetRecords<T>(apiKey: string, search?: string): UseQueryResult<T[]> {
+export default function useGetRecords<T>(apiKey: string, search?: string): [UseQueryResult<T[]>, boolean] {
 	const { session } = useSession();
 	const queryClient = useQueryClient()
+	const [isWaiting, setIsWaiting] = useState(false);
 
 	const handleRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -20,7 +21,9 @@ export default function useGetRecords<T>(apiKey: string, search?: string): UseQu
 
 		handleRef.current = setTimeout(() => {
 			queryClient.invalidateQueries({ queryKey: [apiKey] });
+			setIsWaiting(false);
 		}, 1000);
+		setIsWaiting(true);
 	}, [search])
 
 	const fetchRecords = async () => {
@@ -36,5 +39,5 @@ export default function useGetRecords<T>(apiKey: string, search?: string): UseQu
 
 	const query = useQuery({ queryKey: [apiKey], queryFn: fetchRecords });
 
-	return query;
+	return [query, isWaiting];
 }
