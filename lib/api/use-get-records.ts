@@ -22,7 +22,7 @@ export default function useGetRecords<T>(apiKey: string, search?: string): [UseQ
 		handleRef.current = setTimeout(() => {
 			queryClient.invalidateQueries({ queryKey: [apiKey] });
 			setIsWaiting(false);
-		}, 1000);
+		}, 500);
 		setIsWaiting(true);
 	}, [search])
 

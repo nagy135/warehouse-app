@@ -14,28 +14,29 @@ export default function EntriesPage() {
 	if (!Array.isArray(entries.data)) return <Text>error</Text>;
 
 	return (
-		<View className="m-3">
-
-			<View className="flex-row">
+		<>
+			<View className="m-3">
 				<Input
-					className="flex-1"
 					placeholder='Search by name...'
 					value={searchValue}
 					onChangeText={(val) => {
 						setSearchValue(val);
 					}}
 				/>
-				{isWaiting && <ActivityIndicator color="#666666" />}
+				<ScrollView className="flex">
+					{
+						entries.data.map((entry: Entry, i: number) => (
+							<View key={`exit-card-${i}`} className="my-1">
+								<EntryCard entry={entry} />
+							</View>
+						))
+					}
+				</ScrollView>
 			</View>
-			<ScrollView className="flex">
-				{
-					entries.data.map((entry: Entry, i: number) => (
-						<View key={`exit-card-${i}`} className="my-1">
-							<EntryCard entry={entry} />
-						</View>
-					))
-				}
-			</ScrollView>
-		</View>
+			{isWaiting &&
+				<View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
+					<ActivityIndicator size={60} color="#666666" />
+				</View>}
+		</>
 	)
 }
