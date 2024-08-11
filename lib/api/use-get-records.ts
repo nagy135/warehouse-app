@@ -4,7 +4,13 @@ import { API_ROOT } from "../constants";
 import { useEffect, useRef, useState } from "react";
 
 
-export default function useGetRecords<T>(apiKey: string, search?: string): [UseQueryResult<T[]>, boolean] {
+export default function useGetRecords<T>(
+	apiKey: string,
+	search?: string
+): {
+	data: UseQueryResult<T[]>,
+	isWaiting: boolean,
+} {
 	const { session } = useSession();
 	const queryClient = useQueryClient()
 	const [isWaiting, setIsWaiting] = useState(false);
@@ -39,5 +45,8 @@ export default function useGetRecords<T>(apiKey: string, search?: string): [UseQ
 
 	const query = useQuery({ queryKey: [apiKey], queryFn: fetchRecords });
 
-	return [query, isWaiting];
+	return {
+		data: query,
+		isWaiting: isWaiting || (query.status !== "success"),
+	};
 }

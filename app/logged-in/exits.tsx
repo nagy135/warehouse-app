@@ -9,9 +9,8 @@ import { Exit } from "~/lib/types";
 export default function ExitsPage() {
 	const [searchValue, setSearchValue] = useState('');
 
-	const [exits, isWaiting] = useGetRecords<Exit>('exits', searchValue);
-	if (exits.status !== "success") return <Text>Loading...</Text>;
-	if (!Array.isArray(exits.data)) return <Text>error</Text>;
+	const { data: exits, isWaiting } = useGetRecords<Exit>('exits', searchValue);
+	if (!Array.isArray(exits.data) && !exits.isLoading) return <Text>error</Text>;
 
 	return (
 		<>
@@ -23,7 +22,7 @@ export default function ExitsPage() {
 				/>
 				<ScrollView className="flex">
 					{
-						exits.data.map((exit: Exit, i: number) => (
+						exits.data?.map((exit: Exit, i: number) => (
 							<View key={`exit-card-${i}`} className="my-1">
 								<ExitCard exit={exit} />
 							</View>
