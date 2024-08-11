@@ -4,8 +4,6 @@ import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { useSession } from '~/ctx';
 export default function LoggedInPage() {
-	console.log('logged in page')
-
 	const { session } = useSession();
 	return (
 		<View className='flex-1 justify-center items-center gap-5 p-6 bg-secondary/30'>
