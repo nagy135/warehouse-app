@@ -2,7 +2,9 @@ import { Link } from 'expo-router';
 import { View } from 'react-native';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
+import ZebraScanner from '~/components/zebra-scanner';
 import { useSession } from '~/ctx';
+
 export default function LoggedInPage() {
 	const { session } = useSession();
 	return (
@@ -22,6 +24,7 @@ export default function LoggedInPage() {
 						<Text>Exits</Text>
 					</Button>
 				</Link>
+				<ZebraScanner />
 			</View>
 		</View>
 	)
