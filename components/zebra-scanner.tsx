@@ -1,36 +1,15 @@
-import React, { useEffect, useState } from "react";
-import * as ExpoZebraScanner from "expo-zebra-scanner";
 import { View, Text } from "react-native";
 import { Button } from "./ui/button";
+import useScanner from "~/lib/hooks/use-scanner";
 
 export default function ZebraScanner() {
 
-	const [data, setData] = useState("-");
-	const [label, setLabel] = useState("-");
-	const [scanning, setScanning] = useState(false);
-
-	useEffect(() => {
-
-		const listener = ExpoZebraScanner.addListener(event => {
-
-			const { scanData, scanLabelType } = event;
-			setData(scanData ?? 'nothing data');
-			setLabel(scanLabelType ?? 'nothing label');
-
-		});
-		ExpoZebraScanner.startScan();
-
-
-		return () => {
-			ExpoZebraScanner.stopScan();
-			listener.remove();
-		}
-
-	}, [scanning])
+	const { data, label, startScan, scanning } = useScanner();
 
 	return (
 		<View>
-			<Button onPress={() => setScanning(true)}><Text>Start Scan</Text></Button>
+			<Button onPress={() => startScan()}><Text>Start Scan</Text></Button>
+			<Text>{scanning ? 'SCANNING' : 'not scanning'}</Text>
 			<Text>{`data: ${data}`}</Text>
 			<Text>{`label: ${label}`}</Text>
 		</View>
