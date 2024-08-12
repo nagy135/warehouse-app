@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
-import { API_ROOT } from "../constants";
 import { useEffect, useRef, useState } from "react";
+import { API_ROOT } from "~/lib/constants";
 
 
 export default function useGetRecords<T>(

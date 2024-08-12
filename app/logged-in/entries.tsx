@@ -3,7 +3,7 @@ import { ActivityIndicator, ScrollView, View } from "react-native";
 import EntryCard from "~/components/entry-card";
 import { Input } from "~/components/ui/input";
 import { Text } from '~/components/ui/text';
-import useGetRecords from "~/lib/api/use-get-records";
+import useGetRecords from "~/lib/hooks/api/use-get-records";
 import { Entry } from "~/lib/types";
 
 export default function EntriesPage() {
