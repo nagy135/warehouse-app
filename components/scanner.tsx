@@ -3,12 +3,12 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import useScanner from "~/lib/hooks/use-scanner";
 
-export default function ZebraScanner() {
+export default function Scanner() {
 
 	const { data, label, startScan, scanning } = useScanner();
 
 	return (
-		<View>
+		<View className="w-full">
 			<Button
 				onPress={() => startScan()}
 				size="lg">

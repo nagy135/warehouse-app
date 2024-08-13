@@ -19,7 +19,7 @@ export default function ExitCard({ exit }: { exit: Exit }) {
 			}}>
 				<CardHeader>
 					<CardTitle>{exit.name}</CardTitle>
-					<CardDescription>entry number #{exit.id}</CardDescription>
+					<CardDescription>exit number #{exit.id}</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<Text>Content</Text>

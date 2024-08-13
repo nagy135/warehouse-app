@@ -1,5 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
+import Scanner from '~/components/scanner';
 import {
 	Card,
 	CardContent,
@@ -18,13 +19,14 @@ export default function DetailPage() {
 			<Card className='w-full'>
 				<CardHeader>
 					<CardTitle>{exit.name}</CardTitle>
-					<CardDescription>exit number #{exit.id}</CardDescription>
+					<CardDescription>#{exit.id}</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<Text>Content</Text>
+					<Text>sku: {exit.sku}</Text>
+					<Text>{`created by: ${exit.createdById} at ${new Date(exit.createdAt).toUTCString()}`}</Text>
 				</CardContent>
 				<CardFooter>
-					<Text>Do stuff</Text>
+					<Scanner />
 				</CardFooter>
 			</Card>
 		</View>
