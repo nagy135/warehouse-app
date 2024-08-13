@@ -24,13 +24,6 @@ export default function ActionLayout() {
 		headerShown: false,
 	}}>
 		<Stack.Screen
-			name='entries'
-			options={{
-				animation: 'slide_from_right',
-				title: 'Entries',
-			}}
-		/>
-		<Stack.Screen
 			name='index'
 			options={{
 				animation: 'slide_from_right',

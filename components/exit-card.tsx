@@ -1,3 +1,5 @@
+import { router } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import {
 	Card,
 	CardContent,
@@ -12,16 +14,20 @@ import { type Exit } from '~/lib/types';
 export default function ExitCard({ exit }: { exit: Exit }) {
 	return (
 		<Card className='w-full'>
-			<CardHeader>
-				<CardTitle>{exit.name}</CardTitle>
-				<CardDescription>entry number #{exit.id}</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<Text>Content</Text>
-			</CardContent>
-			<CardFooter>
-				<Text>Do stuff</Text>
-			</CardFooter>
+			<TouchableOpacity onPress={() => {
+				router.push({ pathname: './detail', params: exit })
+			}}>
+				<CardHeader>
+					<CardTitle>{exit.name}</CardTitle>
+					<CardDescription>entry number #{exit.id}</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<Text>Content</Text>
+				</CardContent>
+				<CardFooter>
+					<Text>Do stuff</Text>
+				</CardFooter>
+			</TouchableOpacity>
 		</Card>
 	);
 }

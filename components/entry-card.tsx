@@ -1,3 +1,5 @@
+import { router } from 'expo-router';
+import { TouchableOpacity } from 'react-native';
 import {
 	Card,
 	CardContent,
@@ -12,16 +14,20 @@ import { type Entry } from '~/lib/types';
 export default function EntryCard({ entry }: { entry: Entry }) {
 	return (
 		<Card className='w-full'>
-			<CardHeader>
-				<CardTitle>{entry.name}</CardTitle>
-				<CardDescription>entry number #{entry.id}</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<Text>Content</Text>
-			</CardContent>
-			<CardFooter>
-				<Text>Do stuff</Text>
-			</CardFooter>
-		</Card>
+			<TouchableOpacity onPress={() => {
+				router.push({ pathname: './detail', params: entry })
+			}}>
+				<CardHeader>
+					<CardTitle>{entry.name}</CardTitle>
+					<CardDescription>entry number #{entry.id}</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<Text>Content</Text>
+				</CardContent>
+				<CardFooter>
+					<Text>Do stuff</Text>
+				</CardFooter>
+			</TouchableOpacity>
+		</Card >
 	);
 }
