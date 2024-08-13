@@ -10,10 +10,14 @@ export default function useGetRecords<T>(
 ): {
 	data: UseQueryResult<T[]>,
 	isWaiting: boolean,
+	refreshing: boolean,
+	onRefresh: () => void,
+
 } {
 	const { session } = useSession();
 	const queryClient = useQueryClient()
 	const [isWaiting, setIsWaiting] = useState(false);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const handleRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -48,5 +52,11 @@ export default function useGetRecords<T>(
 	return {
 		data: query,
 		isWaiting: isWaiting || (query.status !== "success"),
+		refreshing,
+		onRefresh: () => {
+			setRefreshing(true);
+			queryClient.invalidateQueries({ queryKey: [apiKey] });
+			setRefreshing(false);
+		},
 	};
 }

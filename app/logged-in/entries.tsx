@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import EntryCard from "~/components/entry-card";
 import { Input } from "~/components/ui/input";
 import { Text } from '~/components/ui/text';
@@ -9,8 +9,15 @@ import { Entry } from "~/lib/types";
 export default function EntriesPage() {
 	const [searchValue, setSearchValue] = useState('');
 
-	const { data: entries, isWaiting } = useGetRecords<Entry>('exits', searchValue);
+	const {
+		data: entries,
+		isWaiting,
+		refreshing,
+		onRefresh,
+	} = useGetRecords<Entry>('entries', searchValue);
+
 	if (!Array.isArray(entries.data) && !entries.isLoading) return <Text>error</Text>;
+
 
 	return (
 		<>
@@ -22,7 +29,14 @@ export default function EntriesPage() {
 						setSearchValue(val);
 					}}
 				/>
-				<ScrollView className="flex">
+				<ScrollView className="flex"
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+						/>
+					}
+				>
 					{
 						entries.data?.map((entry: Entry, i: number) => (
 							<View key={`exit-card-${i}`} className="my-1">

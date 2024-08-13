@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import ExitCard from "~/components/exit-card";
 import { Input } from "~/components/ui/input";
 import { Text } from '~/components/ui/text';
@@ -9,7 +9,12 @@ import { Exit } from "~/lib/types";
 export default function ExitsPage() {
 	const [searchValue, setSearchValue] = useState('');
 
-	const { data: exits, isWaiting } = useGetRecords<Exit>('exits', searchValue);
+	const {
+		data: exits,
+		isWaiting,
+		refreshing,
+		onRefresh,
+	} = useGetRecords<Exit>('exits', searchValue);
 	if (!Array.isArray(exits.data) && !exits.isLoading) return <Text>error</Text>;
 
 	return (
@@ -20,7 +25,14 @@ export default function ExitsPage() {
 					value={searchValue}
 					onChangeText={setSearchValue}
 				/>
-				<ScrollView className="flex">
+				<ScrollView className="flex"
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+						/>
+					}
+				>
 					{
 						exits.data?.map((exit: Exit, i: number) => (
 							<View key={`exit-card-${i}`} className="my-1">
