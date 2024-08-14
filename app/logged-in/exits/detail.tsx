@@ -17,7 +17,7 @@ export default function DetailPage() {
 	const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
 	return (
 		<>
-			<ConfirmationModal onConfirm={() => console.log('confirmed!')} />
+			<ConfirmationModal buttonTitle="Save" onConfirm={() => console.log('confirmed!')} />
 			<View className="mx-3">
 				<Card className='w-full'>
 					<CardHeader>
