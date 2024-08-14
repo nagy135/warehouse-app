@@ -1,42 +1,41 @@
-import React, { useState } from "react";
-import { Modal, View } from "react-native";
+import React from "react";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
+import { View } from "react-native";
 
-export default function ConfirmationModal({ onConfirm }: {
+export default function ConfirmationModal({
+	buttonTitle,
+	onConfirm,
+}: {
+	buttonTitle: string;
 	onConfirm: () => void;
 }) {
-	const [modalVisible, setModalVisible] = useState(false);
 	return (
-		<View className="justify-center p-3 items-end">
-			<Modal
-				animationType="slide"
-				transparent={true}
-				hardwareAccelerated={true}
-				visible={modalVisible}
-				onRequestClose={() => {
-					setModalVisible(!modalVisible);
-					onConfirm();
-				}}>
-				<View
-					className="flex-1 justify-center items-center bg-opacity-50 p-5"
-				>
-					<View
-						className="p-5 border border-black rounded items-center bg-white"
-					>
-						<Text className="mb-5">Are you sure?</Text>
-						<Button
-							variant="destructive"
-							onPress={() => setModalVisible(!modalVisible)}>
-							<Text>Confirm</Text>
-						</Button>
-					</View>
-				</View>
-			</Modal>
-			<Button
-				onPress={() => setModalVisible(true)}>
-				<Text>Save</Text>
-			</Button>
-		</View>
+		<AlertDialog>
+			<View className="flex items-end">
+				<AlertDialogTrigger asChild>
+					<Button variant='outline'>
+						<Text>{buttonTitle}</Text>
+					</Button>
+				</AlertDialogTrigger>
+			</View>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
+						This action cannot be undone.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel>
+						<Text>Cancel</Text>
+					</AlertDialogCancel>
+					<AlertDialogAction onPress={onConfirm}>
+						<Text>Continue</Text>
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 }

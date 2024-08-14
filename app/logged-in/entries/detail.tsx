@@ -16,23 +16,21 @@ import ConfirmationModal from '~/components/confirmation-modal';
 export default function DetailPage() {
 	const entry = useLocalSearchParams<ToStringOrStringArray<Entry>>();
 	return (
-		<>
-			<ConfirmationModal onConfirm={() => console.log('confirmed!')} />
-			<View className="m-5">
-				<Card className='w-full'>
-					<CardHeader>
-						<CardTitle>{entry.name}</CardTitle>
-						<CardDescription>#{entry.id}</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<Text>sku: {entry.sku}</Text>
-						<Text>{`created by: ${entry.createdById} at ${new Date(entry.createdAt).toUTCString()}`}</Text>
-					</CardContent>
-					<CardFooter>
-						<Scanner />
-					</CardFooter>
-				</Card>
-			</View>
-		</>
+		<View className="m-2 flex-col gap-3">
+			<ConfirmationModal buttonTitle="Save" onConfirm={() => console.log('confirmed!')} />
+			<Card className='w-full'>
+				<CardHeader>
+					<CardTitle>{entry.name}</CardTitle>
+					<CardDescription>#{entry.id}</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<Text>sku: {entry.sku}</Text>
+					<Text>{`created by: ${entry.createdById} at ${new Date(entry.createdAt).toUTCString()}`}</Text>
+				</CardContent>
+				<CardFooter>
+					<Scanner />
+				</CardFooter>
+			</Card>
+		</View>
 	);
 }
