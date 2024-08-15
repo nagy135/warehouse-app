@@ -2,14 +2,16 @@ import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query"
 import { useSession } from "~/ctx";
 import { useEffect, useRef, useState } from "react";
 import { API_ROOT } from "~/lib/constants";
-
+import { isEnvVar } from "~/lib/utils";
 
 export default function useGetRecords<T>(
 	apiKey: string,
 	search?: string
 ): {
-	data: UseQueryResult<T[]>,
+	data: T[] | undefined,
 	isWaiting: boolean,
+	isLoading: boolean,
+	error: Error | null,
 	refreshing: boolean,
 	onRefresh: () => void,
 
@@ -30,28 +32,31 @@ export default function useGetRecords<T>(
 		if (handleRef.current) clearTimeout(handleRef.current);
 
 		handleRef.current = setTimeout(() => {
+			setIsWaiting(true);
 			queryClient.invalidateQueries({ queryKey: [apiKey] });
-			setIsWaiting(false);
-		}, 500);
-		setIsWaiting(true);
+		}, 300);
 	}, [search])
 
 	const fetchRecords = async () => {
-		console.log(`fetching: ${API_ROOT}/${apiKey}?${searchString}`);
+		if (isEnvVar('DEBUG', true)) console.log(`fetching: ${API_ROOT}/${apiKey}?${searchString}`);
+
 		const res = await fetch(`${API_ROOT}/${apiKey}?${searchString}`, {
 			headers: {
 				'Authorization': `Bearer ${session?.accessToken}`
 			}
 		});
 		const data = await res.json();
+		setIsWaiting(false);
 		return data;
 	};
 
-	const query = useQuery({ queryKey: [apiKey], queryFn: fetchRecords });
+	const { data, error, isLoading } = useQuery({ queryKey: [apiKey], queryFn: fetchRecords });
 
 	return {
-		data: query,
-		isWaiting: isWaiting || (query.status !== "success"),
+		data,
+		isWaiting,
+		error,
+		isLoading,
 		refreshing,
 		onRefresh: () => {
 			setRefreshing(true);

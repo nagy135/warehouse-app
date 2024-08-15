@@ -1,3 +1,5 @@
+import { getEnvVar } from "./utils";
+
 export const NAV_THEME = {
 	light: {
 		background: 'hsl(0 0% 100%)', // background
@@ -17,5 +19,5 @@ export const NAV_THEME = {
 	},
 };
 
-export const API_ROOT = process.env.EXPO_PUBLIC_API_URL;
+export const API_ROOT = getEnvVar('API_URL');
 
