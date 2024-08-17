@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { useEffect, useRef, useState } from "react";
 import { API_ROOT } from "~/lib/constants";

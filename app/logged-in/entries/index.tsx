@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import EntryCard from "~/components/entry-card";
 import { Input } from "~/components/ui/input";
