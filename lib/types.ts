@@ -16,6 +16,7 @@ export type Exit = {
 };
 
 export type ProductStorage = {
+  id: number;
   productSkuVariant: ProductSkuVariant;
   storage: Storage;
 };
@@ -29,12 +30,14 @@ export type ProductSkuVariant = {
 };
 
 export type ProductCV = {
+  name: string;
   change: string;
   value: string;
   product?: Product;
 };
 
 export type ProductDV = {
+  name: string;
   height: number;
   width: number;
   depth: number;

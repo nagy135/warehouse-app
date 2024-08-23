@@ -25,7 +25,7 @@ export default function ConfirmationModal({
     <AlertDialog>
       <View className="flex items-end">
         <AlertDialogTrigger asChild>
-          <Button variant="outline">
+          <Button size="lg" variant="outline">
             <Text>{buttonTitle}</Text>
           </Button>
         </AlertDialogTrigger>
