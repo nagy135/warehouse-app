@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import { useSession } from '~/ctx';
@@ -13,6 +13,7 @@ import {
 import { Progress } from '~/components/ui/progress';
 import { Text } from '~/components/ui/text';
 import { Input } from '~/components/ui/input';
+import { useRef } from 'react';
 
 const AVATAR_URI =
 	'https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg';
@@ -24,6 +25,7 @@ export default function LoginForm() {
 	const [password, setPassword] = React.useState('user');
 	const [progress, setProgress] = React.useState(0);
 	const [loggingIn, setLoggingIn] = React.useState(false);
+	const timerRef = useRef<NodeJS.Timeout | null>(null);
 	const { signIn } = useSession();
 
 
@@ -32,12 +34,25 @@ export default function LoginForm() {
 		if (progress >= 100) {
 			signIn(email, password).then(() => {
 				router.replace('/logged-in');
+			}).catch(() => {
+
+				Alert.alert('Login error', 'Could not log in.', [
+					{
+						text: 'OK',
+						onPress: () => {
+							setProgress(0);
+							setLoggingIn(false);
+							clearTimeout(timerRef.current!);
+						},
+						style: 'default',
+					},
+				]);
 			});
 
 		} else {
-			setTimeout(() => {
+			timerRef.current = setTimeout(() => {
 				setProgress(progress + 10);
-			}, 100);
+			}, Math.random() * 1000 / 2);
 		}
 
 	}, [progress, setProgress, loggingIn])
