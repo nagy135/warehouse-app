@@ -5,63 +5,67 @@ import { API_ROOT } from "~/lib/constants";
 import { isEnvVar } from "~/lib/utils";
 
 export default function useGetRecords<T>(
-	apiKey: string,
-	search?: string
+  apiKey: string,
+  search?: string
 ): {
-	data: T[] | undefined,
-	isWaiting: boolean,
-	isLoading: boolean,
-	error: Error | null,
-	refreshing: boolean,
-	onRefresh: () => void,
-
+  data: T[] | undefined;
+  isWaiting: boolean;
+  isLoading: boolean;
+  error: Error | null;
+  refreshing: boolean;
+  onRefresh: () => void;
 } {
-	const { session } = useSession();
-	const queryClient = useQueryClient()
-	const [isWaiting, setIsWaiting] = useState(false);
-	const [refreshing, setRefreshing] = useState(false);
+  const { session } = useSession();
+  const queryClient = useQueryClient();
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-	const handleRef = useRef<NodeJS.Timeout | null>(null);
+  const handleRef = useRef<NodeJS.Timeout | null>(null);
 
-	const searchString = search ? new URLSearchParams({
-		search
-	}).toString() : '';
+  const searchString = search
+    ? new URLSearchParams({
+        search,
+      }).toString()
+    : "";
 
+  useEffect(() => {
+    if (handleRef.current) clearTimeout(handleRef.current);
 
-	useEffect(() => {
-		if (handleRef.current) clearTimeout(handleRef.current);
+    handleRef.current = setTimeout(() => {
+      setIsWaiting(true);
+      queryClient.invalidateQueries({ queryKey: [apiKey] });
+    }, 300);
+  }, [search]);
 
-		handleRef.current = setTimeout(() => {
-			setIsWaiting(true);
-			queryClient.invalidateQueries({ queryKey: [apiKey] });
-		}, 300);
-	}, [search])
+  const fetchRecords = async () => {
+    if (isEnvVar("DEBUG", true))
+      console.log(`fetching: ${API_ROOT}/${apiKey}?${searchString}`);
 
-	const fetchRecords = async () => {
-		if (isEnvVar('DEBUG', true)) console.log(`fetching: ${API_ROOT}/${apiKey}?${searchString}`);
+    const res = await fetch(`${API_ROOT}/${apiKey}?${searchString}`, {
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+      },
+    });
+    const data = await res.json();
+    setIsWaiting(false);
+    return data;
+  };
 
-		const res = await fetch(`${API_ROOT}/${apiKey}?${searchString}`, {
-			headers: {
-				'Authorization': `Bearer ${session?.accessToken}`
-			}
-		});
-		const data = await res.json();
-		setIsWaiting(false);
-		return data;
-	};
+  const { data, error, isLoading } = useQuery({
+    queryKey: [apiKey],
+    queryFn: fetchRecords,
+  });
 
-	const { data, error, isLoading } = useQuery({ queryKey: [apiKey], queryFn: fetchRecords });
-
-	return {
-		data,
-		isWaiting,
-		error,
-		isLoading,
-		refreshing,
-		onRefresh: () => {
-			setRefreshing(true);
-			queryClient.invalidateQueries({ queryKey: [apiKey] });
-			setRefreshing(false);
-		},
-	};
+  return {
+    data,
+    isWaiting,
+    error,
+    isLoading,
+    refreshing,
+    onRefresh: () => {
+      setRefreshing(true);
+      queryClient.invalidateQueries({ queryKey: [apiKey] });
+      setRefreshing(false);
+    },
+  };
 }
