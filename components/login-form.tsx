@@ -35,17 +35,8 @@ export default function LoginForm() {
 			signIn(email, password).then(() => {
 				router.replace('/logged-in');
 			}).catch(() => {
-
 				Alert.alert('Login error', 'Could not log in.', [
-					{
-						text: 'OK',
-						onPress: () => {
-							setProgress(0);
-							setLoggingIn(false);
-							clearTimeout(timerRef.current!);
-						},
-						style: 'default',
-					},
+					{ text: 'OK', onPress: () => { setProgress(0); setLoggingIn(false); clearTimeout(timerRef.current!); }, style: 'default' },
 				]);
 			});
 
