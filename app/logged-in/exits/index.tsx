@@ -1,11 +1,14 @@
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   RefreshControl,
   ScrollView,
   View,
 } from "react-native";
 import ExitCard from "~/components/exit-card";
+import Scanner from "~/components/scanner";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 import useGetRecords from "~/lib/hooks/api/use-get-records";
@@ -22,16 +25,51 @@ export default function ExitsPage() {
     refreshing,
     onRefresh,
   } = useGetRecords<Exit>("exits", searchValue);
-  if (error) return <Text>error</Text>;
+  if (error || !exits) return <Text>error</Text>;
 
   return (
     <>
       <View className="m-3">
-        <Input
-          placeholder="Search by name..."
-          value={searchValue}
-          onChangeText={setSearchValue}
-        />
+        <View className="flex-row gap-3">
+          <Input
+            className="flex-1"
+            placeholder="Search by name..."
+            value={searchValue}
+            onChangeText={setSearchValue}
+          />
+          <View className="w-1/3 py-1">
+            <Scanner
+              size={"sm"}
+              onScan={(data) => {
+                const foundExit = exits.find((exit: Exit) => exit.sku === data);
+                if (foundExit) {
+                  Alert.alert(
+                    "Found exit",
+                    "You scanned exit sku and matched it to exit",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => {},
+                        style: "cancel",
+                      },
+                      {
+                        text: "Go to exit",
+                        onPress: () => {
+                          router.push({
+                            pathname: "./detail",
+                            /* @ts-ignore */
+                            params: foundExit,
+                          });
+                        },
+                        style: "default",
+                      },
+                    ]
+                  );
+                }
+              }}
+            />
+          </View>
+        </View>
         <ScrollView
           className="flex"
           refreshControl={

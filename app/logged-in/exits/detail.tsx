@@ -19,23 +19,7 @@ export default function DetailPage() {
         />
       </View>
       {!isLoading && data?.productStorages && (
-        <ProductStorageList
-          data={[
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-            ...data.productStorages,
-          ]}
-        />
+        <ProductStorageList data={data.productStorages} />
       )}
     </View>
   );
