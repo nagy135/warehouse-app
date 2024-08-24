@@ -7,15 +7,17 @@ import ProductStorageList from "./product-storage-list";
 import Scanner from "~/components/scanner";
 import { useState } from "react";
 import { Text } from "~/components/ui/text";
+import CountModal from "~/components/count-modal";
 
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
   const { data, isLoading } = useExitDetail(Number(exit.id));
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null);
+  const [countModalOpen, setCountModalOpen] = useState(false);
   return (
     <View className="h-full px-2 container">
       <View className="m-2 flex flex-row gap-3">
-        <Scanner label="What" />
+        <Scanner label="What" onScan={() => setCountModalOpen(true)} />
         <Scanner
           label="Where"
           variant="secondary"
@@ -36,6 +38,14 @@ export default function DetailPage() {
       {!isLoading && data?.productStorages && (
         <ProductStorageList data={data.productStorages} />
       )}
+      <CountModal
+        open={countModalOpen}
+        setClose={() => setCountModalOpen(false)}
+        onConfirm={(count) => {
+          console.log(count);
+          setCountModalOpen(false);
+        }}
+      />
     </View>
   );
 }
