@@ -55,19 +55,28 @@ export default function ProductStorageList({
 				<TableHeader>
 					<TableRow>
 						<TableHead style={{ width: columnWidths[0] }}>
-							<Text className="text-center">Count</Text>
+							<Text className="text-center font-bold text-md">Count</Text>
 						</TableHead>
 						<TableHead style={{ width: columnWidths[1] }}>
-							<Text>Variant name</Text>
+							<Text className="font-bold text-md">Variant name</Text>
 						</TableHead>
-						<TableHead style={{ width: columnWidths[2] }}>
-							<Text>Storage name</Text>
+						<TableHead
+							className="font-bold text-lg"
+							style={{ width: columnWidths[2] }}
+						>
+							<Text className="font-bold text-md">Storage name</Text>
 						</TableHead>
-						<TableHead style={{ width: columnWidths[3] }}>
-							<Text>Change</Text>
+						<TableHead
+							className="font-bold text-lg"
+							style={{ width: columnWidths[3] }}
+						>
+							<Text className="font-bold text-md">Change</Text>
 						</TableHead>
-						<TableHead style={{ width: columnWidths[4] }}>
-							<Text>Delivery</Text>
+						<TableHead
+							className="font-bold text-lg"
+							style={{ width: columnWidths[4] }}
+						>
+							<Text className="font-bold text-md">Delivery</Text>
 						</TableHead>
 					</TableRow>
 				</TableHeader>
