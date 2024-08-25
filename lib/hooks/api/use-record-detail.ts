@@ -3,7 +3,7 @@ import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
 import { isEnvVar } from "~/lib/utils";
 
-export default function useExitDetail<T>(
+export default function useRecordDetail<T>(
   id: number,
   path: string
 ): {
