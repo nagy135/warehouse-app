@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode } from "react";
 import { Text } from "./ui/text";
 import {
   AlertDialog,
@@ -22,7 +22,7 @@ export default function RedirectModal({
 }: {
   open: boolean;
   title: string;
-  description: string;
+  description: string | ReactNode;
   hrefObject: Href<string | object>;
   setClose: () => void;
 }) {
