@@ -4,6 +4,7 @@ export type Entry = {
   sku: string;
   createdAt: string;
   createdById: string;
+  productStorages?: ProductStorage[];
 };
 
 export type Exit = {
