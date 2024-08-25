@@ -23,3 +23,28 @@ export function isEnvVar(envKey: string, value: string | boolean): boolean {
 
   return false;
 }
+
+type GroupByResult<T> = {
+  [key: string]: T[];
+};
+
+export function groupBy<T>(array: T[], key: string): GroupByResult<T> {
+  return array.reduce((result: GroupByResult<T>, item: T) => {
+    // Split the key by dots to handle nested properties
+    const keys = key.split(".");
+    // Use reduce to traverse through the nested properties
+    const value = keys.reduce(
+      (obj: any, key: string) => (obj ? obj[key] : undefined),
+      item
+    );
+
+    if (value !== undefined) {
+      if (!result[value]) {
+        result[value] = [];
+      }
+      result[value].push(item);
+    }
+
+    return result;
+  }, {});
+}
