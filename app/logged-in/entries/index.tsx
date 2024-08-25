@@ -5,7 +5,7 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import EntryCard from "~/components/entry-card";
+import EntryCard from "~/components/entry/card";
 import RedirectModal from "~/components/redirect-modal";
 import Scanner from "~/components/scanner";
 import { Input } from "~/components/ui/input";
