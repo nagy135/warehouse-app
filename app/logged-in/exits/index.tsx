@@ -1,8 +1,6 @@
-import { router } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   RefreshControl,
   ScrollView,
   View,
