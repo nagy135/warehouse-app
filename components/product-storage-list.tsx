@@ -17,7 +17,7 @@ import { cn, groupBy } from "~/lib/utils";
 import { ProductStorage } from "~/lib/types";
 import { useMemo } from "react";
 
-const MIN_COLUMN_WIDTHS = [120, 120, 120, 120, 120];
+const MIN_COLUMN_WIDTHS = [50, 120, 120, 120, 120];
 
 type ProductStorageWithCount = ProductStorage & { count: number };
 
@@ -31,7 +31,7 @@ export default function ProductStorageList({
 
 	const grouped = useMemo(() => groupBy(data, "productSkuVariant.id"), [data]);
 	const unique = useMemo(() => {
-		return Object.entries(grouped).map(([key, value]) => {
+		return Object.entries(grouped).map(([_, value]) => {
 			const uniqueProductStorage = value[0] as ProductStorageWithCount;
 			uniqueProductStorage.count = value.length;
 			return uniqueProductStorage;
@@ -54,20 +54,20 @@ export default function ProductStorageList({
 			<Table aria-labelledby="invoice-table">
 				<TableHeader>
 					<TableRow>
-						<TableHead className="px-0.5" style={{ width: columnWidths[0] }}>
-							<Text>Variant name</Text>
+						<TableHead style={{ width: columnWidths[0] }}>
+							<Text className="text-center">Count</Text>
 						</TableHead>
 						<TableHead style={{ width: columnWidths[1] }}>
-							<Text>Storage name</Text>
+							<Text>Variant name</Text>
 						</TableHead>
 						<TableHead style={{ width: columnWidths[2] }}>
-							<Text>Change</Text>
+							<Text>Storage name</Text>
 						</TableHead>
 						<TableHead style={{ width: columnWidths[3] }}>
-							<Text>Delivery</Text>
+							<Text>Change</Text>
 						</TableHead>
 						<TableHead style={{ width: columnWidths[4] }}>
-							<Text className="text-center md:text-right md:pr-5">Count</Text>
+							<Text>Delivery</Text>
 						</TableHead>
 					</TableRow>
 				</TableHeader>
@@ -88,27 +88,30 @@ export default function ProductStorageList({
 										index % 2 && "bg-muted/40 "
 									)}
 								>
-									<TableCell style={{ width: columnWidths[0] }}>
+									<TableCell
+										style={{ width: columnWidths[0] }}
+										className="items-center"
+									>
+										<Text>{productStorage.count}</Text>
+									</TableCell>
+									<TableCell
+										className="items-end"
+										style={{ width: columnWidths[1] }}
+									>
 										<Text>{productStorage.productSkuVariant.name}</Text>
 									</TableCell>
-									<TableCell style={{ width: columnWidths[1] }}>
+									<TableCell style={{ width: columnWidths[2] }}>
 										<Text>{productStorage.storage.name}</Text>
 									</TableCell>
-									<TableCell style={{ width: columnWidths[2] }}>
+									<TableCell style={{ width: columnWidths[3] }}>
 										<Text>
 											{productStorage.productSkuVariant.productCV.name}
 										</Text>
 									</TableCell>
-									<TableCell style={{ width: columnWidths[3] }}>
+									<TableCell style={{ width: columnWidths[4] }}>
 										<Text>
 											{productStorage.productSkuVariant.productDV.name}
 										</Text>
-									</TableCell>
-									<TableCell
-										style={{ width: columnWidths[4] }}
-										className="items-end "
-									>
-										<Text>{productStorage.count}</Text>
 									</TableCell>
 								</TableRow>
 							);
