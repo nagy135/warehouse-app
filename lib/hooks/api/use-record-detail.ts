@@ -1,20 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
-import { Exit } from "~/lib/types";
 import { isEnvVar } from "~/lib/utils";
 
-export default function useExitDetail(id: number): {
-  data: Exit | undefined;
+export default function useExitDetail<T>(
+  id: number,
+  path: string
+): {
+  data: T | undefined;
   isLoading: boolean;
   error: Error | null;
 } {
   const { session } = useSession();
   const fetchRecords = async () => {
     if (isEnvVar("DEBUG", true))
-      console.log(`fetching: ${API_ROOT}/exit?id=${id}`);
+      console.log(`fetching: ${API_ROOT}/${path}?id=${id}`);
 
-    const res = await fetch(`${API_ROOT}/exit?id=${id}`, {
+    const res = await fetch(`${API_ROOT}/${path}?id=${id}`, {
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
       },
@@ -24,7 +26,7 @@ export default function useExitDetail(id: number): {
   };
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["get-exit-detail"],
+    queryKey: [`get-${path}-detail`],
     queryFn: fetchRecords,
   });
   return { data, error, isLoading };
