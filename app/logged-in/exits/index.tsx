@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import ExitCard from "~/components/exit-card";
+import RedirectModal from "~/components/redirect-modal";
 import Scanner from "~/components/scanner";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
@@ -16,6 +17,8 @@ import { Exit } from "~/lib/types";
 
 export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState("");
+  const [foundExit, setFoundExit] = useState<Exit | null>(null);
+  const [redirectModalOpen, setRedirectModalOpen] = useState(false);
 
   const {
     data: exits,
@@ -43,28 +46,8 @@ export default function ExitsPage() {
               onScan={(data) => {
                 const foundExit = exits.find((exit: Exit) => exit.sku === data);
                 if (foundExit) {
-                  Alert.alert(
-                    "Found exit",
-                    "You scanned exit sku and matched it to exit",
-                    [
-                      {
-                        text: "Cancel",
-                        onPress: () => {},
-                        style: "cancel",
-                      },
-                      {
-                        text: "Go to exit",
-                        onPress: () => {
-                          router.push({
-                            pathname: "./detail",
-                            /* @ts-ignore */
-                            params: foundExit,
-                          });
-                        },
-                        style: "default",
-                      },
-                    ]
-                  );
+                  setFoundExit(foundExit);
+                  setRedirectModalOpen(true);
                 }
               }}
             />
@@ -88,6 +71,26 @@ export default function ExitsPage() {
           <ActivityIndicator size={60} color="#666666" />
         </View>
       )}
+      <RedirectModal
+        open={redirectModalOpen}
+        title="Redirect to exit"
+        description={
+          <>
+            <View>
+              <Text>{"Are you sure you want to redirect to: "}</Text>
+            </View>
+            <View>
+              <Text className="font-bold">{foundExit?.name ?? "-"}</Text>
+            </View>
+          </>
+        }
+        hrefObject={{
+          pathname: "./detail",
+          /* @ts-ignore */
+          params: foundExit,
+        }}
+        setClose={() => setRedirectModalOpen(false)}
+      />
     </>
   );
 }
