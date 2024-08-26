@@ -1,7 +1,7 @@
 import { Text } from "react-native";
 import { Redirect, Stack } from "expo-router";
 
-import { useSession } from "../../ctx";
+import { useSession } from "~/ctx";
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
@@ -33,10 +33,9 @@ export default function ActionLayout() {
         }}
       />
       <Stack.Screen
-        name="product-storage-group"
+        name="detail"
         options={{
-          animation: "fade_from_bottom",
-          presentation: "fullScreenModal",
+          animation: "slide_from_right",
         }}
       />
     </Stack>

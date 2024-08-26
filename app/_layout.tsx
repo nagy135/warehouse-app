@@ -78,7 +78,7 @@ export default function RootLayout() {
               name="index"
               options={{
                 animation: "slide_from_left",
-                title: "Warehouse App",
+                title: "Warehouse",
                 headerRight: () => <ThemeToggle />,
               }}
             />
@@ -86,7 +86,7 @@ export default function RootLayout() {
               name="logged-in"
               options={{
                 animation: "slide_from_right",
-                title: "Actions",
+                title: "Warehouse",
                 headerRight: () => <ThemeProfile />,
               }}
             />
