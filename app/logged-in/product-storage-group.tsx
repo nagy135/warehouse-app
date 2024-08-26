@@ -1,6 +1,11 @@
 import React from "react";
 import { Text } from "~/components/ui/text";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import {
+	ActivityIndicator,
+	TouchableOpacity,
+	View,
+	ScrollView,
+} from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import useGetStoragesById from "~/lib/hooks/api/use-get-storages-by-id";
 import {
@@ -24,26 +29,29 @@ export default function ProductStorageGroup() {
 			</View>
 		);
 	return (
-		<View className="flex-col gap-3 m-3">
+		<ScrollView className="flex m-3">
 			<Text className="font-bold text-2xl text-center">Product Storages</Text>
+			<Text className="text-sm text-center">
+				Take product from these storages
+			</Text>
 			{data?.map((storage, i) => (
-				<Card key={`storage-card-${i}`} className="w-full">
+				<Card key={`storage-card-${i}`} className="w-full my-1">
 					<TouchableOpacity onPress={() => console.log("Do stuff")}>
 						<CardHeader>
 							<CardTitle>{storage.name}</CardTitle>
-							<CardDescription>{storage.id}</CardDescription>
+							<CardDescription>{`${storage.type} #${storage.id}`}</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<Text>
-								{storage.position?.name}: {storage.position?.qr}
-							</Text>
+							<Text className="text-lg font-bold">Position: </Text>
+							<Text>{storage.position?.name}</Text>
 						</CardContent>
 						<CardFooter>
-							<Text>{storage.type}</Text>
+							<Text className="text-lg font-bold">QR: </Text>
+							<Text>{storage.position?.qr}</Text>
 						</CardFooter>
 					</TouchableOpacity>
 				</Card>
 			))}
-		</View>
+		</ScrollView>
 	);
 }
