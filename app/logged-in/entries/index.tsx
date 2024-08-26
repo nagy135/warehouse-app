@@ -11,12 +11,18 @@ import Scanner from "~/components/scanner";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 import useGetRecords from "~/lib/hooks/api/use-get-records";
+import useNotificationModal from "~/lib/hooks/use-notification-modal";
 import { Entry } from "~/lib/types";
 
 export default function EntriesPage() {
   const [searchValue, setSearchValue] = useState("");
   const [foundEntry, setFoundEntry] = useState<Entry | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
+  const { setOpen: notificationModalOpen, modal: notificationModal } =
+    useNotificationModal({
+      title: "Not found",
+      description: "Entry not found",
+    });
 
   const {
     data: entries,
@@ -26,7 +32,7 @@ export default function EntriesPage() {
     refreshing,
     onRefresh,
   } = useGetRecords<Entry>("entries", searchValue);
-  if (error || !entries) return <Text>error</Text>;
+  if (error) return <Text>error</Text>;
 
   return (
     <>
@@ -42,12 +48,14 @@ export default function EntriesPage() {
             <Scanner
               size={"sm"}
               onScan={(data) => {
-                const foundEntry = entries.find(
+                const foundEntry = entries?.find(
                   (entry: Entry) => entry.sku === data
                 );
                 if (foundEntry) {
                   setFoundEntry(foundEntry);
                   setRedirectModalOpen(true);
+                } else {
+                  notificationModalOpen();
                 }
               }}
             />
@@ -71,6 +79,7 @@ export default function EntriesPage() {
           <ActivityIndicator size={60} color="#666666" />
         </View>
       )}
+      {notificationModal}
       <RedirectModal
         open={redirectModalOpen}
         title="Redirect to entry"

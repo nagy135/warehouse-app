@@ -1,49 +1,37 @@
 import React from "react";
-import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { View } from "react-native";
 
-export default function ConfirmationModal({
+export default function NotificationModal({
+  open,
+  setClose,
   title,
-  description = "Are you sure?",
-  buttonTitle = "This action cant be undone",
-  onConfirm,
+  description,
 }: {
-  buttonTitle: string;
-  title?: string;
-  description?: string;
-  onConfirm: () => void;
+  title: string;
+  description: string;
+  open: boolean;
+  setClose: () => void;
 }) {
   return (
-    <AlertDialog>
-      <View className="flex items-end">
-        <AlertDialogTrigger asChild>
-          <Button size="lg" variant="outline">
-            <Text>{buttonTitle}</Text>
-          </Button>
-        </AlertDialogTrigger>
-      </View>
+    <AlertDialog open={open}>
+      <View className="flex items-end"></View>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            <Text>Cancel</Text>
-          </AlertDialogCancel>
-          <AlertDialogAction onPress={onConfirm}>
+          <AlertDialogAction onPress={setClose}>
             <Text>Continue</Text>
           </AlertDialogAction>
         </AlertDialogFooter>
