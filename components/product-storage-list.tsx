@@ -18,7 +18,7 @@ import { ProductStorage } from "~/lib/types";
 import { useMemo, useState } from "react";
 import { router } from "expo-router";
 
-const MIN_COLUMN_WIDTHS = [50, 120, 120, 120];
+const MIN_COLUMN_WIDTHS = [50, 120, 120, 140];
 
 type ProductStorageWithCount = ProductStorage & { count: number };
 
@@ -115,12 +115,12 @@ export default function ProductStorageList({
                     >
                       <Text>{productStorage.productSkuVariant.name}</Text>
                     </TableCell>
-                    <TableCell style={{ width: columnWidths[3] }}>
+                    <TableCell style={{ width: columnWidths[2] }}>
                       <Text>
                         {productStorage.productSkuVariant.productCV.name}
                       </Text>
                     </TableCell>
-                    <TableCell style={{ width: columnWidths[4] }}>
+                    <TableCell style={{ width: columnWidths[3] }}>
                       <Text>
                         {productStorage.productSkuVariant.productDV.name}
                       </Text>
@@ -133,22 +133,14 @@ export default function ProductStorageList({
                   <>
                     <TableFooter>
                       <TableRow>
-                        <TableCell className="flex-1 justify-center">
-                          <Text className="text-foreground">Total</Text>
-                        </TableCell>
-                        <TableCell className="items-end pr-8">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onPress={() => {
-                              Alert.alert(
-                                "total",
-                                `You pressed the total amount price button.`
-                              );
-                            }}
-                          >
-                            <Text>total</Text>
-                          </Button>
+                        <TableCell className="justify-center">
+                          <Text className="text-foreground">
+                            <Text className="font-bold">Total:</Text>{" "}
+                            {`${unique.reduce(
+                              (prev, next) => prev + next.count,
+                              0
+                            )}`}
+                          </Text>
                         </TableCell>
                       </TableRow>
                     </TableFooter>
