@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { GroupByResult } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,10 +24,6 @@ export function isEnvVar(envKey: string, value: string | boolean): boolean {
 
   return false;
 }
-
-type GroupByResult<T> = {
-  [key: string]: T[];
-};
 
 export function groupBy<T>(array: T[], key: string): GroupByResult<T> {
   return array.reduce((result: GroupByResult<T>, item: T) => {

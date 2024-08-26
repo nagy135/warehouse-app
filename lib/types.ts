@@ -1,3 +1,7 @@
+export type GroupByResult<T> = {
+  [key: string]: T[];
+};
+
 export type Entry = {
   id: number;
   name: string;
@@ -14,6 +18,20 @@ export type Exit = {
   createdAt: string;
   createdById: string;
   productStorages?: ProductStorage[];
+};
+
+export type Storage = {
+  id: number;
+  name: string;
+  type: string;
+  sku: string;
+  position?: Position;
+};
+
+export type Position = {
+  id: number;
+  name: string;
+  qr: string;
 };
 
 export type ProductStorage = {
