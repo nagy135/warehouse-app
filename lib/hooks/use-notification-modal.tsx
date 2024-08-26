@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import NotificationModal from "~/components/notification-modal";
+import NotificationModal from "~/components/modal/notification-modal";
 
 export default function useNotificationModal({
   title,

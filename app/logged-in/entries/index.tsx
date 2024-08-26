@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 import EntryCard from "~/components/entry/card";
-import RedirectModal from "~/components/redirect-modal";
+import RedirectModal from "~/components/modal/redirect-modal";
 import Scanner from "~/components/scanner";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";

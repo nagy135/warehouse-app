@@ -1,29 +1,25 @@
-import React, { ReactNode } from "react";
-import { Text } from "./ui/text";
+import React from "react";
+import { Text } from "~/components/ui/text";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "./ui/alert-dialog";
+} from "~/components/ui/alert-dialog";
 import { View } from "react-native";
-import { Href, router } from "expo-router";
 
-export default function RedirectModal({
+export default function NotificationModal({
   open,
+  setClose,
   title,
   description,
-  hrefObject,
-  setClose,
 }: {
-  open: boolean;
   title: string;
-  description: string | ReactNode;
-  hrefObject: Href<string | object>;
+  description: string;
+  open: boolean;
   setClose: () => void;
 }) {
   return (
@@ -35,16 +31,8 @@ export default function RedirectModal({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onPress={setClose}>
-            <Text>Cancel</Text>
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onPress={() => {
-              router.push(hrefObject);
-              setClose();
-            }}
-          >
-            <Text>Go</Text>
+          <AlertDialogAction onPress={setClose}>
+            <Text>Continue</Text>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

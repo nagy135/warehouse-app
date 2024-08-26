@@ -1,11 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
-import ConfirmationModal from "~/components/confirmation-modal";
+import ConfirmationModal from "~/components/modal/confirmation-modal";
 import { Exit, type ToStringOrStringArray } from "~/lib/types";
 import Scanner from "~/components/scanner";
 import { useState } from "react";
 import { Text } from "~/components/ui/text";
-import CountModal from "~/components/count-modal";
+import CountModal from "~/components/modal/count-modal";
 import useRecordDetail from "~/lib/hooks/api/use-record-detail";
 import ProductStorageList from "~/components/product-storage-list";
 
