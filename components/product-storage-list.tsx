@@ -18,7 +18,7 @@ import { ProductStorage } from "~/lib/types";
 import { useMemo, useState } from "react";
 import { router } from "expo-router";
 
-const MIN_COLUMN_WIDTHS = [50, 120, 120, 120, 120];
+const MIN_COLUMN_WIDTHS = [50, 120, 120, 120];
 
 type ProductStorageWithCount = ProductStorage & { count: number };
 
@@ -66,17 +66,11 @@ export default function ProductStorageList({
                 className="font-bold text-lg"
                 style={{ width: columnWidths[2] }}
               >
-                <Text className="font-bold text-md">Storage name</Text>
-              </TableHead>
-              <TableHead
-                className="font-bold text-lg"
-                style={{ width: columnWidths[3] }}
-              >
                 <Text className="font-bold text-md">Change</Text>
               </TableHead>
               <TableHead
                 className="font-bold text-lg"
-                style={{ width: columnWidths[4] }}
+                style={{ width: columnWidths[3] }}
               >
                 <Text className="font-bold text-md">Delivery</Text>
               </TableHead>
@@ -120,9 +114,6 @@ export default function ProductStorageList({
                       style={{ width: columnWidths[1] }}
                     >
                       <Text>{productStorage.productSkuVariant.name}</Text>
-                    </TableCell>
-                    <TableCell style={{ width: columnWidths[2] }}>
-                      <Text>{productStorage.storage.name}</Text>
                     </TableCell>
                     <TableCell style={{ width: columnWidths[3] }}>
                       <Text>
