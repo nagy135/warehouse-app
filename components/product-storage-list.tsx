@@ -16,13 +16,16 @@ import { cn, groupBy } from "~/lib/utils";
 import { ProductStorage } from "~/lib/types";
 import { useMemo } from "react";
 import { router } from "expo-router";
+import { Button } from "./ui/button";
+import ConfirmationModal from "./modal/confirmation-modal";
 
-const MIN_COLUMN_WIDTHS = [50, 120, 120, 140];
+const MIN_COLUMN_WIDTHS = [50, 120, 120, 140, 100];
 
 type GroupedProductStorage = {
   productStorage: ProductStorage;
   count: number;
   countedCount: number;
+  allIds: number[];
 };
 
 export default function ProductStorageList({
@@ -43,6 +46,7 @@ export default function ProductStorageList({
           (prev, next) => prev + (next.counted ? 1 : 0),
           0
         ),
+        allIds: groupOfProductStorages.map((ps) => ps.id),
       };
       return uniqueProductStorage;
     });
@@ -82,6 +86,12 @@ export default function ProductStorageList({
                 style={{ width: columnWidths[3] }}
               >
                 <Text className="font-bold text-md">Delivery</Text>
+              </TableHead>
+              <TableHead
+                className="font-bold text-lg"
+                style={{ width: columnWidths[4] }}
+              >
+                <Text className="font-bold text-md"></Text>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -138,6 +148,28 @@ export default function ProductStorageList({
                       <Text>
                         {productStorage.productSkuVariant.productDV.name}
                       </Text>
+                    </TableCell>
+
+                    <TableCell
+                      style={{ width: columnWidths[4] }}
+                      className="items-end "
+                    >
+                      <ConfirmationModal
+                        button={
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="shadow-sm shadow-foreground/10 mr-3"
+                          >
+                            <Text>reset</Text>
+                          </Button>
+                        }
+                        title="Reset"
+                        description="Are you sure you want to reset counting on this product storage?"
+                        onConfirm={() => {
+                          console.log(groupRest.allIds);
+                        }}
+                      />
                     </TableCell>
                   </TableRow>
                 );

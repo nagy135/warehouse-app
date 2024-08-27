@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import {
@@ -18,26 +18,32 @@ export default function ConfirmationModal({
   title,
   description = "Are you sure?",
   buttonTitle = "This action cant be undone",
+  button,
   onConfirm,
 }: {
-  buttonTitle: string;
+  buttonTitle?: string;
   title?: string;
   description?: string;
+  button?: ReactNode;
   onConfirm: () => void;
 }) {
   return (
     <AlertDialog>
       <View className="flex items-end">
         <AlertDialogTrigger asChild>
-          <Button size="lg" variant="outline">
-            <Text>{buttonTitle}</Text>
-          </Button>
+          {button ? (
+            button
+          ) : (
+            <Button size="lg" variant="outline">
+              <Text>{buttonTitle ?? "-"}</Text>
+            </Button>
+          )}
         </AlertDialogTrigger>
       </View>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+          <AlertDialogTitle>{title ?? "-"}</AlertDialogTitle>
+          <AlertDialogDescription>{description ?? "-"}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>
