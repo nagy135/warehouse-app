@@ -1,8 +1,7 @@
 import { FlashList } from "@shopify/flash-list";
 import * as React from "react";
-import { Alert, ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Button } from "~/components/ui/button";
 import {
   Table,
   TableBody,
@@ -15,12 +14,15 @@ import {
 import { Text } from "~/components/ui/text";
 import { cn, groupBy } from "~/lib/utils";
 import { ProductStorage } from "~/lib/types";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { router } from "expo-router";
 
 const MIN_COLUMN_WIDTHS = [50, 120, 120, 140];
 
-type ProductStorageWithCount = ProductStorage & { count: number };
+type GroupedProductStorage = {
+  productStorage: ProductStorage;
+  count: number;
+};
 
 export default function ProductStorageList({
   data,
@@ -31,10 +33,12 @@ export default function ProductStorageList({
   const insets = useSafeAreaInsets();
 
   const grouped = useMemo(() => groupBy(data, "productSkuVariant.id"), [data]);
-  const unique = useMemo(() => {
+  const groupedProductStorages = useMemo(() => {
     return Object.entries(grouped).map(([_, value]) => {
-      const uniqueProductStorage = value[0] as ProductStorageWithCount;
-      uniqueProductStorage.count = value.length;
+      const uniqueProductStorage: GroupedProductStorage = {
+        productStorage: value[0],
+        count: value.length,
+      };
       return uniqueProductStorage;
     });
   }, [grouped]);
@@ -78,13 +82,13 @@ export default function ProductStorageList({
           </TableHeader>
           <TableBody>
             <FlashList
-              data={unique}
+              data={groupedProductStorages}
               estimatedItemSize={5}
               contentContainerStyle={{
                 paddingBottom: insets.bottom,
               }}
               showsVerticalScrollIndicator={false}
-              renderItem={({ item: productStorage, index }) => {
+              renderItem={({ item: { productStorage, count }, index }) => {
                 return (
                   <TableRow
                     key={productStorage.id}
@@ -107,7 +111,9 @@ export default function ProductStorageList({
                       style={{ width: columnWidths[0] }}
                       className="items-center"
                     >
-                      <Text>{productStorage.count}</Text>
+                      <Text>
+                        {0}/{count}
+                      </Text>
                     </TableCell>
                     <TableCell
                       className="items-end"
@@ -136,7 +142,7 @@ export default function ProductStorageList({
                         <TableCell className="justify-center">
                           <Text className="text-foreground">
                             <Text className="font-bold">Total:</Text>{" "}
-                            {`${unique.reduce(
+                            {`${groupedProductStorages.reduce(
                               (prev, next) => prev + next.count,
                               0
                             )}`}
