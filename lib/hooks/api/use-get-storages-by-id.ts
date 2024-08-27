@@ -12,7 +12,6 @@ export default function useGetStoragesById(ids: number[]): {
 } {
   const { session } = useSession();
   const fetchRecords = async () => {
-    console.log("hitting");
     const params = new URLSearchParams();
     params.append("ids", ids.join(","));
     if (isEnvVar("DEBUG", true))

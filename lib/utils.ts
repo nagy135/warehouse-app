@@ -2,6 +2,10 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { GroupByResult } from "./types";
 
+// NOTE: for testing slower fetches
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

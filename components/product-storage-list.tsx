@@ -22,6 +22,7 @@ const MIN_COLUMN_WIDTHS = [50, 120, 120, 140];
 type GroupedProductStorage = {
   productStorage: ProductStorage;
   count: number;
+  countedCount: number;
 };
 
 export default function ProductStorageList({
@@ -34,10 +35,14 @@ export default function ProductStorageList({
 
   const grouped = useMemo(() => groupBy(data, "productSkuVariant.id"), [data]);
   const groupedProductStorages = useMemo(() => {
-    return Object.entries(grouped).map(([_, value]) => {
+    return Object.entries(grouped).map(([_, groupOfProductStorages]) => {
       const uniqueProductStorage: GroupedProductStorage = {
-        productStorage: value[0],
-        count: value.length,
+        productStorage: groupOfProductStorages[0], // lets show just first one
+        count: groupOfProductStorages.length,
+        countedCount: groupOfProductStorages.reduce(
+          (prev, next) => prev + (next.counted ? 1 : 0),
+          0
+        ),
       };
       return uniqueProductStorage;
     });
@@ -88,7 +93,10 @@ export default function ProductStorageList({
                 paddingBottom: insets.bottom,
               }}
               showsVerticalScrollIndicator={false}
-              renderItem={({ item: { productStorage, count }, index }) => {
+              renderItem={({
+                item: { productStorage, ...groupRest },
+                index,
+              }) => {
                 return (
                   <TableRow
                     key={productStorage.id}
@@ -112,7 +120,7 @@ export default function ProductStorageList({
                       className="items-center"
                     >
                       <Text>
-                        {0}/{count}
+                        {groupRest.countedCount}/{groupRest.count}
                       </Text>
                     </TableCell>
                     <TableCell

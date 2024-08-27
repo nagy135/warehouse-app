@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import ConfirmationModal from "~/components/modal/confirmation-modal";
 import { Exit, type ToStringOrStringArray } from "~/lib/types";
 import Scanner from "~/components/scanner";
@@ -11,9 +11,18 @@ import ProductStorageList from "~/components/product-storage-list";
 
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
-  const { data, isLoading } = useRecordDetail<Exit>(Number(exit.id), "exit");
+  const { data, isLoading, isRefetching } = useRecordDetail<Exit>(
+    Number(exit.id),
+    "exit"
+  );
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null);
   const [countModalOpen, setCountModalOpen] = useState(false);
+  if (isLoading || isRefetching)
+    return (
+      <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
+        <ActivityIndicator size={60} color="#666666" />
+      </View>
+    );
   return (
     <View className="h-full px-2 container">
       <View className="m-2 flex flex-row gap-3">
@@ -35,7 +44,7 @@ export default function DetailPage() {
           <Text>Selected storage: {selectedStorage}</Text>
         </View>
       )}
-      {!isLoading && data?.productStorages && (
+      {data?.productStorages && (
         <ProductStorageList data={data.productStorages} />
       )}
       <CountModal

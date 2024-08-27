@@ -38,6 +38,7 @@ export type ProductStorage = {
   id: number;
   productSkuVariant: ProductSkuVariant;
   storage: Storage;
+  counted: boolean;
 };
 
 export type ProductSkuVariant = {

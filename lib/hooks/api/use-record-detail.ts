@@ -9,6 +9,7 @@ export default function useRecordDetail<T>(
 ): {
   data: T | undefined;
   isLoading: boolean;
+  isRefetching: boolean;
   error: Error | null;
 } {
   const { session } = useSession();
@@ -25,9 +26,9 @@ export default function useRecordDetail<T>(
     return data;
   };
 
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, isRefetching } = useQuery({
     queryKey: [`get-${path}-detail`],
     queryFn: fetchRecords,
   });
-  return { data, error, isLoading };
+  return { data, error, isLoading, isRefetching };
 }
