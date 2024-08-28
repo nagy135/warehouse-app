@@ -69,6 +69,28 @@ export default function ActionLayout() {
           animation: "slide_from_right",
         }}
       />
+
+      <Stack.Screen
+        name="move-index"
+        options={{
+          title: "Move",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="move-position"
+        options={{
+          title: "storage => new position",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="move-storage"
+        options={{
+          headerTitle: () => <Text className="color-red-500">lol</Text>,
+          animation: "slide_from_right",
+        }}
+      />
     </Stack>
   );
 }
