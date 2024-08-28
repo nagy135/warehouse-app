@@ -5,8 +5,10 @@ const randomString = () => Math.random().toString(36).slice(2, 7);
 
 export default function useScanner({
   onScan,
+  mockData,
 }: {
   onScan?: (data: string, label: string) => void;
+  mockData?: string;
 }) {
   const [data, setData] = useState<string | null>(null);
   const [label, setLabel] = useState<string | null>(null);
@@ -22,7 +24,7 @@ export default function useScanner({
         setLabel(scanLabelType);
         setScanning(false);
 
-        if (onScan) onScan(scanData, scanLabelType);
+        if (onScan) onScan(mockData ? mockData : scanData, scanLabelType);
       }, 500);
     } else {
       // NOTE: this is just to allow development where android modules are not available

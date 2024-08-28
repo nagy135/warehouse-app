@@ -1,9 +1,8 @@
 import { useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Entry, type ToStringOrStringArray } from "~/lib/types";
 import Scanner from "~/components/scanner";
-import ConfirmationModal from "~/components/modal/confirmation-modal";
 import useRecordDetail from "~/lib/hooks/api/use-record-detail";
 import { useState } from "react";
 import ProductStorageList from "~/components/product-storage-list";
@@ -28,18 +27,27 @@ export default function DetailPage() {
   return (
     <View className="h-full px-2 container">
       <View className="m-2 flex flex-row gap-3">
-        <Scanner label="What" onScan={() => setCountModalOpen(true)} />
+        <Scanner
+          label="What"
+          onScan={() => {
+            // TODO: make sure this check runs before scan
+            if (!selectedStorage) {
+              Alert.alert("Please scan storage first");
+            } else setCountModalOpen(true);
+          }}
+        />
         <Scanner
           label="Where"
           variant="secondary"
-          onScan={(_data) => {
-            setSelectedStorage(Math.floor(Math.random() * 100));
+          mockData="2"
+          onScan={(data) => {
+            setSelectedStorage(Number(data));
           }}
         />
       </View>
       {selectedStorage && (
         <Text>
-          <Text className="font-bold">Selected storage:</Text>
+          <Text className="font-bold">Moving to storage:</Text>
           <Text>{` ${selectedStorage}`}</Text>
         </Text>
       )}
@@ -53,8 +61,25 @@ export default function DetailPage() {
       <CountModal
         open={countModalOpen}
         setClose={() => setCountModalOpen(false)}
-        onConfirm={(count) => {
-          console.log(count);
+        onConfirm={(count, skuVariantId) => {
+          console.log(
+            "================\n",
+            "skuVariantId: ",
+            skuVariantId,
+            "\n================"
+          );
+          console.log(
+            "================\n",
+            "count: ",
+            count,
+            "\n================"
+          );
+          console.log(
+            "================\n",
+            "selectedStorage: ",
+            selectedStorage,
+            "\n================"
+          );
           setCountModalOpen(false);
         }}
       />

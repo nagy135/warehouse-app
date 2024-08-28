@@ -38,7 +38,7 @@ export default function DetailPage() {
       </View>
       {selectedStorage && (
         <View>
-          <Text className="font-bold">Selected storage:</Text>
+          <Text className="font-bold">Moving to storage:</Text>
           <Text>{selectedStorage}</Text>
         </View>
       )}

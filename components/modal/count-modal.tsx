@@ -21,29 +21,35 @@ export default function CountModal({
 }: {
   open: boolean;
   setClose: () => void;
-  onConfirm: (count: number) => void;
+  onConfirm: (count: number, skuVariantId: number) => void;
 }) {
   const { startScan, scanning } = useScanner({
-    onScan: () => {
-      onConfirm(count);
+    mockData: "5",
+    onScan: (data) => {
+      onConfirm(Number(count), Number(data));
       setClose();
     },
   });
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState("");
 
   const onChangeCount = (text: string) => {
-    setCount(Number(text));
+    setCount(text.replace(/[^0-9]/g, ""));
   };
   return (
     <AlertDialog open={open}>
-      <View className="flex items-end"></View>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Count how many items</AlertDialogTitle>
+          <AlertDialogTitle>
+            <View>
+              <Text className="font-extrabold text-lg">
+                Count how many items
+              </Text>
+            </View>
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            These will be marked as moved to selected moving storage.
             <View className="h-12">
               <Input
+                className="h-5 rounded-md"
                 keyboardType="numeric"
                 placeholder="How many items are we moving"
                 value={count.toString()}
