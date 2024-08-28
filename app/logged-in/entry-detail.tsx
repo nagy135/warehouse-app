@@ -27,23 +27,27 @@ export default function DetailPage() {
   return (
     <View className="h-full px-2 container">
       <View className="m-2 flex flex-row gap-3">
-        <Scanner
-          label="What"
-          onScan={() => {
-            // TODO: make sure this check runs before scan
-            if (!selectedStorage) {
-              Alert.alert("Please scan storage first");
-            } else setCountModalOpen(true);
-          }}
-        />
-        <Scanner
-          label="Where"
-          variant="secondary"
-          mockData="2"
-          onScan={(data) => {
-            setSelectedStorage(Number(data));
-          }}
-        />
+        <View className="flex-1">
+          <Scanner
+            label="What"
+            onScan={() => {
+              // TODO: make sure this check runs before scan
+              if (!selectedStorage) {
+                Alert.alert("Please scan storage first");
+              } else setCountModalOpen(true);
+            }}
+          />
+        </View>
+        <View className="flex-1">
+          <Scanner
+            label="Where"
+            variant="secondary"
+            mockData="2"
+            onScan={(data) => {
+              setSelectedStorage(Number(data));
+            }}
+          />
+        </View>
       </View>
       {selectedStorage && (
         <Text>

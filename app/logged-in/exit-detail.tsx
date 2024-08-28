@@ -27,14 +27,18 @@ export default function DetailPage() {
   return (
     <View className="h-full px-2 container">
       <View className="m-2 flex flex-row gap-3">
-        <Scanner label="What" onScan={() => setCountModalOpen(true)} />
-        <Scanner
-          label="Where"
-          variant="secondary"
-          onScan={(_data) => {
-            setSelectedStorage(Math.floor(Math.random() * 100));
-          }}
-        />
+        <View className="flex-1">
+          <Scanner label="What" onScan={() => setCountModalOpen(true)} />
+        </View>
+        <View className="flex-1">
+          <Scanner
+            label="Where"
+            variant="secondary"
+            onScan={(_data) => {
+              setSelectedStorage(Math.floor(Math.random() * 100));
+            }}
+          />
+        </View>
       </View>
       {selectedStorage && (
         <View>
