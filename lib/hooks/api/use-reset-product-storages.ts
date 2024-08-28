@@ -1,34 +1,51 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
 import { isEnvVar } from "~/lib/utils";
 
-export default function useRecordDetail<T>(
-  id: number,
-  path: string
-): {
-  data: T | undefined;
-  isLoading: boolean;
-  isRefetching: boolean;
-  error: Error | null;
+export default function useChangeProductStorageState({
+  onSuccessCallback,
+}: {
+  onSuccessCallback: () => void;
+}): {
+  isPending: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+  mutate: (args: { ids: number[]; change: "counted" | "not-counted" }) => void;
 } {
   const { session } = useSession();
-  const fetchRecords = async () => {
-    if (isEnvVar("DEBUG", true))
-      console.log(`fetching: ${API_ROOT}/${path}?id=${id}`);
+  const mutateRecords = async ({
+    ids,
+    change,
+  }: {
+    ids: number[];
+    change: "counted" | "not-counted";
+  }) => {
+    const path = `${API_ROOT}/product-storages/${change}`;
+    if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
 
-    const res = await fetch(`${API_ROOT}/${path}?id=${id}`, {
+    const res = await fetch(path, {
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
+        ContentType: "application/json",
       },
+      body: JSON.stringify({ ids }),
+      method: "POST",
     });
     const data = await res.json();
     return data;
   };
 
-  const { data, error, isLoading, isRefetching } = useQuery({
-    queryKey: [`get-${path}-detail`],
-    queryFn: fetchRecords,
+  const { isPending, isError, isSuccess, mutate } = useMutation({
+    mutationKey: [`reset-product-storages`],
+    mutationFn: mutateRecords,
+    onSuccess: onSuccessCallback,
   });
-  return { data, error, isLoading, isRefetching };
+  return {
+    isPending,
+    isError,
+    isSuccess,
+    mutate: (args: { ids: number[]; change: "counted" | "not-counted" }) =>
+      mutate(args),
+  };
 }

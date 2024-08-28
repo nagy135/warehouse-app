@@ -11,10 +11,12 @@ import CountModal from "~/components/modal/count-modal";
 
 export default function DetailPage() {
   const entry = useLocalSearchParams<ToStringOrStringArray<Entry>>();
-  const { data, isLoading, isRefetching } = useRecordDetail<Entry>(
-    Number(entry.id),
-    "entry"
-  );
+  const {
+    data,
+    isLoading,
+    isRefetching,
+    refetch: refetchProductStorages,
+  } = useRecordDetail<Entry>(Number(entry.id), "entry");
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null);
   const [countModalOpen, setCountModalOpen] = useState(false);
   if (isLoading || isRefetching)
@@ -45,7 +47,10 @@ export default function DetailPage() {
         </View>
       )}
       {data?.productStorages && (
-        <ProductStorageList data={data.productStorages} />
+        <ProductStorageList
+          data={data.productStorages}
+          refetchProductStorages={refetchProductStorages}
+        />
       )}
       <CountModal
         open={countModalOpen}

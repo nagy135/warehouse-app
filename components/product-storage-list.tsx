@@ -18,6 +18,7 @@ import { useMemo } from "react";
 import { router } from "expo-router";
 import { Button } from "./ui/button";
 import ConfirmationModal from "./modal/confirmation-modal";
+import useChangeProductStorageState from "~/lib/hooks/api/use-reset-product-storages";
 
 const MIN_COLUMN_WIDTHS = [50, 120, 120, 140, 100];
 
@@ -30,8 +31,10 @@ type GroupedProductStorage = {
 
 export default function ProductStorageList({
   data,
+  refetchProductStorages,
 }: {
   data: ProductStorage[];
+  refetchProductStorages: () => void;
 }) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -51,6 +54,9 @@ export default function ProductStorageList({
       return uniqueProductStorage;
     });
   }, [grouped]);
+
+  const { mutate: mutateChangeProductStorageState } =
+    useChangeProductStorageState({ onSuccessCallback: refetchProductStorages });
 
   const columnWidths = React.useMemo(() => {
     return MIN_COLUMN_WIDTHS.map((minWidth) => {
@@ -167,7 +173,10 @@ export default function ProductStorageList({
                         title="Reset"
                         description="Are you sure you want to reset counting on this product storage?"
                         onConfirm={() => {
-                          console.log(groupRest.allIds);
+                          mutateChangeProductStorageState({
+                            ids: groupRest.allIds,
+                            change: "not-counted",
+                          });
                         }}
                       />
                     </TableCell>
