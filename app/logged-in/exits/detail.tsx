@@ -1,6 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
-import ConfirmationModal from "~/components/modal/confirmation-modal";
 import { Exit, type ToStringOrStringArray } from "~/lib/types";
 import Scanner from "~/components/scanner";
 import { useState } from "react";
@@ -11,10 +10,12 @@ import ProductStorageList from "~/components/product-storage-list";
 
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
-  const { data, isLoading, isRefetching } = useRecordDetail<Exit>(
-    Number(exit.id),
-    "exit"
-  );
+  const {
+    data,
+    isLoading,
+    isRefetching,
+    refetch: refetchExits,
+  } = useRecordDetail<Exit>(Number(exit.id), "exit");
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null);
   const [countModalOpen, setCountModalOpen] = useState(false);
   if (isLoading || isRefetching)
@@ -34,18 +35,19 @@ export default function DetailPage() {
             setSelectedStorage(Math.floor(Math.random() * 100));
           }}
         />
-        <ConfirmationModal
-          buttonTitle="Save"
-          onConfirm={() => console.log("confirmed!")}
-        />
       </View>
       {selectedStorage && (
         <View>
-          <Text>Selected storage: {selectedStorage}</Text>
+          <Text className="font-bold">Selected storage:</Text>
+          <Text>{selectedStorage}</Text>
         </View>
       )}
       {data?.productStorages && (
-        <ProductStorageList data={data.productStorages} />
+        <ProductStorageList
+          variant="exit"
+          data={data.productStorages}
+          refetchProductStorages={refetchExits}
+        />
       )}
       <CountModal
         open={countModalOpen}

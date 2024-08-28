@@ -32,9 +32,11 @@ type GroupedProductStorage = {
 export default function ProductStorageList({
   data,
   refetchProductStorages,
+  variant,
 }: {
   data: ProductStorage[];
   refetchProductStorages: () => void;
+  variant: "entry" | "exit";
 }) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -124,11 +126,13 @@ export default function ProductStorageList({
                       const group =
                         grouped[productStorage.productSkuVariant.id];
                       const storageIds = group.map((ps) => ps.storage.id);
-                      router.push({
-                        /* @ts-ignore */
-                        pathname: "/logged-in/product-storage-group",
-                        params: { storageIds },
-                      });
+                      if (variant === "exit") {
+                        router.push({
+                          /* @ts-ignore */
+                          pathname: "/logged-in/product-storage-group",
+                          params: { storageIds },
+                        });
+                      }
                     }}
                   >
                     <TableCell

@@ -15,7 +15,7 @@ export default function DetailPage() {
     data,
     isLoading,
     isRefetching,
-    refetch: refetchProductStorages,
+    refetch: refetchEntries,
   } = useRecordDetail<Entry>(Number(entry.id), "entry");
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null);
   const [countModalOpen, setCountModalOpen] = useState(false);
@@ -36,20 +36,18 @@ export default function DetailPage() {
             setSelectedStorage(Math.floor(Math.random() * 100));
           }}
         />
-        <ConfirmationModal
-          buttonTitle="Save"
-          onConfirm={() => console.log("confirmed!")}
-        />
       </View>
       {selectedStorage && (
-        <View>
-          <Text>Selected storage: {selectedStorage}</Text>
-        </View>
+        <Text>
+          <Text className="font-bold">Selected storage:</Text>
+          <Text>{` ${selectedStorage}`}</Text>
+        </Text>
       )}
       {data?.productStorages && (
         <ProductStorageList
+          variant="entry"
           data={data.productStorages}
-          refetchProductStorages={refetchProductStorages}
+          refetchProductStorages={refetchEntries}
         />
       )}
       <CountModal
