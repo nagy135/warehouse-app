@@ -32,7 +32,6 @@ type GroupedProductStorage = {
 export default function ProductStorageList({
   data,
   refetchProductStorages,
-  variant,
 }: {
   data: ProductStorage[];
   refetchProductStorages: () => void;
@@ -126,13 +125,11 @@ export default function ProductStorageList({
                       const group =
                         grouped[productStorage.productSkuVariant.id];
                       const storageIds = group.map((ps) => ps.storage.id);
-                      if (variant === "exit") {
-                        router.push({
-                          /* @ts-ignore */
-                          pathname: "/logged-in/product-storage-group",
-                          params: { storageIds },
-                        });
-                      }
+                      router.push({
+                        /* @ts-ignore */
+                        pathname: "/logged-in/product-storage-group",
+                        params: { storageIds },
+                      });
                     }}
                   >
                     <TableCell

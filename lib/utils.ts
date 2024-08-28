@@ -49,3 +49,7 @@ export function groupBy<T>(array: T[], key: string): GroupByResult<T> {
     return result;
   }, {});
 }
+
+export function arrayCount<T>(array: T[], value: T): number {
+  return array.filter((v) => v === value).length;
+}
