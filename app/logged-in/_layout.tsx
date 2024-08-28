@@ -1,7 +1,8 @@
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { Redirect, Stack } from "expo-router";
 
 import { useSession } from "../../ctx";
+import { ArrowRight } from "lucide-react-native";
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
@@ -80,14 +81,26 @@ export default function ActionLayout() {
       <Stack.Screen
         name="move-position"
         options={{
-          title: "storage => new position",
+          headerTitle: () => (
+            <View className="flex flex-row">
+              <Text className="text-2xl">storage</Text>
+              <ArrowRight color="#ea6962" size={32} />
+              <Text className="text-2xl">new position</Text>
+            </View>
+          ),
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
         name="move-storage"
         options={{
-          headerTitle: () => <Text className="color-red-500">lol</Text>,
+          headerTitle: () => (
+            <View className="flex flex-row">
+              <Text className="text-2xl">product</Text>
+              <ArrowRight color="#ea6962" size={32} />
+              <Text className="text-2xl">new storage</Text>
+            </View>
+          ),
           animation: "slide_from_right",
         }}
       />
