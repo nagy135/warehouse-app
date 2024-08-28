@@ -17,7 +17,7 @@ export default function ExitCard({ exit }: { exit: Exit }) {
       <TouchableOpacity
         onPress={() => {
           /* @ts-ignore */
-          router.push({ pathname: "/logged-in/exits/detail", params: exit });
+          router.push({ pathname: "/logged-in/exit-detail", params: exit });
         }}
       >
         <CardHeader>

@@ -94,7 +94,7 @@ export default function ExitsPage() {
           </>
         }
         hrefObject={{
-          pathname: "./detail",
+          pathname: "./exit-detail",
           /* @ts-ignore */
           params: foundExit,
         }}

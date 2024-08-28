@@ -32,10 +32,6 @@ export default function ProductStorageGroup() {
     );
   return (
     <ScrollView className="flex m-3">
-      <Text className="font-bold text-2xl text-center">Product Storages</Text>
-      <Text className="text-sm text-center">
-        Take product from these storages
-      </Text>
       {data?.map((storage, i) => (
         <Card key={`storage-card-${i}`} className="w-full my-1">
           <TouchableOpacity onPress={() => console.log("Do stuff")}>

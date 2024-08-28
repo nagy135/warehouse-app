@@ -17,7 +17,7 @@ export default function EntryCard({ entry }: { entry: Entry }) {
       <TouchableOpacity
         onPress={() => {
           // @ts-ignore
-          router.push({ pathname: "/logged-in/entries/detail", params: entry });
+          router.push({ pathname: "/logged-in/entry-detail", params: entry });
         }}
       >
         <CardHeader>

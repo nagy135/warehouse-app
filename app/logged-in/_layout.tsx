@@ -23,20 +23,50 @@ export default function ActionLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
       <Stack.Screen
         name="index"
         options={{
+          title: "Home",
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
-        name="product-storage-group"
+        name="storages-group"
         options={{
+          title: "Storages",
           animation: "fade_from_bottom",
           presentation: "fullScreenModal",
+        }}
+      />
+      <Stack.Screen
+        name="entries-index"
+        options={{
+          title: "Entries",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="entry-detail"
+        options={{
+          title: "Entry",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="exits-index"
+        options={{
+          title: "Exits",
+          animation: "slide_from_right",
+        }}
+      />
+      <Stack.Screen
+        name="exit-detail"
+        options={{
+          title: "Exit",
+          animation: "slide_from_right",
         }}
       />
     </Stack>

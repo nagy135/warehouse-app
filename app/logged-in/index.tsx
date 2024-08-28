@@ -12,19 +12,19 @@ export default function LoggedInPage() {
       <Text className="text-md">{session?.email ?? "-"}</Text>
       <View className="flex-1 justify-center w-full gap-5 p-3">
         {/* @ts-ignore */}
-        <Link href="/logged-in/entries" asChild>
+        <Link href="/logged-in/entries-index" asChild>
           <Button className="text-2xl font-bold" size="lg">
             <Text>Entries</Text>
           </Button>
         </Link>
         {/* @ts-ignore */}
-        <Link href="/logged-in/exits" asChild>
+        <Link href="/logged-in/exits-index" asChild>
           <Button className="text-2xl font-bold" size="lg">
             <Text>Exits</Text>
           </Button>
         </Link>
         {/* @ts-ignore */}
-        <Link href="/logged-in/move" asChild>
+        <Link href="/logged-in/move-index" asChild>
           <Button className="text-2xl font-bold" variant="outline" size="lg">
             <Text>Move</Text>
           </Button>
