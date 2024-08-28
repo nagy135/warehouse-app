@@ -23,6 +23,12 @@ export default function LoggedInPage() {
             <Text>Exits</Text>
           </Button>
         </Link>
+        {/* @ts-ignore */}
+        <Link href="/logged-in/move" asChild>
+          <Button className="text-2xl font-bold" variant="outline" size="lg">
+            <Text>Move</Text>
+          </Button>
+        </Link>
       </View>
     </View>
   );
