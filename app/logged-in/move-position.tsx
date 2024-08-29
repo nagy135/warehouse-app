@@ -13,12 +13,12 @@ export default function MovePositionPage() {
     useNotificationModal({
       title: "Scan values first",
       description:
-        "Scan product SKU and storages SKU first before transferring.",
+        "Scan storage SKU and position SKU first before transferring.",
     });
   const { modal: successModal, setOpen: openSuccessModal } =
     useNotificationModal({
       title: "Transfer successful",
-      description: "Product has been transferred to the new storage.",
+      description: "Storage has been transferred to the new position.",
     });
   const { mutate, error } = useTransferStorageToPosition({
     onSuccessCallback: () => {
