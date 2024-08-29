@@ -4,57 +4,68 @@ import { API_ROOT } from "~/lib/constants";
 import { isEnvVar } from "~/lib/utils";
 
 export default function useTransferProductToStorage({
-  onSuccessCallback,
+	onSuccessCallback,
+	onErrorCallback,
 }: {
-  onSuccessCallback: () => void;
+	onSuccessCallback: () => void;
+	onErrorCallback: () => void;
 }): {
-  isPending: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  mutate: (args: {
-    productSkuVariantSKU: string;
-    fromStorageSKU: string;
-    toStorageSKU: string;
-  }) => void;
+	isPending: boolean;
+	isError: boolean;
+	isSuccess: boolean;
+	error: string;
+	mutate: (args: {
+		productSkuVariantSKU: string;
+		fromStorageSKU: string;
+		toStorageSKU: string;
+	}) => void;
 } {
-  const { session } = useSession();
-  const mutateRecords = async ({
-    productSkuVariantSKU,
-    fromStorageSKU,
-    toStorageSKU,
-  }: {
-    productSkuVariantSKU: string;
-    fromStorageSKU: string;
-    toStorageSKU: string;
-  }) => {
-    const path = `${API_ROOT}/product-sku-variant/transfer`;
-    if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
+	const { session } = useSession();
+	const mutateRecords = async ({
+		productSkuVariantSKU,
+		fromStorageSKU,
+		toStorageSKU,
+	}: {
+		productSkuVariantSKU: string;
+		fromStorageSKU: string;
+		toStorageSKU: string;
+	}) => {
+		const path = `${API_ROOT}/product-sku-variant/transfer`;
+		if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
 
-    const res = await fetch(path, {
-      headers: {
-        Authorization: `Bearer ${session?.accessToken}`,
-        ContentType: "application/json",
-      },
-      body: JSON.stringify({
-        productSkuVariantSKU,
-        fromStorageSKU,
-        toStorageSKU,
-      }),
-      method: "POST",
-    });
-    const data = await res.json();
-    return data;
-  };
+		const res = await fetch(path, {
+			headers: {
+				Authorization: `Bearer ${session?.accessToken}`,
+				ContentType: "application/json",
+			},
+			body: JSON.stringify({
+				productSkuVariantSKU,
+				fromStorageSKU,
+				toStorageSKU,
+			}),
+			method: "POST",
+		});
+		const data = await res.json();
+		if (!res.ok) {
+			throw new Error(JSON.stringify(data.error ?? "unknown"));
+		}
 
-  const { isPending, isError, isSuccess, mutate } = useMutation({
-    mutationKey: [`reset-product-storages`],
-    mutationFn: mutateRecords,
-    onSuccess: onSuccessCallback,
-  });
-  return {
-    isPending,
-    isError,
-    isSuccess,
-    mutate: (args) => mutate(args),
-  };
+		if (isEnvVar("DEBUG", true))
+			console.log(`returned: ${JSON.stringify(data)}`);
+		return data;
+	};
+
+	const { isPending, isError, isSuccess, mutate, error } = useMutation({
+		mutationKey: [`reset-product-storages`],
+		mutationFn: mutateRecords,
+		onSuccess: onSuccessCallback,
+		onError: onErrorCallback,
+	});
+	return {
+		isPending,
+		isError,
+		isSuccess,
+		error: error?.message ?? "",
+		mutate: (args) => mutate(args),
+	};
 }
