@@ -1,8 +1,10 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+
+import { Text } from "~/components/ui/text";
 import { Redirect, Stack } from "expo-router";
 
 import { useSession } from "../../ctx";
-import { ArrowRight } from "lucide-react-native";
+import { ArrowBigRight, ArrowRight, MoveRight } from "lucide-react-native";
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
@@ -82,11 +84,7 @@ export default function ActionLayout() {
         name="move-position"
         options={{
           headerTitle: () => (
-            <View className="flex flex-row">
-              <Text className="text-2xl">storage</Text>
-              <ArrowRight color="#ea6962" size={32} />
-              <Text className="text-2xl">new position</Text>
-            </View>
+            <MoveArrowFromTo from="storage" to="new position" />
           ),
           animation: "slide_from_right",
         }}
@@ -95,11 +93,7 @@ export default function ActionLayout() {
         name="move-storage"
         options={{
           headerTitle: () => (
-            <View className="flex flex-row">
-              <Text className="text-2xl">product</Text>
-              <ArrowRight color="#ea6962" size={32} />
-              <Text className="text-2xl">new storage</Text>
-            </View>
+            <MoveArrowFromTo from="product" to="new storage" />
           ),
           animation: "slide_from_right",
         }}
@@ -107,3 +101,13 @@ export default function ActionLayout() {
     </Stack>
   );
 }
+
+const MoveArrowFromTo = ({ from, to }: { from: string; to: string }) => {
+  return (
+    <View className="flex flex-row">
+      <Text className="text-2xl">{`${from} `}</Text>
+      <MoveRight color="#ea6962" size={32} />
+      <Text className="text-2xl">{` ${to}`}</Text>
+    </View>
+  );
+};
