@@ -56,7 +56,6 @@ export default function useTransferProductToStorage({
 	};
 
 	const { isPending, isError, isSuccess, mutate, error } = useMutation({
-		mutationKey: [`reset-product-storages`],
 		mutationFn: mutateRecords,
 		onSuccess: onSuccessCallback,
 		onError: onErrorCallback,
