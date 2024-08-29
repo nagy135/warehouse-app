@@ -18,6 +18,7 @@ export default function MoveStoragePage() {
   );
   const { modal: warningModal, setOpen: openWarningModal } =
     useNotificationModal({
+      variant: "danger",
       title: "Scan values first",
       description:
         "Scan product SKU and storages SKU first before transferring.",
@@ -39,6 +40,7 @@ export default function MoveStoragePage() {
     },
   });
   const { modal: errorModal, setOpen: openErrorModal } = useNotificationModal({
+    variant: "danger",
     title: "Error occured",
     description: error,
   });

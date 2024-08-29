@@ -11,6 +11,7 @@ export default function MovePositionPage() {
   const [storageSKU, setStorageSKU] = useState<string | undefined>(undefined);
   const { modal: warningModal, setOpen: openWarningModal } =
     useNotificationModal({
+      variant: "danger",
       title: "Scan values first",
       description:
         "Scan storage SKU and position SKU first before transferring.",
@@ -31,6 +32,7 @@ export default function MovePositionPage() {
     },
   });
   const { modal: errorModal, setOpen: openErrorModal } = useNotificationModal({
+    variant: "danger",
     title: "Error occured",
     description: error,
   });

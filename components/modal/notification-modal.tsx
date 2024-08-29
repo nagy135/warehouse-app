@@ -9,30 +9,36 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { View } from "react-native";
 
 export default function NotificationModal({
   open,
   setClose,
   title,
   description,
+  variant = "default",
 }: {
   title: string;
   description: string;
   open: boolean;
+  variant?: "default" | "danger";
   setClose: () => void;
 }) {
   return (
     <AlertDialog open={open}>
-      <View className="flex items-end"></View>
-      <AlertDialogContent>
+      <AlertDialogContent
+        className={variant == "danger" ? "border-2 border-red-500" : ""}
+      >
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle
+            className={variant === "danger" ? "color-red-500" : ""}
+          >
+            {title}
+          </AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction onPress={setClose}>
-            <Text>Continue</Text>
+            <Text>OK</Text>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

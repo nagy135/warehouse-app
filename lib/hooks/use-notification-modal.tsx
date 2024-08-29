@@ -4,9 +4,11 @@ import NotificationModal from "~/components/modal/notification-modal";
 export default function useNotificationModal({
   title,
   description,
+  variant = "default",
 }: {
   title: string;
   description: string;
+  variant?: "default" | "danger";
 }): {
   setOpen: () => void;
   modal: ReactNode;
@@ -20,6 +22,7 @@ export default function useNotificationModal({
         title={title}
         description={description}
         open={open}
+        variant={variant}
         setClose={() => setOpen(false)}
       />
     ),
