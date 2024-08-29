@@ -4,7 +4,7 @@ import { Text } from "~/components/ui/text";
 import { Redirect, Stack } from "expo-router";
 
 import { useSession } from "../../ctx";
-import { ArrowBigRight, ArrowRight, MoveRight } from "lucide-react-native";
+import { MoveRight } from "lucide-react-native";
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();

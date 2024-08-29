@@ -34,7 +34,7 @@ export default function MoveStoragePage() {
 			<View className="flex justify-center gap-3 w-full">
 				<Scanner
 					label="Product SKU"
-					mockData="123"
+					mockData="sweetwaffles50123"
 					onScan={(data) => {
 						setProductSkuVariantSKU(data);
 					}}
@@ -46,7 +46,7 @@ export default function MoveStoragePage() {
 				)}
 				<Scanner
 					label="FROM Storage SKU"
-					mockData="STORAGE-1234"
+					mockData="spotexactlyforwaffles123"
 					onScan={(data) => {
 						setFromStorageSKU(data);
 					}}
@@ -58,14 +58,14 @@ export default function MoveStoragePage() {
 				)}
 				<Scanner
 					label="TO Storage SKU"
-					mockData="TO-STORAGE-1234"
+					mockData="secondspotexactlyforsourwaffles123"
 					onScan={(data) => {
 						setToStorageSKU(data);
 					}}
 				/>
 				{toStorageSKU && (
 					<View>
-						<Text>{`TO Storage: ${fromStorageSKU}`}</Text>
+						<Text>{`TO Storage: ${toStorageSKU}`}</Text>
 					</View>
 				)}
 				<View className="flex flex-row justify-center gap-3 mt-5">
