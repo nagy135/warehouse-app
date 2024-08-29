@@ -52,7 +52,7 @@ export default function MovePositionPage() {
         )}
         <Scanner
           label="Position"
-          mockData="sweetwaffles50123"
+          mockData="randomemptyspot123"
           onScan={(data) => {
             setPositionSKU(data);
           }}

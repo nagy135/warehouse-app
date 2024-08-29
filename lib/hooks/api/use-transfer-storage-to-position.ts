@@ -24,7 +24,7 @@ export default function useTransferStorageToPosition({
     storageSKU: string;
     positionSKU: string;
   }) => {
-    const path = `${API_ROOT}/storage/transfer`;
+    const path = `${API_ROOT}/storages/transfer`;
     if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
 
     const res = await fetch(path, {
