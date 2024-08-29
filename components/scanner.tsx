@@ -4,7 +4,7 @@ import useScanner from "~/lib/hooks/use-scanner";
 
 export default function Scanner({
   size = "lg",
-  label = "Scan",
+  label = "",
   variant = "default",
   onScan,
   mockData,
@@ -19,7 +19,9 @@ export default function Scanner({
 
   return (
     <Button onPress={() => startScan()} size={size} variant={variant}>
-      <Text className=" text-2xl font-bold">{scanning ? "..." : label}</Text>
+      <Text className=" text-2xl font-bold">
+        {scanning ? "..." : `SCAN ${label}`}
+      </Text>
     </Button>
   );
 }

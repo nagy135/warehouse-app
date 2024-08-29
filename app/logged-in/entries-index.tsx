@@ -94,6 +94,7 @@ export default function EntriesPage() {
           </>
         }
         hrefObject={{
+          // @ts-ignore
           pathname: "/entry-detail",
           /* @ts-ignore */
           params: foundEntry,
