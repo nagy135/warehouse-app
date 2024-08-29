@@ -10,16 +10,22 @@ export default function MoveStoragePage() {
 	const [productSkuVariantSKU, setProductSkuVariantSKU] = useState<
 		string | undefined
 	>(undefined);
-	const [storageSKU, setStorageSKU] = useState<string | undefined>(undefined);
+	const [fromStorageSKU, setFromStorageSKU] = useState<string | undefined>(
+		undefined
+	);
+	const [toStorageSKU, setToStorageSKU] = useState<string | undefined>(
+		undefined
+	);
 	const { modal, setOpen: openModal } = useNotificationModal({
 		title: "Scan values first",
-		description: "Scan product SKU and storage SKU first before transferring.",
+		description: "Scan product SKU and storages SKU first before transferring.",
 	});
 
 	const { mutate } = useTransferProductToStorage({
 		onSuccessCallback: () => {
 			setProductSkuVariantSKU(undefined);
-			setStorageSKU(undefined);
+			setFromStorageSKU(undefined);
+			setToStorageSKU(undefined);
 		},
 	});
 
@@ -39,15 +45,27 @@ export default function MoveStoragePage() {
 					</View>
 				)}
 				<Scanner
-					label="Storage SKU"
+					label="FROM Storage SKU"
 					mockData="STORAGE-1234"
 					onScan={(data) => {
-						setStorageSKU(data);
+						setFromStorageSKU(data);
 					}}
 				/>
-				{storageSKU && (
+				{fromStorageSKU && (
 					<View>
-						<Text>{`Storage: ${storageSKU}`}</Text>
+						<Text>{`FROM Storage: ${fromStorageSKU}`}</Text>
+					</View>
+				)}
+				<Scanner
+					label="TO Storage SKU"
+					mockData="TO-STORAGE-1234"
+					onScan={(data) => {
+						setToStorageSKU(data);
+					}}
+				/>
+				{toStorageSKU && (
+					<View>
+						<Text>{`TO Storage: ${fromStorageSKU}`}</Text>
 					</View>
 				)}
 				<View className="flex flex-row justify-center gap-3 mt-5">
@@ -55,10 +73,10 @@ export default function MoveStoragePage() {
 						variant="secondary"
 						className="flex-1 border"
 						onPress={() => {
-							if (!productSkuVariantSKU || !storageSKU) {
+							if (!productSkuVariantSKU || !fromStorageSKU || !toStorageSKU) {
 								openModal();
 							} else {
-								mutate({ productSkuVariantSKU, storageSKU });
+								mutate({ productSkuVariantSKU, fromStorageSKU, toStorageSKU });
 							}
 						}}
 					>
@@ -69,7 +87,8 @@ export default function MoveStoragePage() {
 						className="w-1/3"
 						onPress={() => {
 							setProductSkuVariantSKU(undefined);
-							setStorageSKU(undefined);
+							setFromStorageSKU(undefined);
+							setToStorageSKU(undefined);
 						}}
 					>
 						<Text>Reset</Text>

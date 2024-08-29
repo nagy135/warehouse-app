@@ -11,15 +11,21 @@ export default function useTransferProductToStorage({
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutate: (args: { productSkuVariantSKU: string; storageSKU: string }) => void;
+  mutate: (args: {
+    productSkuVariantSKU: string;
+    fromStorageSKU: string;
+    toStorageSKU: string;
+  }) => void;
 } {
   const { session } = useSession();
   const mutateRecords = async ({
     productSkuVariantSKU,
-    storageSKU,
+    fromStorageSKU,
+    toStorageSKU,
   }: {
     productSkuVariantSKU: string;
-    storageSKU: string;
+    fromStorageSKU: string;
+    toStorageSKU: string;
   }) => {
     const path = `${API_ROOT}/product-sku-variant/transfer`;
     if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
@@ -29,7 +35,11 @@ export default function useTransferProductToStorage({
         Authorization: `Bearer ${session?.accessToken}`,
         ContentType: "application/json",
       },
-      body: JSON.stringify({ productSkuVariantSKU, storageSKU }),
+      body: JSON.stringify({
+        productSkuVariantSKU,
+        fromStorageSKU,
+        toStorageSKU,
+      }),
       method: "POST",
     });
     const data = await res.json();
