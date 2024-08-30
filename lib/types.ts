@@ -6,6 +6,7 @@ export type Entry = {
   id: number;
   name: string;
   sku: string;
+  processed: boolean;
   createdAt: string;
   createdById: string;
   productStorages?: ProductStorage[];
@@ -15,6 +16,7 @@ export type Exit = {
   id: number;
   name: string;
   sku: string;
+  processed: boolean;
   createdAt: string;
   createdById: string;
   productStorages?: ProductStorage[];

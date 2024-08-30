@@ -24,7 +24,7 @@ export default function CountModal({
   onConfirm: (count: number, skuVariantSKU: string) => void;
 }) {
   const { startScan, scanning } = useScanner({
-    mockData: "redpancakes1k123",
+    mockData: "sweetwaffles50123",
     onScan: (data) => {
       onConfirm(Number(count), data);
       setClose();

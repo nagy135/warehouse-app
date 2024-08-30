@@ -32,7 +32,10 @@ export default function DetailPage() {
     useChangeProductStorageState({ onSuccessCallback: refetchExits });
   const { mutate: mutateTransferExitProductStorages } =
     useTransferEntryOrExitProductStorages({
-      onSuccessCallback: () => Alert.alert("Transfer successful"),
+      onSuccessCallback: () => {
+        refetchExits();
+        Alert.alert("Transfer successful");
+      },
       onErrorCallback: () => Alert.alert("Error occured"),
     });
   // }}}
@@ -100,6 +103,7 @@ export default function DetailPage() {
         <Button
           size="sm"
           className="my-auto"
+          disabled={data?.processed ? true : false}
           onPress={() => {
             if (!selectedStorageSKU) {
               openScanWhereWarningModal();
