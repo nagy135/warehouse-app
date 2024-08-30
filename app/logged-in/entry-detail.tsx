@@ -1,14 +1,16 @@
 import { useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Entry, type ToStringOrStringArray } from "~/lib/types";
 import Scanner from "~/components/scanner";
 import useRecordDetail from "~/lib/hooks/api/use-record-detail";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ProductStorageList from "~/components/product-storage-list";
 import CountModal from "~/components/modal/count-modal";
 import useNotificationModal from "~/lib/hooks/use-notification-modal";
 import useChangeProductStorageState from "~/lib/hooks/api/use-change-product-storage-state";
+import { Button } from "~/components/ui/button";
+import useTransferEntryOrExitProductStorages from "~/lib/hooks/api/use-transfer-entry-or-exit-product-storages";
 
 export default function DetailPage() {
   const entry = useLocalSearchParams<ToStringOrStringArray<Entry>>();
@@ -19,8 +21,22 @@ export default function DetailPage() {
     isRefetching,
     refetch: refetchEntries,
   } = useRecordDetail<Entry>(entryId, "entry");
+  const uncountedProductStoragesCount = useMemo(
+    () => data?.productStorages?.filter((e) => !e.counted).length ?? 1,
+    [data]
+  );
+
+  // Mutations {{{
   const { mutate: mutateChangeProductStorageState } =
     useChangeProductStorageState({ onSuccessCallback: refetchEntries });
+  const { mutate: mutateTransferEntryProductStorages } =
+    useTransferEntryOrExitProductStorages({
+      onSuccessCallback: () => Alert.alert("Transfer successful"),
+      onErrorCallback: () => Alert.alert("Error occured"),
+    });
+  // }}}
+
+  // Modals {{{
   const { modal: scanWhereWarningModal, setOpen: openScanWhereWarningModal } =
     useNotificationModal({
       variant: "danger",
@@ -34,6 +50,16 @@ export default function DetailPage() {
       description:
         "Please try again, in table there is line with how many items are there",
     });
+  const {
+    modal: notFinishedWarningModal,
+    setOpen: openNotFinishedWarningModal,
+  } = useNotificationModal({
+    variant: "danger",
+    title: "This Entry is not finished yet",
+    description:
+      "Please scan all the products in this entry before transferring",
+  });
+  // }}}
   const [selectedStorageSKU, setSelectedStorageSKU] = useState<string | null>(
     null
   );
@@ -68,6 +94,26 @@ export default function DetailPage() {
             }}
           />
         </View>
+        <Button
+          size="sm"
+          className="my-auto"
+          onPress={() => {
+            if (!selectedStorageSKU) {
+              openScanWhereWarningModal();
+              return;
+            }
+            if (uncountedProductStoragesCount > 0) {
+              openNotFinishedWarningModal();
+              return;
+            }
+            mutateTransferEntryProductStorages({
+              toStorageSKU: selectedStorageSKU,
+              entryId,
+            });
+          }}
+        >
+          <Text className="text-xs">Transfer</Text>
+        </Button>
       </View>
       {selectedStorageSKU && (
         <Text>
@@ -100,6 +146,7 @@ export default function DetailPage() {
               .map((e) => e.id) ?? [];
           if (productStoragesWithThisSkuVariantIds.length < count) {
             openCountWarningModal();
+            return;
           }
           mutateChangeProductStorageState({
             ids: productStoragesWithThisSkuVariantIds.slice(0, count),
@@ -110,6 +157,7 @@ export default function DetailPage() {
       />
       {scanWhereWarningModal}
       {countWarningModal}
+      {notFinishedWarningModal}
     </View>
   );
 }
