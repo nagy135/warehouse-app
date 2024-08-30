@@ -21,12 +21,12 @@ export default function CountModal({
 }: {
   open: boolean;
   setClose: () => void;
-  onConfirm: (count: number, skuVariantId: number) => void;
+  onConfirm: (count: number, skuVariantSKU: string) => void;
 }) {
   const { startScan, scanning } = useScanner({
-    mockData: "5",
+    mockData: "sourwaffles50123",
     onScan: (data) => {
-      onConfirm(Number(count), Number(data));
+      onConfirm(Number(count), data);
       setClose();
     },
   });

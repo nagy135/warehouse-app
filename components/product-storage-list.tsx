@@ -18,7 +18,7 @@ import { useMemo } from "react";
 import { router } from "expo-router";
 import { Button } from "./ui/button";
 import ConfirmationModal from "./modal/confirmation-modal";
-import useChangeProductStorageState from "~/lib/hooks/api/use-reset-product-storages";
+import useChangeProductStorageState from "~/lib/hooks/api/use-change-product-storage-state";
 
 const MIN_COLUMN_WIDTHS = [50, 120, 120, 140, 100];
 
