@@ -132,9 +132,6 @@ export default function DetailPage() {
         open={countModalOpen}
         setClose={() => setCountModalOpen(false)}
         onConfirm={(count, skuVariantSKU) => {
-          console.log(
-            data?.productStorages?.map((e) => e.productSkuVariant.sku)
-          );
           const productStoragesWithThisSkuVariantIds =
             data?.productStorages
               ?.filter((productStorage) => {
