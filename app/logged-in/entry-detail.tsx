@@ -31,7 +31,8 @@ export default function DetailPage() {
     useNotificationModal({
       variant: "danger",
       title: "Not enough items in this entry with given SKU",
-      description: "Please try again, in table there is record with count",
+      description:
+        "Please try again, in table there is line with how many items are there",
     });
   const [selectedStorageSKU, setSelectedStorageSKU] = useState<string | null>(
     null
@@ -91,7 +92,10 @@ export default function DetailPage() {
           const productStoragesWithThisSkuVariantIds =
             data?.productStorages
               ?.filter((productStorage) => {
-                return productStorage.productSkuVariant.sku === skuVariantSKU;
+                return (
+                  productStorage.productSkuVariant.sku === skuVariantSKU &&
+                  !productStorage.counted
+                );
               })
               .map((e) => e.id) ?? [];
           if (productStoragesWithThisSkuVariantIds.length < count) {
