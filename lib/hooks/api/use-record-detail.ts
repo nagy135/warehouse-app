@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
-import { isEnvVar } from "~/lib/utils";
 
 export default function useRecordDetail<T>(
   id: number,
@@ -15,8 +14,9 @@ export default function useRecordDetail<T>(
 } {
   const { session } = useSession();
   const fetchRecords = async () => {
-    if (isEnvVar("DEBUG", true))
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
       console.log(`fetching: ${API_ROOT}/${path}?id=${id}`);
+    }
 
     const res = await fetch(`${API_ROOT}/${path}?id=${id}`, {
       headers: {

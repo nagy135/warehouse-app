@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
-import { isEnvVar } from "~/lib/utils";
 
 export default function useTransferProductToStorage({
 	onSuccessCallback,
@@ -31,7 +30,9 @@ export default function useTransferProductToStorage({
 		toStorageSKU: string;
 	}) => {
 		const path = `${API_ROOT}/product-sku-variant/transfer`;
-		if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
+		if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
+      		console.log(`changing: ${path}`);
+    	}
 
 		const res = await fetch(path, {
 			headers: {
@@ -50,8 +51,9 @@ export default function useTransferProductToStorage({
 			throw new Error(JSON.stringify(data.error ?? "unknown"));
 		}
 
-		if (isEnvVar("DEBUG", true))
+		if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
 			console.log(`returned: ${JSON.stringify(data)}`);
+		}
 		return data;
 	};
 

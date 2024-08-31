@@ -2,7 +2,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { useEffect, useRef, useState } from "react";
 import { API_ROOT } from "~/lib/constants";
-import { isEnvVar } from "~/lib/utils";
 
 export default function useGetRecords<T>(
   apiKey: string,
@@ -38,8 +37,9 @@ export default function useGetRecords<T>(
   }, [search]);
 
   const fetchRecords = async () => {
-    if (isEnvVar("DEBUG", true))
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
       console.log(`fetching: ${API_ROOT}/${apiKey}?${searchString}`);
+	}
 
     const res = await fetch(`${API_ROOT}/${apiKey}?${searchString}`, {
       headers: {

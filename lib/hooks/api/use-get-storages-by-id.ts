@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
-import { isEnvVar } from "~/lib/utils";
 import type { Storage } from "~/lib/types";
 
 export default function useGetStoragesById(ids: number[]): {
@@ -14,8 +13,9 @@ export default function useGetStoragesById(ids: number[]): {
   const fetchRecords = async () => {
     const params = new URLSearchParams();
     params.append("ids", ids.join(","));
-    if (isEnvVar("DEBUG", true))
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
       console.log(`fetching here: ${API_ROOT}/storages?${params.toString()}`);
+    }
 
     const res = await fetch(`${API_ROOT}/storages?${params.toString()}`, {
       headers: {

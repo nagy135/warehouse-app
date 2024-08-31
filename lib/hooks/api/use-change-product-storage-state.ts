@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
-import { isEnvVar } from "~/lib/utils";
 
 export default function useChangeProductStorageState({
   onSuccessCallback,
@@ -22,7 +21,9 @@ export default function useChangeProductStorageState({
     change: "counted" | "not-counted";
   }) => {
     const path = `${API_ROOT}/product-storages/${change}`;
-    if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
+      console.log(`changing: ${path}`);
+    }
 
     const res = await fetch(path, {
       headers: {

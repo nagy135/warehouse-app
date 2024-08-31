@@ -14,7 +14,6 @@ import { Progress } from "~/components/ui/progress";
 import { Text } from "~/components/ui/text";
 import { Input } from "~/components/ui/input";
 import { useRef } from "react";
-import { isEnvVar } from "~/lib/utils";
 
 const AVATAR_URI =
   "https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg";
@@ -49,7 +48,7 @@ export default function LoginForm() {
           ]);
         });
     } else {
-      if (isEnvVar("FAKE_LOGIN_LOADER", false)) {
+      if (process.env.EXPO_PUBLIC_FAKE_LOGIN_LOADER == "false") {
         setProgress(100);
         return;
       }

@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "~/ctx";
 import { API_ROOT } from "~/lib/constants";
-import { isEnvVar } from "~/lib/utils";
 
 export default function useTransferEntryOrExitProductStorages({
   onSuccessCallback,
@@ -31,7 +30,9 @@ export default function useTransferEntryOrExitProductStorages({
     toStorageSKU: string;
   }) => {
     const path = `${API_ROOT}/${exitId ? "exit" : "entry"}/transfer`;
-    if (isEnvVar("DEBUG", true)) console.log(`changing: ${path}`);
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") { 
+      console.log(`changing: ${path}`);
+    }
 
     const res = await fetch(path, {
       headers: {
@@ -49,8 +50,9 @@ export default function useTransferEntryOrExitProductStorages({
       throw new Error(JSON.stringify(data.error ?? "unknown"));
     }
 
-    if (isEnvVar("DEBUG", true))
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") { 
       console.log(`returned: ${JSON.stringify(data)}`);
+    }
     return data;
   };
 

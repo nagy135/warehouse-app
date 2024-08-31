@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { isEnvVar } from "../utils";
 
 const randomString = () => Math.random().toString(36).slice(2, 7);
 
@@ -15,7 +14,7 @@ export default function useScanner({
   const [scanning, setScanning] = useState(false);
   useEffect(() => {
     if (!scanning) return;
-    if (isEnvVar("MOCK_SCANNER", true)) {
+	if (process.env.EXPO_PUBLIC_MOCK_SCANNER == "true") {
       setTimeout(() => {
         const scanLabelType = randomString();
         const scanData = "123billa";
