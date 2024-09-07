@@ -10,7 +10,10 @@ export default function useChangeProductStorageState({
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutate: (args: { ids: number[]; change: "counted" | "not-counted" }) => void;
+  mutate: (args: {
+    ids: number[];
+    change: "counted" | "moved" | "none";
+  }) => void;
 } {
   const { session } = useSession();
   const mutateRecords = async ({
@@ -18,7 +21,7 @@ export default function useChangeProductStorageState({
     change,
   }: {
     ids: number[];
-    change: "counted" | "not-counted";
+    change: "counted" | "moved" | "none";
   }) => {
     const path = `${API_ROOT}/product-storages/${change}`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
@@ -46,7 +49,9 @@ export default function useChangeProductStorageState({
     isPending,
     isError,
     isSuccess,
-    mutate: (args: { ids: number[]; change: "counted" | "not-counted" }) =>
-      mutate(args),
+    mutate: (args: {
+      ids: number[];
+      change: "counted" | "moved" | "none";
+    }) => mutate(args),
   };
 }

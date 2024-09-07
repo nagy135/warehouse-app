@@ -16,6 +16,7 @@ import { Button } from "~/components/ui/button";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { EntryStateProvider } from "./contexts/entryStateContext";
 
 const queryClient = new QueryClient();
 
@@ -72,26 +73,28 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <SessionProvider>
-        <QueryClientProvider client={queryClient}>
-          <Stack>
-            <Stack.Screen
-              name="index"
-              options={{
-                animation: "slide_from_left",
-                title: "Warehouse",
-                headerRight: () => <ThemeToggle />,
-              }}
-            />
-            <Stack.Screen
-              name="logged-in"
-              options={{
-                animation: "slide_from_right",
-                title: "Warehouse",
-                headerRight: () => <ThemeProfile />,
-              }}
-            />
-          </Stack>
-        </QueryClientProvider>
+        <EntryStateProvider>
+          <QueryClientProvider client={queryClient}>
+            <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  animation: "slide_from_left",
+                  title: "Warehouse",
+                  headerRight: () => <ThemeToggle />,
+                }}
+              />
+              <Stack.Screen
+                name="logged-in"
+                options={{
+                  animation: "slide_from_right",
+                  title: "Warehouse",
+                  headerRight: () => <ThemeProfile />,
+                }}
+              />
+            </Stack>
+          </QueryClientProvider>
+        </EntryStateProvider>
       </SessionProvider>
       <PortalHost />
     </ThemeProvider>

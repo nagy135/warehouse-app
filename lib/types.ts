@@ -39,8 +39,9 @@ export type Position = {
 export type ProductStorage = {
   id: number;
   productSkuVariant: ProductSkuVariant;
+  productSkuVariantId: number;
   storage: Storage;
-  counted: boolean;
+  state: "counted" | "moved" | "none";
 };
 
 export type ProductSkuVariant = {

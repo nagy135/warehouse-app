@@ -18,10 +18,18 @@ export default function Scanner({
   const { startScan, scanning } = useScanner({ onScan, mockData });
 
   return (
-    <Button onPress={() => startScan()} size={size} variant={variant}>
-      <Text className=" text-2xl font-bold">
-        {scanning ? "..." : `SCAN ${label}`}
-      </Text>
-    </Button>
+    <>
+      {process.env.EXPO_PUBLIC_MOCK_SCANNER === "true" ? (
+        <Button onPress={() => startScan()} size={size} variant={variant}>
+          <Text className="text-2xl font-bold">
+            {scanning ? "..." : `${label}`}
+          </Text>
+        </Button>
+      ) : (
+        <Text className="text-2xl text-center font-bold">
+          {scanning ? "..." : `${label}`}
+        </Text>
+      )}
+    </>
   );
 }
