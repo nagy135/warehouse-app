@@ -11,6 +11,7 @@
     "web": "expo start -c --web",
     "build": "eas build -p android --profile preview",
     "clean": "rm -rf .expo node_modules",
+    "clear-cache": "expo start -c",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
