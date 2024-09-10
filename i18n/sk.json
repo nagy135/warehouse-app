@@ -1,0 +1,11 @@
+{
+    "entryNumber": "Číslo príjemky",
+    "state": {
+        "created": "Vytvorené",
+        "registered": "Rozpracované",
+        "moved": "Dokončené",
+        "canceled": "Zrušené"
+    },
+    "dateTime": "{{date, DATETIME_SHORT_WITH_SECONDS}}",
+    "date": "{{date, DATE_SHORT}}"
+}

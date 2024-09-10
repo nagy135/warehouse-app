@@ -1,0 +1,11 @@
+{
+    "entryNumber": "Entry number",
+    "state": {
+        "created": "Created",
+        "registered": "Registered",
+        "moved": "Finished",
+        "canceled": "Canceled"
+    },
+    "dateTime": "{{date, DATETIME_SHORT_WITH_SECONDS}}",
+    "date": "{{date, DATE_SHORT}}"
+}
