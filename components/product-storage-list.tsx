@@ -11,14 +11,15 @@ import { router } from 'expo-router'
 import { Button } from './ui/button'
 import ConfirmationModal from './modal/confirmation-modal'
 import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state'
-import { useEntryStateContext } from '~/app/contexts/entryStateContext'
 
 export const MIN_COLUMN_WIDTHS = [50, 120, 120, 140, 100]
 
 export type GroupedProductStorage = {
     productStorage: ProductStorage
     count: number
-    countedCount: number
+    counted: number
+    moved?: number
+    notMoved?: number
     allIds: number[]
 }
 
@@ -33,7 +34,6 @@ export default function ProductStorageList({
 }) {
     const { width } = useWindowDimensions()
     const insets = useSafeAreaInsets()
-    const { state } = useEntryStateContext()
 
     const grouped = useMemo(() => groupBy(data, 'productSkuVariant.id'), [data])
     const groupedProductStorages = useMemo(() => {
@@ -41,12 +41,14 @@ export default function ProductStorageList({
             const uniqueProductStorage: GroupedProductStorage = {
                 productStorage: groupOfProductStorages[0], // lets show just first one
                 count: groupOfProductStorages.length,
-                countedCount: groupOfProductStorages.reduce((prev, next) => prev + (next.state === 'counted' ? 1 : 0), 0),
+                moved: groupOfProductStorages.filter(item => item.state === 'moved' ).length,
+                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved' ).length,
+                counted: groupOfProductStorages.filter(item => item.state === 'counted' ).length,
                 allIds: groupOfProductStorages.map((ps) => ps.id),
             }
             return uniqueProductStorage
         })
-    }, [grouped, state.scannedProductSkuVariants])
+    }, [grouped])
 
     const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchProductStorages })
 
@@ -65,6 +67,9 @@ export default function ProductStorageList({
                         <TableRow>
                             <TableHead style={{ width: columnWidths[0] }}>
                                 <Text className="text-center font-bold text-md">Count</Text>
+                            </TableHead>
+                            <TableHead style={{ width: columnWidths[0] }}>
+                                <Text className="text-center font-bold text-md">Moved</Text>
                             </TableHead>
                             <TableHead style={{ width: columnWidths[1] }}>
                                 <Text className="font-bold text-md">Variant name</Text>
@@ -92,7 +97,7 @@ export default function ProductStorageList({
                                 return (
                                     <TableRow
                                         key={productStorage.id}
-                                        className={cn('active:bg-secondary', index % 2 && 'bg-muted/40 ')}
+                                        className={cn('active:bg-secondary', index % 2 && 'bg-muted/40 ', groupRest.notMoved === 0 && 'bg-green-100')}
                                         onPress={() => {
                                             const group = grouped[productStorage.productSkuVariant.id]
                                             const storageIds = group.map((ps) => ps.storage.id)
@@ -107,7 +112,12 @@ export default function ProductStorageList({
                                     >
                                         <TableCell style={{ width: columnWidths[0] }} className="items-center">
                                             <Text>
-                                                {groupRest.countedCount}/{groupRest.count}
+                                             {groupRest.notMoved === 0 ? '' : `${groupRest.counted}/${groupRest.notMoved}`}
+                                            </Text>
+                                        </TableCell>
+                                        <TableCell style={{ width: columnWidths[0] }} className="items-center">
+                                            <Text>
+                                                {groupRest.moved}/{groupRest.count}
                                             </Text>
                                         </TableCell>
                                         <TableCell className="items-end" style={{ width: columnWidths[1] }}>
@@ -155,7 +165,7 @@ export default function ProductStorageList({
                                         </TableFooter>
                                         <View className="items-center py-3 ios:pb-0">
                                             <Text nativeID="invoice-table" className="items-center text-sm text-muted-foreground">
-                                                A list of product storages in this exit
+                                                A list of product storages in this {variant}
                                             </Text>
                                         </View>
                                     </>

@@ -14,22 +14,22 @@ import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-sto
 import useCheckStorageExits from '~/lib/hooks/api/use-check-storage-exits'
 import useRecordDetail from '~/lib/hooks/api/use-record-detail'
 import useNotificationModal from '~/lib/hooks/use-notification-modal'
-import { Entry, ProductSkuVariant, ToStringOrStringArray } from '~/lib/types'
+import { Exit, ProductSkuVariant, ToStringOrStringArray } from '~/lib/types'
 import { cn, groupBy } from '~/lib/utils'
 import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move'
 
 export default function DetailPageSecondPage() {
     const insets = useSafeAreaInsets()
-    const entry = useLocalSearchParams<ToStringOrStringArray<{ id: string }>>()
-    const entryId = Number(entry.id)
+    const exit = useLocalSearchParams<ToStringOrStringArray<{ id: string }>>()
+    const exitId = Number(exit.id)
 
-    const { data, isLoading, isRefetching, refetch: refetchEntries } = useRecordDetail<Entry>(entryId, 'entry')
+    const { data, isLoading, isRefetching, refetch: refetchExits } = useRecordDetail<Exit>(exitId, 'exit')
 
     const [selectedProductSkuVariant, setSelectedProductSkuVariant] = useState<ProductSkuVariant>()
     const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits()
-    const { mutateAsync: mutateEntryMove } = useEntryExitMove()
+    const { mutateAsync: mutateExitMove } = useEntryExitMove()
     const [countModalOpen, setCountModalOpen] = useState(false)
-    const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchEntries })
+    const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchExits })
 
     const { modal: countWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
         variant: 'danger',
@@ -43,10 +43,10 @@ export default function DetailPageSecondPage() {
         description: 'Naskenovaný SKU kód nepríslucha žiadnemu storage',
     })
 
-    const { modal: entryDoneModal, setOpen: openEntryDoneModal } = useNotificationModal({
+    const { modal: exitDoneModal, setOpen: openExitDoneModal } = useNotificationModal({
         variant: 'default',
-        title: 'Entry has been processed',
-        description: 'Whole entry has been processed',
+        title: 'Exit has been processed',
+        description: 'Whole exit has been processed',
         onClose: () => {
             router.push({
                 pathname: '/logged-in/',
@@ -54,9 +54,9 @@ export default function DetailPageSecondPage() {
         },
     })
 
-    const { modal: entryErrorModal, setOpen: openEntryErrorModal } = useNotificationModal({
+    const { modal: exitErrorModal, setOpen: openExitErrorModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Entry has not been processed',
+        title: 'Exit has not been processed',
         description: 'Error occurred',
     })
 
@@ -180,15 +180,15 @@ export default function DetailPageSecondPage() {
             />
             {countWarningModal}
             {skuNotFoundModal}
-            {entryDoneModal}
-            {entryErrorModal}
+            {exitDoneModal}
+            {exitErrorModal}
             {atLeasOneProductMoved && (
                 <View className="absolute bottom-10 left-0 right-0 p-4">
                     <Button
                         className="w-full"
                         onPress={() => {
                             if (data?.productStorages?.every((storage) => storage.state === 'moved')) {
-                                mutateEntryMove({ type: 'entry', id: entryId }).then(openEntryDoneModal).catch(openEntryErrorModal)
+                                mutateExitMove({ type: 'exit', id: exitId }).then(openExitDoneModal).catch(openExitErrorModal)
                             } else {
                                 router.push({
                                     pathname: '/logged-in/',

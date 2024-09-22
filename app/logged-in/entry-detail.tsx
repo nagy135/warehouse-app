@@ -54,7 +54,7 @@ export default function DetailPage() {
                         label="Skenovanie produktov"
                         variant="secondary"
                         // mockData="4058172286521"
-                        mockData="bluepancakes1k123"
+                        mockData="sweetwaffles50123"
                         onScan={(skuCode) => {
                             const productStoragesWithScannedSku = data?.productStorages?.find((storage) => storage.productSkuVariant.sku === skuCode)
                             if (productStoragesWithScannedSku) {

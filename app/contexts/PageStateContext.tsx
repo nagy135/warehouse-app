@@ -5,39 +5,39 @@ export type ProductSkuVariantWithCount = ProductSkuVariant & {
   count?: number;
 };
 
-type EntriesStateContextState = {
+type PagesStateContextState = {
   scannedProductSkuVariants: ProductSkuVariantWithCount[];
 };
 
-export enum EntryStateActions {
+export enum PagesStateActions {
   SET_PRODUCT_SKU_VARIANT,
   SET_PRODUCT_SKU_VARIANTS,
   CLEAR_SKU,
 }
 
 interface SetSku {
-  type: EntryStateActions.SET_PRODUCT_SKU_VARIANT;
+  type: PagesStateActions.SET_PRODUCT_SKU_VARIANT;
   value: ProductSkuVariantWithCount;
 }
 
 interface SetSkus {
-  type: EntryStateActions.SET_PRODUCT_SKU_VARIANTS;
+  type: PagesStateActions.SET_PRODUCT_SKU_VARIANTS;
   value: ProductSkuVariantWithCount[];
 }
 
 interface ClearSku {
-  type: EntryStateActions.CLEAR_SKU;
+  type: PagesStateActions.CLEAR_SKU;
 }
 
 type Actions = SetSku | ClearSku | SetSkus;
 
-const initialState: EntriesStateContextState = {
+const initialState: PagesStateContextState = {
   scannedProductSkuVariants: [],
 };
 
-const reducer = (state: EntriesStateContextState, action: Actions) => {
+const reducer = (state: PagesStateContextState, action: Actions) => {
   switch (action.type) {
-    case EntryStateActions.SET_PRODUCT_SKU_VARIANT:
+    case PagesStateActions.SET_PRODUCT_SKU_VARIANT:
       return {
         ...state,
         scannedProductSkuVariants: [
@@ -45,7 +45,7 @@ const reducer = (state: EntriesStateContextState, action: Actions) => {
           action.value,
         ],
       };
-    case EntryStateActions.SET_PRODUCT_SKU_VARIANTS:
+    case PagesStateActions.SET_PRODUCT_SKU_VARIANTS:
       return {
         ...state,
         scannedProductSkuVariants: [
@@ -53,7 +53,7 @@ const reducer = (state: EntriesStateContextState, action: Actions) => {
           ...action.value,
         ],
       };
-    case EntryStateActions.CLEAR_SKU:
+    case PagesStateActions.CLEAR_SKU:
       return {
         ...state,
         scannedProductSkuVariants: [],
@@ -63,24 +63,24 @@ const reducer = (state: EntriesStateContextState, action: Actions) => {
   }
 };
 
-const EntryStateContext = createContext<{
-  state: EntriesStateContextState;
+const PagesStateContext = createContext<{
+  state: PagesStateContextState;
   dispatch: React.Dispatch<Actions>;
 }>({ state: initialState, dispatch: () => null });
 
-const EntryStateProvider: React.FC<React.PropsWithChildren> = ({
+const PageStateProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer<
-    Reducer<EntriesStateContextState, Actions>
+    Reducer<PagesStateContextState, Actions>
   >(reducer, initialState);
   return (
-    <EntryStateContext.Provider value={{ state, dispatch }}>
+    <PagesStateContext.Provider value={{ state, dispatch }}>
       {children}
-    </EntryStateContext.Provider>
+    </PagesStateContext.Provider>
   );
 };
 
-const useEntryStateContext = () => useContext(EntryStateContext);
+const usePageStateContext = () => useContext(PagesStateContext);
 
-export { useEntryStateContext, EntryStateProvider };
+export { usePageStateContext, PageStateProvider };

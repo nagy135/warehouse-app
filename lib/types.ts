@@ -10,7 +10,7 @@ export type Entry = {
     createdAt: string
     createdById: string
     productStorages?: ProductStorage[]
-    state: EntryStatesEnum
+    state: EntryExitStatesEnum
 }
 
 export type Exit = {
@@ -21,6 +21,7 @@ export type Exit = {
     createdAt: string
     createdById: string
     productStorages?: ProductStorage[]
+    state: EntryExitStatesEnum
 }
 
 export type Storage = {
@@ -83,11 +84,9 @@ export type ToStringOrStringArray<T> = {
     [K in keyof T]: T[K] extends string | string[] ? T[K] : string
 }
 
-export enum EntryStatesEnum {
+export enum EntryExitStatesEnum {
   CREATED = 'created',
   REGISTERED = 'registered',
   MOVED = 'moved',
   CANCELED = 'canceled',
 }
-
-export const ENTRY_STATES = ['created', 'registered', 'moved', 'canceled'] as const
