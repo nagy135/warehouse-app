@@ -1,35 +1,28 @@
 import React, { useState } from "react";
-import { Text } from "~/components/ui/text";
+import { View } from "react-native";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
+  AlertDialogTitle
 } from "~/components/ui/alert-dialog";
-import { View } from "react-native";
 import { Input } from "~/components/ui/input";
-import useScanner from "~/lib/hooks/use-scanner";
+import { Text } from "~/components/ui/text";
 
 export default function CountModal({
   open,
   setClose,
   onConfirm,
+  productName
 }: {
   open: boolean;
   setClose: () => void;
-  onConfirm: (count: number, skuVariantSKU: string) => void;
+  onConfirm: (count: number) => void;
+  productName?: string;
 }) {
-  const { startScan, scanning } = useScanner({
-    mockData: "sweetwaffles50123",
-    onScan: (data) => {
-      onConfirm(Number(count), data);
-      setClose();
-    },
-  });
   const [count, setCount] = useState("");
 
   const onChangeCount = (text: string) => {
@@ -39,19 +32,19 @@ export default function CountModal({
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
+          <AlertDialogTitle className="h-14">
             <View>
               <Text className="font-extrabold text-lg">
-                Count how many items
+                {`Product: ${productName}`}
               </Text>
             </View>
           </AlertDialogTitle>
           <AlertDialogDescription>
             <View className="h-12">
               <Input
-                className="h-5 rounded-md"
+                className="h-5 rounded-md w-full"
                 keyboardType="numeric"
-                placeholder="How many items are we moving"
+                placeholder="number of items"
                 value={count.toString()}
                 onChangeText={onChangeCount}
               />
@@ -59,12 +52,17 @@ export default function CountModal({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
+          <AlertDialogCancel
+            onPress={() => {
+              onConfirm(Number(count));
+              setClose();
+            }}
+          >
+            <Text>Ok</Text>
+          </AlertDialogCancel>
           <AlertDialogCancel onPress={setClose}>
             <Text>Cancel</Text>
           </AlertDialogCancel>
-          <AlertDialogAction onPress={() => startScan()}>
-            <Text>{scanning ? "..." : "From"}</Text>
-          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as ExpoZebraScanner from "expo-zebra-scanner";
 
 const randomString = () => Math.random().toString(36).slice(2, 7);
 
@@ -13,8 +14,7 @@ export default function useScanner({
   const [label, setLabel] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   useEffect(() => {
-    if (!scanning) return;
-	if (process.env.EXPO_PUBLIC_MOCK_SCANNER == "true") {
+    if (scanning && process.env.EXPO_PUBLIC_MOCK_SCANNER == "true") {
       setTimeout(() => {
         const scanLabelType = randomString();
         const scanData = "123billa";
@@ -25,27 +25,24 @@ export default function useScanner({
 
         if (onScan) onScan(mockData ? mockData : scanData, scanLabelType);
       }, 500);
-    } else {
-      // NOTE: this is just to allow development where android modules are not available
-      // if this causes any issues in the production, just remove the mock entirely
-      // and import the module directly
-      import("expo-zebra-scanner").then(({ default: ExpoZebraScanner }) => {
-        const listener = ExpoZebraScanner.addListener((event) => {
-          const { scanData, scanLabelType } = event;
-          setData(scanData ?? "nothing data");
-          setLabel(scanLabelType ?? "nothing label");
-
-          setScanning(false);
-          if (onScan) onScan(scanData, scanLabelType);
-        });
-        ExpoZebraScanner.startScan();
-
-        return () => {
-          ExpoZebraScanner.stopScan();
-          listener.remove();
-        };
-      });
     }
+    // production code
+    // if (process.env.EXPO_PUBLIC_MOCK_SCANNER == "false") {
+    //   const listener = ExpoZebraScanner.addListener((event) => {
+    //     const { scanData, scanLabelType } = event;
+    //     setData(scanData ?? "nothing data");
+    //     setLabel(scanLabelType ?? "nothing label");
+
+    //     setScanning(false);
+    //     if (onScan) onScan(scanData, scanLabelType);
+    //   });
+    //   ExpoZebraScanner.startScan();
+
+    //   return () => {
+    //     ExpoZebraScanner.stopScan();
+    //     listener.remove();
+    //   };
+    // }
   }, [scanning]);
 
   return {

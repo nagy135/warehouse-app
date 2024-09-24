@@ -46,6 +46,7 @@ export default function EntriesPage() {
 					/>
 					<View className="w-1/3 py-1">
 						<Scanner
+							label="Scan"
 							mockData={"wafflesrefill123"}
 							size={"sm"}
 							onScan={(data) => {

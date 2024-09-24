@@ -47,6 +47,7 @@ export default function ExitsPage() {
           <View className="w-1/3 py-1">
             <Scanner
               size={"sm"}
+              label="Scan"
               onScan={(data) => {
                 const foundExit = exits?.find(
                   (exit: Exit) => exit.sku === data
