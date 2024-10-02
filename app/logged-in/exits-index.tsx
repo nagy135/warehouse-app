@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -15,6 +16,7 @@ import useNotificationModal from "~/lib/hooks/use-notification-modal";
 import { Exit } from "~/lib/types";
 
 export default function ExitsPage() {
+  const isFocused = useIsFocused();
   const [searchValue, setSearchValue] = useState("");
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
@@ -45,7 +47,7 @@ export default function ExitsPage() {
             onChangeText={setSearchValue}
           />
           <View className="w-1/3 py-1">
-            <Scanner
+          {isFocused && <Scanner
               size={"sm"}
               label="Scan"
               onScan={(data) => {
@@ -59,7 +61,7 @@ export default function ExitsPage() {
                   notificationModalOpen();
                 }
               }}
-            />
+            />}
           </View>
         </View>
         <ScrollView

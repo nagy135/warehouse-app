@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { MoveRight } from 'lucide-react-native'
 import { useState } from 'react'
@@ -15,7 +16,8 @@ import { cn } from '~/lib/utils'
 export default function DetailPage() {
     const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>()
     const exitId = Number(exit.id)
-
+    const isFocused = useIsFocused();
+    
     const { data, isLoading, isRefetching, refetch: refetchExits } = useRecordDetail<Exit>(exitId, 'exit')
     const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchExits })
     const { modal: countWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
@@ -50,7 +52,7 @@ export default function DetailPage() {
         <View className="h-full px-2 container">
             <View className="m-2 flex flex-row gap-3">
                 <View className={cn(atLeasOneProductScanned ? 'flex-auto' : 'flex-1')}>
-                    <Scanner
+                {isFocused && <Scanner
                         label="Skenovanie produktov"
                         variant="secondary"
                         // mockData="4058172286521"
@@ -64,7 +66,7 @@ export default function DetailPage() {
                                 openSkuNotFoundModal()
                             }
                         }}
-                    />
+                    />}
                 </View>
                 {atLeasOneProductScanned && (
                     <View className="flex-1">

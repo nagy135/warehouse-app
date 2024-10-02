@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import * as ExpoZebraScanner from "expo-zebra-scanner";
+import { useEffect, useState } from "react";
 
 const randomString = () => Math.random().toString(36).slice(2, 7);
 
@@ -26,23 +26,21 @@ export default function useScanner({
         if (onScan) onScan(mockData ? mockData : scanData, scanLabelType);
       }, 500);
     }
-    // production code
-    // if (process.env.EXPO_PUBLIC_MOCK_SCANNER == "false") {
-    //   const listener = ExpoZebraScanner.addListener((event) => {
-    //     const { scanData, scanLabelType } = event;
-    //     setData(scanData ?? "nothing data");
-    //     setLabel(scanLabelType ?? "nothing label");
+    // production mode
+    // const listener = ExpoZebraScanner.addListener((event) => {
+    //   const { scanData, scanLabelType } = event;
+    //   setData(scanData ?? "nothing data");
+    //   setLabel(scanLabelType ?? "nothing label");
 
-    //     setScanning(false);
-    //     if (onScan) onScan(scanData, scanLabelType);
-    //   });
-    //   ExpoZebraScanner.startScan();
+    //   setScanning(false);
+    //   if (onScan) onScan(scanData, scanLabelType);
+    // });
+    // ExpoZebraScanner.startScan();
 
-    //   return () => {
-    //     ExpoZebraScanner.stopScan();
-    //     listener.remove();
-    //   };
-    // }
+    // return () => {
+    //   ExpoZebraScanner.stopScan();
+    //   listener.remove();
+    // };
   }, [scanning]);
 
   return {

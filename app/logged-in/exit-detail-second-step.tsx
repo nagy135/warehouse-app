@@ -17,12 +17,13 @@ import useNotificationModal from '~/lib/hooks/use-notification-modal'
 import { Exit, ProductSkuVariant, ToStringOrStringArray } from '~/lib/types'
 import { cn, groupBy } from '~/lib/utils'
 import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move'
+import { useIsFocused } from '@react-navigation/native'
 
 export default function DetailPageSecondPage() {
     const insets = useSafeAreaInsets()
     const exit = useLocalSearchParams<ToStringOrStringArray<{ id: string }>>()
     const exitId = Number(exit.id)
-
+    const isFocused = useIsFocused();
     const { data, isLoading, isRefetching, refetch: refetchExits } = useRecordDetail<Exit>(exitId, 'exit')
 
     const [selectedProductSkuVariant, setSelectedProductSkuVariant] = useState<ProductSkuVariant>()
@@ -88,7 +89,7 @@ export default function DetailPageSecondPage() {
             <View className="m-2 flex flex-row gap-3">
                 {selectedProductSkuVariant ? (
                     <View className="flex-1">
-                        <Scanner
+                        {isFocused && <Scanner
                             label="Skenovanie boxu"
                             variant="secondary"
                             mockData="newfancybox123"
@@ -97,7 +98,7 @@ export default function DetailPageSecondPage() {
                                     .then(() => setCountModalOpen(true))
                                     .catch(openSkuNotFoundModal)
                             }}
-                        />
+                        />}
                     </View>
                 ) : (
                     <View className="flex-1">

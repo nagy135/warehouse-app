@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
 import { View } from "react-native";
 import Scanner from "~/components/scanner";
@@ -7,6 +8,7 @@ import useTransferStorageToPosition from "~/lib/hooks/api/use-transfer-storage-t
 import useNotificationModal from "~/lib/hooks/use-notification-modal";
 
 export default function MovePositionPage() {
+  const isFocused = useIsFocused();
   const [positionSKU, setPositionSKU] = useState<string | undefined>(undefined);
   const [storageSKU, setStorageSKU] = useState<string | undefined>(undefined);
   const { modal: warningModal, setOpen: openWarningModal } =
@@ -40,25 +42,25 @@ export default function MovePositionPage() {
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <View className="flex justify-center gap-3 w-full">
-        <Scanner
+      {isFocused && <Scanner
           label="Storage"
           mockData="spotexactlyforwaffles123"
           onScan={(data) => {
             setStorageSKU(data);
           }}
-        />
+        />}
         {storageSKU && (
           <View>
             <Text>{`Storage: ${storageSKU}`}</Text>
           </View>
         )}
-        <Scanner
+        {isFocused && <Scanner
           label="Position"
           mockData="randomemptyspot123"
           onScan={(data) => {
             setPositionSKU(data);
           }}
-        />
+        />}
         {positionSKU && (
           <View>
             <Text>{`Position: ${positionSKU}`}</Text>

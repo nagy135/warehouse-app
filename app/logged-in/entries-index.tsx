@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
 import {
 	ActivityIndicator,
@@ -18,6 +19,7 @@ export default function EntriesPage() {
 	const [searchValue, setSearchValue] = useState("");
 	const [foundEntry, setFoundEntry] = useState<Entry | null>(null);
 	const [redirectModalOpen, setRedirectModalOpen] = useState(false);
+	const isFocused = useIsFocused();
 	const { setOpen: notificationModalOpen, modal: notificationModal } =
 		useNotificationModal({
 			title: "Not found",
@@ -45,7 +47,7 @@ export default function EntriesPage() {
 						onChangeText={setSearchValue}
 					/>
 					<View className="w-1/3 py-1">
-						<Scanner
+						{isFocused && <Scanner
 							label="Scan"
 							mockData={"wafflesrefill123"}
 							size={"sm"}
@@ -60,7 +62,7 @@ export default function EntriesPage() {
 									notificationModalOpen();
 								}
 							}}
-						/>
+						/>}
 					</View>
 				</View>
 				<ScrollView

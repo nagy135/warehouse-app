@@ -1,6 +1,7 @@
+import { useIsFocused } from '@react-navigation/native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { MoveRight } from 'lucide-react-native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import CountModal from '~/components/modal/count-modal'
 import ProductStorageList from '~/components/product-storage-list'
@@ -15,6 +16,7 @@ import { cn } from '~/lib/utils'
 export default function DetailPage() {
     const entry = useLocalSearchParams<ToStringOrStringArray<Entry>>()
     const entryId = Number(entry.id)
+    const isFocused = useIsFocused();
 
     const { data, isLoading, isRefetching, refetch: refetchEntries } = useRecordDetail<Entry>(entryId, 'entry')
     const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchEntries })
@@ -50,11 +52,11 @@ export default function DetailPage() {
         <View className="h-full px-2 container">
             <View className="m-2 flex flex-row gap-3">
                 <View className={cn(atLeasOneProductScanned ? 'flex-auto' : 'flex-1')}>
-                    <Scanner
+                    {isFocused && <Scanner
                         label="Skenovanie produktov"
                         variant="secondary"
                         // mockData="4058172286521"
-                        mockData="sweetwaffles50123"
+                        mockData="96060650"
                         onScan={(skuCode) => {
                             const productStoragesWithScannedSku = data?.productStorages?.find((storage) => storage.productSkuVariant.sku === skuCode)
                             if (productStoragesWithScannedSku) {
@@ -64,7 +66,7 @@ export default function DetailPage() {
                                 openSkuNotFoundModal()
                             }
                         }}
-                    />
+                    />}
                 </View>
                 {atLeasOneProductScanned && (
                     <View className="flex-1">

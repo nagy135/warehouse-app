@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
 import { View } from "react-native";
 import Scanner from "~/components/scanner";
@@ -7,6 +8,7 @@ import useTransferProductToStorage from "~/lib/hooks/api/use-transfer-product-to
 import useNotificationModal from "~/lib/hooks/use-notification-modal";
 
 export default function MoveStoragePage() {
+  const isFocused = useIsFocused();
   const [productSkuVariantSKU, setProductSkuVariantSKU] = useState<
     string | undefined
   >(undefined);
@@ -48,37 +50,37 @@ export default function MoveStoragePage() {
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <View className="flex justify-center gap-3 w-full">
-        <Scanner
+      {isFocused && <Scanner
           label="Product"
           mockData="sweetwaffles50123"
           onScan={(data) => {
             setProductSkuVariantSKU(data);
           }}
-        />
+        />}
         {productSkuVariantSKU && (
           <View>
             <Text>{`Product: ${productSkuVariantSKU}`}</Text>
           </View>
         )}
-        <Scanner
+        {isFocused && <Scanner
           label="Storage (from)"
           mockData="spotexactlyforwaffles123"
           onScan={(data) => {
             setFromStorageSKU(data);
           }}
-        />
+        />}
         {fromStorageSKU && (
           <View>
             <Text>{`FROM Storage: ${fromStorageSKU}`}</Text>
           </View>
         )}
-        <Scanner
+        {isFocused && <Scanner
           label="Storage (to)"
           mockData="secondspotexactlyforsourwaffles123"
           onScan={(data) => {
             setToStorageSKU(data);
           }}
-        />
+        />}
         {toStorageSKU && (
           <View>
             <Text>{`TO Storage: ${toStorageSKU}`}</Text>
