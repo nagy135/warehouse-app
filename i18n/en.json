@@ -1,4 +1,7 @@
 {
+    "entries": "Entries",
+    "exits": "Exits",
+    "move": "Move",
     "entryNumber": "Entry number",
     "state": {
         "created": "Created",

@@ -1,4 +1,7 @@
 {
+    "entries": "Príjem",
+    "exits": "Výdaj",
+    "move": "Presun",
     "entryNumber": "Číslo príjemky",
     "state": {
         "created": "Vytvorené",
