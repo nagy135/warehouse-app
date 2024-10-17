@@ -21,6 +21,7 @@ export type GroupedProductStorage = {
     moved?: number
     notMoved?: number
     allIds: number[]
+    positions?: string[]
 }
 
 export default function ProductStorageList({
@@ -39,11 +40,12 @@ export default function ProductStorageList({
     const groupedProductStorages = useMemo(() => {
         return Object.entries(grouped).map(([_, groupOfProductStorages]) => {
             const uniqueProductStorage: GroupedProductStorage = {
-                productStorage: groupOfProductStorages[0], // lets show just first one
+                productStorage: groupOfProductStorages[0],
                 count: groupOfProductStorages.length,
-                moved: groupOfProductStorages.filter(item => item.state === 'moved' ).length,
-                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved' ).length,
-                counted: groupOfProductStorages.filter(item => item.state === 'counted' ).length,
+                moved: groupOfProductStorages.filter(item => item.state === 'moved').length,
+                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved').length,
+                counted: groupOfProductStorages.filter(item => item.state === 'counted').length,
+                positions: [...new Set(groupOfProductStorages.map(item => item.storage.position?.name ?? ''))],
                 allIds: groupOfProductStorages.map((ps) => ps.id),
             }
             return uniqueProductStorage
@@ -71,6 +73,9 @@ export default function ProductStorageList({
                             <TableHead style={{ width: columnWidths[0] }}>
                                 <Text className="text-center font-bold text-md">Moved</Text>
                             </TableHead>
+                            {variant === "exit" && <TableHead style={{ width: columnWidths[1] }}>
+                                <Text className="font-bold text-md">Position(s)</Text>
+                            </TableHead>}
                             <TableHead style={{ width: columnWidths[1] }}>
                                 <Text className="font-bold text-md">Variant name</Text>
                             </TableHead>
@@ -112,7 +117,7 @@ export default function ProductStorageList({
                                     >
                                         <TableCell style={{ width: columnWidths[0] }} className="items-center">
                                             <Text>
-                                             {groupRest.notMoved === 0 ? '' : `${groupRest.counted}/${groupRest.notMoved}`}
+                                                {groupRest.notMoved === 0 ? '' : `${groupRest.counted}/${groupRest.notMoved}`}
                                             </Text>
                                         </TableCell>
                                         <TableCell style={{ width: columnWidths[0] }} className="items-center">
@@ -120,6 +125,9 @@ export default function ProductStorageList({
                                                 {groupRest.moved}/{groupRest.count}
                                             </Text>
                                         </TableCell>
+                                        {variant === "exit" && <TableCell style={{ width: columnWidths[1] }}>
+                                            <Text>{groupRest.positions?.map((position, index) => `${index === 0 ? '' : ', '}${position}`)}</Text>
+                                        </TableCell>}
                                         <TableCell className="items-end" style={{ width: columnWidths[1] }}>
                                             <Text>{productStorage.productSkuVariant.name}</Text>
                                         </TableCell>

@@ -55,8 +55,7 @@ export default function DetailPage() {
                     {isFocused && <Scanner
                         label="Skenovanie produktov"
                         variant="secondary"
-                        // mockData="4058172286521"
-                        mockData="96060650"
+                        mockData="sweetwaffles50123"
                         onScan={(skuCode) => {
                             const productStoragesWithScannedSku = data?.productStorages?.find((storage) => storage.productSkuVariant.sku === skuCode)
                             if (productStoragesWithScannedSku) {
@@ -86,7 +85,7 @@ export default function DetailPage() {
             </View>
             {data?.productStorages && <ProductStorageList variant="entry" data={data.productStorages} refetchProductStorages={refetchEntries} />}
             <CountModal
-                open={countModalOpen}
+                open={countModalOpen && isFocused}
                 setClose={() => {
                     setSelectedProductSkuVariant(undefined)
                     setCountModalOpen(false)

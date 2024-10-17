@@ -35,7 +35,7 @@ export type Storage = {
 export type Position = {
     id: number
     name: string
-    qr: string
+    sku: string
 }
 
 export type ProductStorage = {
@@ -89,4 +89,11 @@ export enum EntryExitStatesEnum {
   REGISTERED = 'registered',
   MOVED = 'moved',
   CANCELED = 'canceled',
+}
+
+export enum ExitProductStepEnum {
+  SCAN_LOCATION = 'SCAN_LOCATION',
+  SCAN_PRODUCT = 'SCAN_PRODUCT',
+  SET_COUNT = 'SET_COUNT',
+  SCAN_STORAGE = 'SCAN_STORAGE',
 }

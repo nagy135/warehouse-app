@@ -38,10 +38,10 @@ export default function EntriesPage() {
 
 	return (
 		<>
-			<View className="m-3">
+			<View className="h-full p-2 container">
 				<View className="flex-row gap-3">
 					<Input
-						className="flex-1"
+						className="flex-1 mb-2"
 						placeholder="Search by name..."
 						value={searchValue}
 						onChangeText={setSearchValue}
@@ -66,7 +66,6 @@ export default function EntriesPage() {
 					</View>
 				</View>
 				<ScrollView
-					className="flex"
 					refreshControl={
 						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 					}

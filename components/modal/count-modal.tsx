@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import {
   AlertDialog,
@@ -28,6 +28,13 @@ export default function CountModal({
   const onChangeCount = (text: string) => {
     setCount(text.replace(/[^0-9]/g, ""));
   };
+
+  useEffect(() => {
+    if (!open) {
+      setCount('')
+    }
+  }, [open])
+  
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
