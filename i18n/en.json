@@ -1,6 +1,7 @@
 {
     "entries": "Entries",
     "exits": "Exits",
+    "exit": "Exit",
     "move": "Move",
     "entryNumber": "Entry number",
     "state": {
@@ -8,6 +9,12 @@
         "registered": "Registered",
         "moved": "Finished",
         "canceled": "Canceled"
+    },
+    "storages": {
+        "count": "Count",
+        "overall": "Overall",
+        "moved": "Moved",
+        "position": "Position"
     },
     "dateTime": "{{date, DATETIME_SHORT_WITH_SECONDS}}",
     "date": "{{date, DATE_SHORT}}"

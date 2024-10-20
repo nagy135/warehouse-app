@@ -5,45 +5,55 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { Text } from '~/components/ui/text'
 import { cn, groupBy } from '~/lib/utils'
-import { ProductStorage } from '~/lib/types'
+import { EntryExitStatesEnum, ProductStorage } from '~/lib/types'
 import { useMemo } from 'react'
 import { router } from 'expo-router'
 import { Button } from './ui/button'
 import ConfirmationModal from './modal/confirmation-modal'
 import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state'
+import { PagesStateActions, usePageStateContext } from '~/app/contexts/PageStateContext'
 
 export const MIN_COLUMN_WIDTHS = [50, 120, 120, 140, 100]
 
 export type GroupedProductStorage = {
     productStorage: ProductStorage
+    productStorages?: ProductStorage[]
     count: number
     counted: number
     moved?: number
     notMoved?: number
     allIds: number[]
+    positions?: string[]
 }
 
 export default function ProductStorageList({
     data,
     refetchProductStorages,
     variant,
+    state,
+    exitName
 }: {
     data: ProductStorage[]
     refetchProductStorages: () => void
     variant: 'entry' | 'exit'
+    state: EntryExitStatesEnum
+    exitName?: string
 }) {
     const { width } = useWindowDimensions()
     const insets = useSafeAreaInsets()
+    const { dispatch } = usePageStateContext()
 
     const grouped = useMemo(() => groupBy(data, 'productSkuVariant.id'), [data])
     const groupedProductStorages = useMemo(() => {
         return Object.entries(grouped).map(([_, groupOfProductStorages]) => {
             const uniqueProductStorage: GroupedProductStorage = {
-                productStorage: groupOfProductStorages[0], // lets show just first one
+                productStorage: groupOfProductStorages[0],
+                productStorages: groupOfProductStorages,
                 count: groupOfProductStorages.length,
-                moved: groupOfProductStorages.filter(item => item.state === 'moved' ).length,
-                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved' ).length,
-                counted: groupOfProductStorages.filter(item => item.state === 'counted' ).length,
+                moved: groupOfProductStorages.filter(item => item.state === 'moved').length,
+                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved').length,
+                counted: groupOfProductStorages.filter(item => item.state === 'counted').length,
+                positions: [...new Set(groupOfProductStorages.map(item => item.storage.position?.name ?? ''))],
                 allIds: groupOfProductStorages.map((ps) => ps.id),
             }
             return uniqueProductStorage
@@ -65,12 +75,15 @@ export default function ProductStorageList({
                 <Table aria-labelledby="productstorage-table">
                     <TableHeader>
                         <TableRow>
-                            <TableHead style={{ width: columnWidths[0] }}>
+                            {variant === "entry" && <TableHead style={{ width: columnWidths[0] }}>
                                 <Text className="text-center font-bold text-md">Count</Text>
-                            </TableHead>
+                            </TableHead>}
                             <TableHead style={{ width: columnWidths[0] }}>
                                 <Text className="text-center font-bold text-md">Moved</Text>
                             </TableHead>
+                            {variant === "exit" && <TableHead style={{ width: columnWidths[1] }}>
+                                <Text className="font-bold text-md">Position(s)</Text>
+                            </TableHead>}
                             <TableHead style={{ width: columnWidths[1] }}>
                                 <Text className="font-bold text-md">Variant name</Text>
                             </TableHead>
@@ -93,33 +106,41 @@ export default function ProductStorageList({
                                 paddingBottom: insets.bottom,
                             }}
                             showsVerticalScrollIndicator={false}
-                            renderItem={({ item: { productStorage, ...groupRest }, index }) => {
+                            renderItem={({ item: { productStorage, productStorages, ...groupRest }, index }) => {
                                 return (
                                     <TableRow
                                         key={productStorage.id}
-                                        className={cn('active:bg-secondary', index % 2 && 'bg-muted/40 ', groupRest.notMoved === 0 && 'bg-green-100')}
+                                        className={cn('active:bg-secondary', index % 2 && 'bg-muted/40 ', (groupRest.notMoved === 0 || state === EntryExitStatesEnum.MOVED) && 'bg-green-100')}
                                         onPress={() => {
                                             const group = grouped[productStorage.productSkuVariant.id]
                                             const storageIds = group.map((ps) => ps.storage.id)
+
                                             if (variant === 'exit') {
+                                                dispatch({
+                                                    type: PagesStateActions.SET_PRODUCT_STORAGES,
+                                                    value: productStorages || [],
+                                                });
                                                 router.push({
                                                     /* @ts-ignore */
                                                     pathname: '/logged-in/storages-group',
-                                                    params: { storageIds },
+                                                    params: { storageIds, exitName },
                                                 })
                                             }
                                         }}
                                     >
+                                        {variant === "entry" && <TableCell style={{ width: columnWidths[0] }} className="items-center">
+                                            <Text>
+                                                {(groupRest.notMoved === 0 || state === EntryExitStatesEnum.MOVED) ? '' : `${groupRest.counted}/${groupRest.notMoved}`}
+                                            </Text>
+                                        </TableCell>}
                                         <TableCell style={{ width: columnWidths[0] }} className="items-center">
                                             <Text>
-                                             {groupRest.notMoved === 0 ? '' : `${groupRest.counted}/${groupRest.notMoved}`}
+                                                {state === EntryExitStatesEnum.MOVED ? groupRest.count : groupRest.moved}/{groupRest.count}
                                             </Text>
                                         </TableCell>
-                                        <TableCell style={{ width: columnWidths[0] }} className="items-center">
-                                            <Text>
-                                                {groupRest.moved}/{groupRest.count}
-                                            </Text>
-                                        </TableCell>
+                                        {variant === "exit" && <TableCell style={{ width: columnWidths[1] }}>
+                                            <Text>{groupRest.positions?.map((position, index) => `${index === 0 ? '' : ', '}${position}`)}</Text>
+                                        </TableCell>}
                                         <TableCell className="items-end" style={{ width: columnWidths[1] }}>
                                             <Text>{productStorage.productSkuVariant.name}</Text>
                                         </TableCell>

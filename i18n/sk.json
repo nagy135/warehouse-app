@@ -1,6 +1,7 @@
 {
-    "entries": "Príjem",
-    "exits": "Výdaj",
+    "entries": "Príjmy",
+    "exits": "Výdaje",
+    "exit": "Výdaj",
     "move": "Presun",
     "entryNumber": "Číslo príjemky",
     "state": {
@@ -8,6 +9,12 @@
         "registered": "Rozpracované",
         "moved": "Dokončené",
         "canceled": "Zrušené"
+    },
+    "storages": {
+        "count": "Počet",
+        "overall": "Celkovo",
+        "moved": "Presunutých",
+        "position": "Pozícia"
     },
     "dateTime": "{{date, DATETIME_SHORT_WITH_SECONDS}}",
     "date": "{{date, DATE_SHORT}}"

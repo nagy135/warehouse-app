@@ -1,132 +1,126 @@
 import { useIsFocused } from '@react-navigation/native'
 import { router, useLocalSearchParams } from 'expo-router'
-import { MoveRight } from 'lucide-react-native'
 import { useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
-import CountModal from '~/components/modal/count-modal'
+import ExitProductModal from '~/components/modal/exit-product-modal'
 import ProductStorageList from '~/components/product-storage-list'
 import Scanner from '~/components/scanner'
 import { Button } from '~/components/ui/button'
+import { Text } from '~/components/ui/text'
 import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state'
+import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move'
 import useRecordDetail from '~/lib/hooks/api/use-record-detail'
 import useNotificationModal from '~/lib/hooks/use-notification-modal'
-import { Exit, ProductSkuVariant, type ToStringOrStringArray } from '~/lib/types'
-import { cn } from '~/lib/utils'
+import { EntryExitStatesEnum, Exit, ExitProductStepEnum, ProductStorage, type ToStringOrStringArray } from '~/lib/types'
 
 export default function DetailPage() {
     const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>()
     const exitId = Number(exit.id)
     const isFocused = useIsFocused();
-    
+    const [step, setStep] = useState<ExitProductStepEnum>(ExitProductStepEnum.SCAN_LOCATION)
+    const [productStoragesOnScannedLocation, setProductStoragesOnScannedLocation] = useState<ProductStorage[]>()
+
     const { data, isLoading, isRefetching, refetch: refetchExits } = useRecordDetail<Exit>(exitId, 'exit')
-    const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchExits })
-    const { modal: countWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
+    const { mutateAsync: mutateAsyncChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchExits })
+    const { mutateAsync: mutateExitMove } = useEntryExitMove()
+
+    const { modal: PositionSkuNotFoundModal, setOpen: openPositionSkuNotFoundModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Not enough items in this exit with given SKU',
-        description: 'Please try again, in table there is line with how many items are there',
+        title: 'Pozícia nebola nájdená',
+        description: 'Naskenovaná pozícia neprislúcha pozícii žiadneho produktu v tomto výdaji',
+    })
+    const { modal: MoveErrorModal, setOpen: openMoveErrorModal } = useNotificationModal({
+        variant: 'danger',
+        title: 'Chyba',
+        description: 'Presun položiek sa nepodaril',
     })
 
-    const { modal: skuNotFoundModal, setOpen: openSkuNotFoundModal } = useNotificationModal({
-        variant: 'danger',
-        title: 'Produkt nebol nájdeny',
-        description: 'Naskenovaný SKU kód nepríslucha žiadnemu produktu',
-    })
-    const { modal: notFinishedWarningModal, setOpen: openNotFinishedWarningModal } = useNotificationModal({
-        variant: 'danger',
-        title: 'This exit is not finished yet',
-        description: 'Please scan all the products in this exit before transferring',
+    const { modal: ExitDoneModal, setOpen: openExitDoneModal } = useNotificationModal({
+        variant: 'default',
+        title: 'Výdaj spracovaný',
+        description: 'Výdaj bol úspešne dokončený',
+        onClose: () => {
+            router.push({
+                pathname: '/logged-in/',
+            })
+        },
     })
 
-    const [selectedProductSkuVariant, setSelectedProductSkuVariant] = useState<ProductSkuVariant>()
+    const { modal: ExitErrorModal, setOpen: openExitErrorModal } = useNotificationModal({
+        variant: 'danger',
+        title: 'Chyba',
+        description: 'Zmena stavu výdaja skončila chybou',
+    })
 
-    const [countModalOpen, setCountModalOpen] = useState(false)
-    if (isLoading || isRefetching)
+    const allProductsMoved = data?.productStorages?.every((storage) => storage.state === 'moved')
+
+    if (isLoading || isRefetching) {
         return (
             <View className="absolute top-0 left-0 right-0 bottom-0 items-center justify-center">
                 <ActivityIndicator size={60} color="#666666" />
             </View>
         )
-    const atLeasOneProductScanned = data?.productStorages?.find((storage) => storage.state === 'counted')
-
+    }
     return (
         <View className="h-full px-2 container">
             <View className="m-2 flex flex-row gap-3">
-                <View className={cn(atLeasOneProductScanned ? 'flex-auto' : 'flex-1')}>
-                {isFocused && <Scanner
-                        label="Skenovanie produktov"
+                <View className='flex-1'>
+                    {isFocused && step === ExitProductStepEnum.SCAN_LOCATION && <Scanner
+                        label="Skenovanie pozície"
                         variant="secondary"
-                        // mockData="4058172286521"
-                        mockData="redpancakes1k123"
+                        mockData="secondshelftontheleft123"
                         onScan={(skuCode) => {
-                            const productStoragesWithScannedSku = data?.productStorages?.find((storage) => storage.productSkuVariant.sku === skuCode)
-                            if (productStoragesWithScannedSku) {
-                                setSelectedProductSkuVariant(productStoragesWithScannedSku.productSkuVariant)
-                                setCountModalOpen(true)
+                            const productStorages = data?.productStorages?.filter((storage) => storage.storage.position?.sku === skuCode && storage.state === "none")
+                            if (productStorages?.length) {
+                                setProductStoragesOnScannedLocation(productStorages)
+                                setStep(ExitProductStepEnum.SCAN_PRODUCT)
                             } else {
-                                openSkuNotFoundModal()
+                                openPositionSkuNotFoundModal()
                             }
                         }}
                     />}
                 </View>
-                {atLeasOneProductScanned && (
-                    <View className="flex-1">
-                        <Button
-                            className="my-auto"
-                            onPress={() => {
-                                router.push({
-                                    pathname: '/logged-in/exit-detail-second-step',
-                                    params: { id: exit.id },
-                                })
-                            }}
-                        >
-                            <MoveRight color="white" />
-                        </Button>
-                    </View>
-                )}
             </View>
-            {data?.productStorages && <ProductStorageList variant="exit" data={data.productStorages} refetchProductStorages={refetchExits} />}
-            <CountModal
-                open={countModalOpen}
-                setClose={() => {
-                    setSelectedProductSkuVariant(undefined)
-                    setCountModalOpen(false)
-                }}
-                productName={selectedProductSkuVariant?.name}
-                onConfirm={(count) => {
-                    const productStoragesWithThisSkuVariantIds =
-                        data?.productStorages
-                            ?.filter(
-                                (productStorage) =>
-                                    productStorage.productSkuVariant.sku === selectedProductSkuVariant?.sku && productStorage.state === 'none',
-                            )
-                            .map((item) => item.id) ?? []
-                    if (productStoragesWithThisSkuVariantIds.length < count) {
-                        openCountWarningModal()
-                        return
-                    }
-                    setSelectedProductSkuVariant(undefined)
-                    let ids = productStoragesWithThisSkuVariantIds.slice(0, count)
-                    if (process.env.EXPO_PUBLIC_MOCK_SCANNER === 'true') {
-                        //for testing purpose each product is scanned with count 1
-                        const tmpIds = new Set<number>()
-                        ids = []
-                        data?.productStorages?.forEach((storage) => {
-                            if (!tmpIds.has(storage.productSkuVariantId)) {
-                                ids.push(storage.id)
+            {data?.productStorages && <ProductStorageList variant="exit" exitName={data.name} data={data.productStorages} state={data.state} refetchProductStorages={refetchExits} />}
+            {allProductsMoved && data?.state !== EntryExitStatesEnum.MOVED && (
+                <View className="absolute bottom-10 left-0 right-0 p-4">
+                    <Button
+                        className="w-full"
+                        onPress={() => {
+                            if (data?.productStorages?.every((storage) => storage.state === 'moved')) {
+                                mutateExitMove({ type: 'exit', id: exitId }).then(openExitDoneModal).catch(openExitErrorModal)
+                            } else {
+                                router.push({
+                                    pathname: '/logged-in/',
+                                })
                             }
-                            tmpIds.add(storage.productSkuVariantId)
-                        })
-                    }
-                    mutateChangeProductStorageState({
-                        ids: ids,
-                        change: 'counted',
-                    })
-                    setCountModalOpen(false)
+                        }}
+                    >
+                        <Text className="text-center">Dokončiť</Text>
+                    </Button>
+                </View>
+            )}
+            <ExitProductModal
+                open={step !== ExitProductStepEnum.SCAN_LOCATION}
+                step={step}
+                setStep={setStep}
+                setClose={() => {
+                    setProductStoragesOnScannedLocation(undefined)
+                    setStep(ExitProductStepEnum.SCAN_LOCATION)
+                }}
+                productStoragesOnScannedLocation={productStoragesOnScannedLocation}
+                onConfirm={(productStorageIds, boxSku) => {
+                    mutateAsyncChangeProductStorageState({
+                        ids: productStorageIds,
+                        change: 'moved',
+                        storageSku: boxSku
+                    }).then(() => setStep(ExitProductStepEnum.SCAN_LOCATION)).catch(openMoveErrorModal)
                 }}
             />
-            {skuNotFoundModal}
-            {countWarningModal}
-            {notFinishedWarningModal}
+            {PositionSkuNotFoundModal}
+            {MoveErrorModal}
+            {ExitDoneModal}
+            {ExitErrorModal}
         </View>
     )
 }

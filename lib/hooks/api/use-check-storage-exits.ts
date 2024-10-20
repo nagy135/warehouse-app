@@ -10,7 +10,7 @@ export default function useCheckStorageExits(): {
     isPending: boolean
     isError: boolean
     isSuccess: boolean
-    mutateAsync: (args: checkStorageExits) => Promise<{id: string}>
+    mutateAsync: (args: checkStorageExits) => Promise<{id: string, sku: string}>
 } {
     const { session } = useSession()
     const mutateRecords = async ({ sku }: checkStorageExits) => {

@@ -80,13 +80,6 @@ export default function ActionLayout() {
         }}
       />
       <Stack.Screen
-        name="exit-detail-second-step"
-        options={{
-          title: "Exit choose storage",
-          animation: "slide_from_right",
-        }}
-      />
-      <Stack.Screen
         name="move-index"
         options={{
           title: "Move",

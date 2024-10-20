@@ -1,28 +1,31 @@
+import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Text } from "~/components/ui/text";
 import {
   ActivityIndicator,
+  ScrollView,
   TouchableOpacity,
   View,
-  ScrollView,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import useGetStoragesById from "~/lib/hooks/api/use-get-storages-by-id";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { arrayCount } from "~/lib/utils";
+import { Text } from "~/components/ui/text";
+import useGetStoragesById from "~/lib/hooks/api/use-get-storages-by-id";
+import { usePageStateContext } from "../contexts/PageStateContext";
+import { useTranslation } from "react-i18next";
+import { cn } from "~/lib/utils";
 
 export default function ProductStorageGroup() {
-  const { storageIds } = useLocalSearchParams<{ storageIds: string }>();
+  const { storageIds, exitName } = useLocalSearchParams<{ storageIds: string, exitName: string }>();
   const storageIdsNumber = storageIds.split(",").map((id) => Number(id));
   const { data, isLoading, isRefetching } =
     useGetStoragesById(storageIdsNumber);
+  const { state: { productStorages } } = usePageStateContext()
+  const { t } = useTranslation()
 
   if (isLoading || isRefetching)
     return (
@@ -30,34 +33,38 @@ export default function ProductStorageGroup() {
         <ActivityIndicator size={60} color="#666666" />
       </View>
     );
+
   return (
     <ScrollView className="flex m-3">
-      {data?.map((storage, i) => (
-        <Card key={`storage-card-${i}`} className="w-full my-1">
-          <TouchableOpacity onPress={() => console.log("Do stuff")}>
-            <CardHeader>
-              <CardTitle>
-                {`(${arrayCount(storageIdsNumber, storage.id)}x) ${
-                  storage.name
-                }`}
-              </CardTitle>
-              <CardDescription>{`${storage.type} #${storage.id}`}</CardDescription>
-            </CardHeader>
-            {storage.position && (
-              <>
+      <Text className="font-bold text-2xl text-center mb-2">{productStorages?.[0].productSkuVariant.name}</Text>
+      <Text className="mb-2">{t('exit')}: {exitName}</Text>
+      {data?.map((storage, i) => {
+        const storageItems = productStorages.filter(item => item.storage.id === storage.id)
+        return (
+          <Card key={`storage-card-${i}`} className={cn('w-full my-1', storageItems.every(item => item.state === "moved") && 'bg-green-100')}>
+            <TouchableOpacity>
+              <CardHeader>
+                <CardTitle>
+                  {storage.name}
+                </CardTitle>
+                <CardDescription>{`${storage.type} #${storage.id}`}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Text className="text-lg font-bold">{t('storages.count')}: </Text>
+                <Text>{t('storages.overall')}: {storageItems.length}</Text>
+                <Text>{t('storages.moved')}: {storageItems.filter(item => item.state === "moved").length}</Text>
+              </CardContent>
+
+              {storage.position && (
                 <CardContent>
-                  <Text className="text-lg font-bold">Position: </Text>
+                  <Text className="text-lg font-bold">{t('storages.position')}: </Text>
                   <Text>{storage.position?.name}</Text>
                 </CardContent>
-                <CardFooter>
-                  <Text className="text-lg font-bold">QR: </Text>
-                  <Text>{storage.position?.qr}</Text>
-                </CardFooter>
-              </>
-            )}
-          </TouchableOpacity>
-        </Card>
-      ))}
+              )}
+            </TouchableOpacity>
+          </Card>
+        )
+      })}
     </ScrollView>
   );
 }

@@ -29,8 +29,9 @@ export default function DetailPageSecondPage() {
     const [selectedProductSkuVariant, setSelectedProductSkuVariant] = useState<ProductSkuVariant>()
     const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits()
     const { mutateAsync: mutateEntryMove } = useEntryExitMove()
-    const [countModalOpen, setCountModalOpen] = useState(false)
     const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchEntries })
+    const [countModalOpen, setCountModalOpen] = useState(false)
+    const [storageSku, setStorageSku] = useState("")
 
     const { modal: countWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
         variant: 'danger',
@@ -67,7 +68,7 @@ export default function DetailPageSecondPage() {
             const uniqueProductStorage: GroupedProductStorage = {
                 productStorage: groupOfProductStorages[0], // lets show just first one
                 count: groupOfProductStorages.filter((storage) => storage.state).length,
-                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved' ).length,
+                notMoved: groupOfProductStorages.filter(item => item.state !== 'moved').length,
                 counted: groupOfProductStorages.filter((storage) => storage.state === 'counted').length,
                 allIds: groupOfProductStorages.map((ps) => ps.id),
             }
@@ -90,12 +91,15 @@ export default function DetailPageSecondPage() {
                 {selectedProductSkuVariant ? (
                     <View className="flex-1">
                         {isFocused && <Scanner
-                            label="Skenovanie boxu"
+                            label="Skenovanie úložiska"
                             variant="secondary"
                             mockData="newfancybox123"
                             onScan={async (storageCode) => {
                                 mutateCheckStorageExits({ sku: storageCode })
-                                    .then(() => setCountModalOpen(true))
+                                    .then((resp) => {
+                                        setStorageSku(resp.sku)
+                                        setCountModalOpen(true)
+                                    })
                                     .catch(openSkuNotFoundModal)
                             }}
                         />}
@@ -154,7 +158,7 @@ export default function DetailPageSecondPage() {
                 </Table>
             </ScrollView>
             <CountModal
-                open={countModalOpen}
+                open={countModalOpen && isFocused}
                 setClose={() => {
                     setCountModalOpen(false)
                 }}
@@ -173,8 +177,9 @@ export default function DetailPageSecondPage() {
                     }
                     setSelectedProductSkuVariant(undefined)
                     mutateChangeProductStorageState({
-                        ids: productStoragesWithThisSkuVariantIds.slice(0, count),
                         change: 'moved',
+                        ids: productStoragesWithThisSkuVariantIds.slice(0, count),
+                        storageSku
                     })
                     setCountModalOpen(false)
                 }}
