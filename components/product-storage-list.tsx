@@ -110,7 +110,7 @@ export default function ProductStorageList({
                                 return (
                                     <TableRow
                                         key={productStorage.id}
-                                        className={cn('active:bg-secondary', index % 2 && 'bg-muted/40 ', (groupRest.notMoved === 0 || state === EntryExitStatesEnum.MOVED) && 'bg-green-200')}
+                                        className={cn('active:bg-secondary', index % 2 && 'bg-muted/40 ', (groupRest.notMoved === 0 || state === EntryExitStatesEnum.MOVED) && 'bg-green-100')}
                                         onPress={() => {
                                             const group = grouped[productStorage.productSkuVariant.id]
                                             const storageIds = group.map((ps) => ps.storage.id)
