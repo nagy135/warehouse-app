@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native'
-import { useState } from 'react'
 import { router, useLocalSearchParams } from 'expo-router'
+import { useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import ExitProductModal from '~/components/modal/exit-product-modal'
 import ProductStorageList from '~/components/product-storage-list'
@@ -11,7 +11,7 @@ import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-sto
 import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move'
 import useRecordDetail from '~/lib/hooks/api/use-record-detail'
 import useNotificationModal from '~/lib/hooks/use-notification-modal'
-import { Exit, ExitProductStepEnum, ProductStorage, type ToStringOrStringArray } from '~/lib/types'
+import { EntryExitStatesEnum, Exit, ExitProductStepEnum, ProductStorage, type ToStringOrStringArray } from '~/lib/types'
 
 export default function DetailPage() {
     const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>()
@@ -19,7 +19,6 @@ export default function DetailPage() {
     const isFocused = useIsFocused();
     const [step, setStep] = useState<ExitProductStepEnum>(ExitProductStepEnum.SCAN_LOCATION)
     const [productStoragesOnScannedLocation, setProductStoragesOnScannedLocation] = useState<ProductStorage[]>()
-
 
     const { data, isLoading, isRefetching, refetch: refetchExits } = useRecordDetail<Exit>(exitId, 'exit')
     const { mutateAsync: mutateAsyncChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchExits })
@@ -82,8 +81,8 @@ export default function DetailPage() {
                     />}
                 </View>
             </View>
-            {data?.productStorages && <ProductStorageList variant="exit" data={data.productStorages} refetchProductStorages={refetchExits} />}
-            {allProductsMoved && (
+            {data?.productStorages && <ProductStorageList variant="exit" exitName={data.name} data={data.productStorages} state={data.state} refetchProductStorages={refetchExits} />}
+            {allProductsMoved && data?.state !== EntryExitStatesEnum.MOVED && (
                 <View className="absolute bottom-10 left-0 right-0 p-4">
                     <Button
                         className="w-full"
@@ -97,7 +96,7 @@ export default function DetailPage() {
                             }
                         }}
                     >
-                        <Text className="text-center">Finish</Text>
+                        <Text className="text-center">Dokončiť</Text>
                     </Button>
                 </View>
             )}

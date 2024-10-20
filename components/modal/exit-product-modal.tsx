@@ -51,14 +51,14 @@ export default function ExitProductModal({
 
   const { modal: StorageSkuNotFoundModal, setOpen: openStorageSkuNotFoundModal } = useNotificationModal({
     variant: 'danger',
-    title: 'Box nebol nájdeny',
-    description: 'Naskenovaný SKU kód nepríslucha žiadnemu boxu',
+    title: 'Úložisko nebolo nájdené',
+    description: 'Naskenovaný SKU kód nepríslucha žiadnemu úložisku',
   })
 
   const { modal: CountWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
     variant: 'danger',
     title: 'Na danej pozícii nie je dostatok položiek s daným kódom SKU',
-    description: `Na tejto pozícii sa nachadzá ${notMovedSelectedProductStoragesCount} položiek`,
+    description: `Na tejto pozícii sa nachadzá počet položiek: ${notMovedSelectedProductStoragesCount}`,
   })
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function ExitProductModal({
           title: "Skenovanie produktu", body: isFocused && <Scanner
             label="Oskenujte produkt"
             variant="secondary"
-            mockData="bluepancakes1k123"
+            mockData="USBPUPRPLE1PIECE"
             onScan={(skuCode) => {
               const storages = productStoragesOnScannedLocation?.filter(storage => storage.productSkuVariant.sku === skuCode)
               if (storages?.length) {
@@ -101,7 +101,7 @@ export default function ExitProductModal({
           title: "Skenovanie boxu", body: isFocused && <Scanner
             label="Oskenujte box"
             variant="secondary"
-            mockData="newfancybox123"
+            mockData="StorageA4"
             onScan={async (storageCode) => {
               mutateCheckStorageExits({ sku: storageCode })
                 .then((storageResp) => {

@@ -1,5 +1,5 @@
 import React, { createContext, Reducer, useContext, useReducer } from "react";
-import { ProductSkuVariant } from "~/lib/types";
+import { ProductSkuVariant, ProductStorage } from "~/lib/types";
 
 export type ProductSkuVariantWithCount = ProductSkuVariant & {
   count?: number;
@@ -7,9 +7,11 @@ export type ProductSkuVariantWithCount = ProductSkuVariant & {
 
 type PagesStateContextState = {
   scannedProductSkuVariants: ProductSkuVariantWithCount[];
+  productStorages: ProductStorage[];
 };
 
 export enum PagesStateActions {
+  SET_PRODUCT_STORAGES,
   SET_PRODUCT_SKU_VARIANT,
   SET_PRODUCT_SKU_VARIANTS,
   CLEAR_SKU,
@@ -25,14 +27,20 @@ interface SetSkus {
   value: ProductSkuVariantWithCount[];
 }
 
+interface SetProductStorages {
+  type: PagesStateActions.SET_PRODUCT_STORAGES;
+  value: ProductStorage[];
+}
+
 interface ClearSku {
   type: PagesStateActions.CLEAR_SKU;
 }
 
-type Actions = SetSku | ClearSku | SetSkus;
+type Actions = SetSku | ClearSku | SetSkus | SetProductStorages;
 
 const initialState: PagesStateContextState = {
   scannedProductSkuVariants: [],
+  productStorages: [],
 };
 
 const reducer = (state: PagesStateContextState, action: Actions) => {
@@ -53,10 +61,23 @@ const reducer = (state: PagesStateContextState, action: Actions) => {
           ...action.value,
         ],
       };
+    case PagesStateActions.SET_PRODUCT_SKU_VARIANTS:
+      return {
+        ...state,
+        scannedProductSkuVariants: [
+          ...state.scannedProductSkuVariants,
+          ...action.value,
+        ],
+      };
     case PagesStateActions.CLEAR_SKU:
       return {
         ...state,
         scannedProductSkuVariants: [],
+      };
+    case PagesStateActions.SET_PRODUCT_STORAGES:
+      return {
+        ...state,
+        productStorages: action.value,
       };
     default:
       return state;

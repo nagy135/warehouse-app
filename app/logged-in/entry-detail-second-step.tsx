@@ -91,7 +91,7 @@ export default function DetailPageSecondPage() {
                 {selectedProductSkuVariant ? (
                     <View className="flex-1">
                         {isFocused && <Scanner
-                            label="Skenovanie boxu"
+                            label="Skenovanie úložiska"
                             variant="secondary"
                             mockData="newfancybox123"
                             onScan={async (storageCode) => {
