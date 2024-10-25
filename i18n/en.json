@@ -1,9 +1,23 @@
 {
+    "warehouse": "Warehouse",
     "entries": "Entries",
     "exits": "Exits",
     "exit": "Exit",
     "move": "Move",
     "entryNumber": "Entry number",
+    "welcome": "Welcome",
+    "loading": "Loading",
+    "scan": "Scan",
+    "not-found-title": "Not found",
+    "titles": {
+        "home": "Home",
+        "storages": "Storages",
+        "entries": "Entries",
+        "entry": "Entry",
+        "exits": "Exits",
+        "exit": "Exit",
+        "move": "Move"
+    },
     "state": {
         "created": "Created",
         "registered": "Registered",
@@ -15,6 +29,43 @@
         "overall": "Overall",
         "moved": "Moved",
         "position": "Position"
+    },
+    "login": {
+        "log-in": "Log in",
+        "log-out": "Log out",
+        "hide": "Hide",
+        "show": "Show",
+        "error": "Login error",
+        "could-not-log-in": "Could not log in."
+    },
+    "entry-list": {
+        "not-found": "Entry not found",
+        "search-by-name": "Search by name...",
+        "redirect-to-entry": "Redirect to entry",
+        "redirect-confirm": "Are you sure you want to redirect to:"
+    },
+    "exit-list": {
+        "not-found": "Exit not found",
+        "search-by-name": "Search by name...",
+        "exit-number": "Exit number",
+        "redirect-to-exit": "Redirect to exit",
+        "redirect-confirm": "Are you sure you want to redirect to:",
+        "finish": "Finish"
+    },
+    "product-storage-list": {
+        "scanned": "Scanned",
+        "moved": "Moved",
+        "positions": "Position(s)",
+        "variant_name": "Name",
+        "change": "Change",
+        "reset": "Reset",
+        "reset_confirmation": "Are you sure you want to reset counting on this product storage?",
+        "total": "Total:",
+        "list": "A list of product storages"
+    },
+    "not-found": {
+        "screen-does-not-exist": "This screen doesn't exist.",
+        "go-to-home": "Go to home screen."
     },
     "dateTime": "{{date, DATETIME_SHORT_WITH_SECONDS}}",
     "date": "{{date, DATE_SHORT}}"

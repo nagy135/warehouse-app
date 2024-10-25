@@ -5,13 +5,15 @@ import { Redirect, Stack } from "expo-router";
 
 import { useSession } from "../../ctx";
 import { MoveRight } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
+  const { t } = useTranslation()
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text>{t('loading')}</Text>;
   }
 
   // Only require authentication within the (app) group's layout as users
@@ -32,14 +34,14 @@ export default function ActionLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Home",
+          title: t('titles.home'),
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
         name="storages-group"
         options={{
-          title: "Storages",
+          title: t('titles.storages'),
           animation: "fade_from_bottom",
           presentation: "fullScreenModal",
         }}
@@ -47,7 +49,7 @@ export default function ActionLayout() {
       <Stack.Screen
         name="entries-index"
         options={{
-          title: "Entries",
+          title: t('titles.entries'),
           animation: "slide_from_right",
         }}
       />
@@ -61,28 +63,28 @@ export default function ActionLayout() {
       <Stack.Screen
         name="entry-detail"
         options={{
-          title: "Entry",
+          title: t('titles.entry'),
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
         name="exits-index"
         options={{
-          title: "Exits",
+          title: t('titles.exits'),
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
         name="exit-detail"
         options={{
-          title: "Exit",
+          title:t('titles.exit'),
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
         name="move-index"
         options={{
-          title: "Move",
+          title: t('titles.move'),
           animation: "slide_from_right",
         }}
       />

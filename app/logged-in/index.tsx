@@ -10,7 +10,7 @@ export default function LoggedInPage() {
   const { t } = useTranslation()
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
-      <Text className="font-bold text-2xl">Welcome!</Text>
+      <Text className="font-bold text-2xl">{t('welcome')}</Text>
       <Text className="text-md">{session?.email ?? "-"}</Text>
       <View className="flex-1 justify-center w-full gap-5 p-3">
         {/* @ts-ignore */}

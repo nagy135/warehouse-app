@@ -41,7 +41,7 @@ export default function useGetRecords<T>(
       console.log(`fetching: ${API_ROOT}/${apiKey}?${searchString}`);
 	}
 
-    const res = await fetch(`${API_ROOT}/${apiKey}?${searchString}`, {
+    const res = await fetch(`${API_ROOT}/${apiKey}?pageSize=50&${searchString}`, {
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
       },

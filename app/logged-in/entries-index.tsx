@@ -1,5 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	ActivityIndicator,
 	RefreshControl,
@@ -19,11 +20,12 @@ export default function EntriesPage() {
 	const [searchValue, setSearchValue] = useState("");
 	const [foundEntry, setFoundEntry] = useState<Entry | null>(null);
 	const [redirectModalOpen, setRedirectModalOpen] = useState(false);
+	const { t } = useTranslation()
 	const isFocused = useIsFocused();
 	const { setOpen: notificationModalOpen, modal: notificationModal } =
 		useNotificationModal({
-			title: "Not found",
-			description: "Entry not found",
+			title: t('not-found-title'),
+			description: t('entry-list.not-found'),
 		});
 
 	const {
@@ -36,19 +38,20 @@ export default function EntriesPage() {
 	} = useGetRecords<Entry>("entries", searchValue);
 	if (error) return <Text>error</Text>;
 
+
 	return (
 		<>
 			<View className="h-full p-2 container">
 				<View className="flex-row gap-3">
 					<Input
 						className="flex-1 mb-2"
-						placeholder="Search by name..."
+						placeholder={t('entry-list.search-by-name')}
 						value={searchValue}
 						onChangeText={setSearchValue}
 					/>
 					<View className="w-1/3 py-1">
 						{isFocused && <Scanner
-							label="Scan"
+							label={t('scan')}
 							mockData={"wafflesrefill123"}
 							size={"sm"}
 							onScan={(data) => {
@@ -85,11 +88,11 @@ export default function EntriesPage() {
 			{notificationModal}
 			<RedirectModal
 				open={redirectModalOpen}
-				title="Redirect to entry"
+				title={t('entry-list.redirect-to-entry')}
 				description={
 					<>
 						<View>
-							<Text>{"Are you sure you want to redirect to: "}</Text>
+							<Text>{t('entry-list.redirect-confirm')} </Text>
 						</View>
 						<View>
 							<Text className="font-bold">{foundEntry?.name ?? "-"}</Text>

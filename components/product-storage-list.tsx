@@ -12,8 +12,9 @@ import { Button } from './ui/button'
 import ConfirmationModal from './modal/confirmation-modal'
 import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state'
 import { PagesStateActions, usePageStateContext } from '~/app/contexts/PageStateContext'
+import { useTranslation } from 'react-i18next'
 
-export const MIN_COLUMN_WIDTHS = [50, 120, 120, 140, 100]
+export const MIN_COLUMN_WIDTHS = [100, 120, 120, 140, 100]
 
 export type GroupedProductStorage = {
     productStorage: ProductStorage
@@ -42,6 +43,7 @@ export default function ProductStorageList({
     const { width } = useWindowDimensions()
     const insets = useSafeAreaInsets()
     const { dispatch } = usePageStateContext()
+    const { t } = useTranslation()
 
     const grouped = useMemo(() => groupBy(data, 'productSkuVariant.id'), [data])
     const groupedProductStorages = useMemo(() => {
@@ -76,23 +78,21 @@ export default function ProductStorageList({
                     <TableHeader>
                         <TableRow>
                             {variant === "entry" && <TableHead style={{ width: columnWidths[0] }}>
-                                <Text className="text-center font-bold text-md">Count</Text>
+                                <Text className="text-center font-bold text-md">{t('product-storage-list.scanned')}</Text>
                             </TableHead>}
                             <TableHead style={{ width: columnWidths[0] }}>
-                                <Text className="text-center font-bold text-md">Moved</Text>
+                                <Text className="text-center font-bold text-md">{t('product-storage-list.moved')}</Text>
                             </TableHead>
                             {variant === "exit" && <TableHead style={{ width: columnWidths[1] }}>
-                                <Text className="font-bold text-md">Position(s)</Text>
+                                <Text className="font-bold text-md">{t('product-storage-list.positions')}</Text>
                             </TableHead>}
                             <TableHead style={{ width: columnWidths[1] }}>
-                                <Text className="font-bold text-md">Variant name</Text>
+                                <Text className="font-bold text-md">{t('product-storage-list.variant_name')}</Text>
                             </TableHead>
                             <TableHead className="font-bold text-lg" style={{ width: columnWidths[2] }}>
-                                <Text className="font-bold text-md">Change</Text>
+                                <Text className="font-bold text-md">{t('product-storage-list.change')}</Text>
                             </TableHead>
-                            <TableHead className="font-bold text-lg" style={{ width: columnWidths[3] }}>
-                                <Text className="font-bold text-md">Delivery</Text>
-                            </TableHead>
+
                             <TableHead className="font-bold text-lg" style={{ width: columnWidths[4] }}>
                                 <Text className="font-bold text-md"></Text>
                             </TableHead>
@@ -147,10 +147,6 @@ export default function ProductStorageList({
                                         <TableCell style={{ width: columnWidths[2] }}>
                                             <Text>{productStorage.productSkuVariant.productCV.name}</Text>
                                         </TableCell>
-                                        <TableCell style={{ width: columnWidths[3] }}>
-                                            <Text>{productStorage.productSkuVariant.productDV.name}</Text>
-                                        </TableCell>
-
                                         <TableCell style={{ width: columnWidths[4] }} className="items-end ">
                                             <ConfirmationModal
                                                 button={
@@ -159,7 +155,7 @@ export default function ProductStorageList({
                                                     </Button>
                                                 }
                                                 title="Reset"
-                                                description="Are you sure you want to reset counting on this product storage?"
+                                                description={t('product-storage-list.reset_confirmation')}
                                                 onConfirm={() => {
                                                     mutateChangeProductStorageState({
                                                         ids: groupRest.allIds,
@@ -178,7 +174,7 @@ export default function ProductStorageList({
                                             <TableRow>
                                                 <TableCell className="justify-center">
                                                     <Text className="text-foreground">
-                                                        <Text className="font-bold">Total:</Text>{' '}
+                                                        <Text className="font-bold">{t('product-storage-list.total')}: </Text>
                                                         {`${groupedProductStorages.reduce((prev, next) => prev + next.count, 0)}`}
                                                     </Text>
                                                 </TableCell>
@@ -186,7 +182,7 @@ export default function ProductStorageList({
                                         </TableFooter>
                                         <View className="items-center py-3 ios:pb-0">
                                             <Text nativeID="invoice-table" className="items-center text-sm text-muted-foreground">
-                                                A list of product storages in this {variant}
+                                                {t('product-storage-list.list')}
                                             </Text>
                                         </View>
                                     </>

@@ -1,9 +1,23 @@
 {
+    "warehouse": "Sklad",
     "entries": "Príjmy",
     "exits": "Výdaje",
     "exit": "Výdaj",
     "move": "Presun",
     "entryNumber": "Číslo príjemky",
+    "welcome": "Vitajte",
+    "loading": "Načitávanie",
+    "scan": "Skenovať",
+    "not-found-title": "Nenájdené",
+    "titles": {
+        "home": "Domov",
+        "storages": "Úložiská",
+        "entries": "Príjmy",
+        "entry": "Príjem",
+        "exits": "Výdaje",
+        "exit": "Výdaj",
+        "move": "Presun"
+    },
     "state": {
         "created": "Vytvorené",
         "registered": "Rozpracované",
@@ -15,6 +29,43 @@
         "overall": "Celkovo",
         "moved": "Presunutých",
         "position": "Pozícia"
+    },
+    "login": {
+        "log-in": "Prihlásiť sa",
+        "log-out": "Odhlásiť",
+        "hide": "Schovať",
+        "show": "Zobraziť",
+        "error": "Chyba pri prihlásení",
+        "could-not-log-in": "Nepodarilo sa prihlásiť."
+    },
+    "entry-list": {
+        "not-found": "Príjemka nebola nenájdená",
+        "search-by-name": "Hľadať podľa mena...",
+        "redirect-to-entry": "Presmerovať na príjem",
+        "redirect-confirm": "Naozaj chcete presmerovať na:"
+    },
+    "exit-list": {
+        "not-found": "Výdaj nebol nájdený",
+        "search-by-name": "Hľadať podľa mena...",
+        "exit-number": "Číslo výdaja",
+        "redirect-to-exit": "Presmerovať na výdaj",
+        "redirect-confirm": "Naozaj chcete presmerovať na:",
+        "finish": "Dokončiť"
+    },
+    "product-storage-list": {
+        "scanned": "Oskenované",
+        "moved": "Presunuté",
+        "positions": "Pozícia(e)",
+        "variant_name": "Názov",
+        "change": "Zmenová varianta",
+        "reset": "Obnoviť",
+        "reset_confirmation": "Naozaj chcete obnoviť počítanie tohto produktu?",
+        "total": "Celkovo:",
+        "list": "Zoznam produktov"
+    },
+    "not-found": {
+        "screen-does-not-exist": "Táto obrazovka neexistuje.",
+        "go-to-home": "Prejsť na úvodnú obrazovku."
     },
     "dateTime": "{{date, DATETIME_SHORT_WITH_SECONDS}}",
     "date": "{{date, DATE_SHORT}}"

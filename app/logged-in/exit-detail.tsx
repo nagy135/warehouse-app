@@ -1,6 +1,7 @@
 import { useIsFocused } from '@react-navigation/native'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, View } from 'react-native'
 import ExitProductModal from '~/components/modal/exit-product-modal'
 import ProductStorageList from '~/components/product-storage-list'
@@ -19,6 +20,8 @@ export default function DetailPage() {
     const isFocused = useIsFocused();
     const [step, setStep] = useState<ExitProductStepEnum>(ExitProductStepEnum.SCAN_LOCATION)
     const [productStoragesOnScannedLocation, setProductStoragesOnScannedLocation] = useState<ProductStorage[]>()
+    const { mutateAsync: mutateEntryMove } = useEntryExitMove()
+    const { t } = useTranslation()
 
     const { data, isLoading, isRefetching, refetch: refetchExits } = useRecordDetail<Exit>(exitId, 'exit')
     const { mutateAsync: mutateAsyncChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchExits })
@@ -51,6 +54,13 @@ export default function DetailPage() {
         title: 'Chyba',
         description: 'Zmena stavu výdaja skončila chybou',
     })
+
+
+    useEffect(() => {
+        if (data?.state === EntryExitStatesEnum.CREATED) {
+            mutateEntryMove({ type: 'exit', id: exitId, state: EntryExitStatesEnum.REGISTERED })
+        }
+    }, [data])
 
     const allProductsMoved = data?.productStorages?.every((storage) => storage.state === 'moved')
 
@@ -96,7 +106,7 @@ export default function DetailPage() {
                             }
                         }}
                     >
-                        <Text className="text-center">Dokončiť</Text>
+                        <Text className="text-center">{t('exit-list.finish')}</Text>
                     </Button>
                 </View>
             )}

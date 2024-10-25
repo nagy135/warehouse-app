@@ -25,7 +25,7 @@ export default function ExitCard({ exit }: { exit: Exit }) {
       >
         <CardHeader>
           <CardTitle>{exit.name}</CardTitle>
-          <CardDescription>exit number #{exit.id}</CardDescription>
+          <CardDescription>{t('exit-list.exit-number')}: {exit.id}</CardDescription>
         </CardHeader>
         <CardContent>
           <Text>{t(`state.${exit.state}`)}</Text>

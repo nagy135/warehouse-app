@@ -17,7 +17,7 @@ import { useColorScheme } from '~/lib/useColorScheme'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PageStateProvider } from './contexts/PageStateContext'
-import { I18nextProvider } from 'react-i18next'
+import { I18nextProvider, useTranslation } from 'react-i18next'
 import { initializeI18nInstance } from '~/i18n'
 import { LanguageSelector } from '~/components/language-selector/LanguageSelector'
 
@@ -45,7 +45,7 @@ export default function RootLayout() {
     const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false)
 
     React.useEffect(() => {
-        ;(async () => {
+        ; (async () => {
             const theme = await AsyncStorage.getItem('theme')
             if (Platform.OS === 'web') {
                 // Adds the background color to the html element to prevent white background on overscroll.
@@ -84,7 +84,7 @@ export default function RootLayout() {
                                     name="index"
                                     options={{
                                         animation: 'slide_from_left',
-                                        title: 'Warehouse',
+                                        title: 'Sklad',
                                         headerRight: () => <ThemeToggle />,
                                     }}
                                 />
@@ -92,7 +92,7 @@ export default function RootLayout() {
                                     name="logged-in"
                                     options={{
                                         animation: 'slide_from_right',
-                                        title: 'Warehouse',
+                                        title: 'Sklad',
                                         headerRight: () => <ThemeProfile />,
                                     }}
                                 />
@@ -108,6 +108,7 @@ export default function RootLayout() {
 
 const ThemeProfile = () => {
     const { signOut } = useSession()
+    const { t } = useTranslation()
     return (
         <View className="flex-row gap-1">
             <ThemeToggle />
@@ -118,7 +119,7 @@ const ThemeProfile = () => {
                     signOut()
                 }}
             >
-                <Text>Log out</Text>
+                <Text>{t('login.log-out')}</Text>
             </Button>
         </View>
     )

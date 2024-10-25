@@ -1,5 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   RefreshControl,
@@ -20,10 +21,11 @@ export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState("");
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
+  const { t } = useTranslation()
   const { setOpen: notificationModalOpen, modal: notificationModal } =
     useNotificationModal({
-      title: "Not found",
-      description: "Exit not found",
+			title: t('not-found-title'),
+			description: t('exit-list.not-found'),
     });
 
   const {
@@ -34,6 +36,7 @@ export default function ExitsPage() {
     refreshing,
     onRefresh,
   } = useGetRecords<Exit>("exits", searchValue);
+  
   if (error) return <Text>error</Text>;
 
   return (
@@ -42,14 +45,15 @@ export default function ExitsPage() {
         <View className="flex-row gap-3">
           <Input
             className="flex-1 mb-2"
-            placeholder="Search by name..."
+            placeholder={t('exit-list.search-by-name')}
             value={searchValue}
             onChangeText={setSearchValue}
           />
           <View className="w-1/3 py-1">
           {isFocused && <Scanner
               size={"sm"}
-              label="Scan"
+              label={t('scan')}
+              mockData="billadeliveryofpancakes123"
               onScan={(data) => {
                 const foundExit = exits?.find(
                   (exit: Exit) => exit.sku === data
@@ -84,11 +88,11 @@ export default function ExitsPage() {
       {notificationModal}
       <RedirectModal
         open={redirectModalOpen}
-        title="Redirect to exit"
+        title={t('exit-list.redirect-to-exit')}
         description={
           <>
             <View>
-              <Text>{"Are you sure you want to redirect to: "}</Text>
+              <Text>{t('exit-list.redirect-confirm')} </Text>
             </View>
             <View>
               <Text className="font-bold">{foundExit?.name ?? "-"}</Text>
