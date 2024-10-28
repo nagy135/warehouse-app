@@ -16,9 +16,9 @@ export default function MovePage() {
           </Button>
         </Link>
         {/* @ts-ignore */}
-        <Link href="/logged-in/move-position" asChild>
+        <Link href="/logged-in/move-storage" asChild>
           <Button className="text-2xl font-bold" size="lg">
-            <Text>{t('move-section.box')}</Text>
+            <Text>{t('move-section.storage')}</Text>
           </Button>
         </Link>
       </View>

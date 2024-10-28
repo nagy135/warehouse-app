@@ -24,6 +24,13 @@ export type Exit = {
     state: EntryExitStatesEnum
 }
 
+export type PositionExits = {
+    id: number
+    name: string
+    sku: string
+    storages: Storage[]
+}
+
 export type Storage = {
     id: number
     name: string
@@ -103,5 +110,11 @@ export enum MoveProductStepEnum {
     SCAN_PRODUCT = 'SCAN_PRODUCT',
     SCAN_STORAGE_FROM = 'SCAN_STORAGE_FROM',
     SCAN_STORAGE_TO = 'SCAN_STORAGE_TO',
+    FINISH = 'FINISH',
+}
+
+export enum MoveStorageStepEnum {
+    SCAN_STORAGE = 'SCAN_STORAGE',
+    SCAN_POSITION = 'SCAN_POSITION',
     FINISH = 'FINISH',
 }

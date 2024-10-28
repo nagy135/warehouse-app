@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import {
   AlertDialog,
@@ -24,6 +25,7 @@ export default function CountModal({
   productName?: string;
 }) {
   const [count, setCount] = useState("");
+  const { t } = useTranslation()
 
   const onChangeCount = (text: string) => {
     setCount(text.replace(/[^0-9]/g, ""));
@@ -34,24 +36,23 @@ export default function CountModal({
       setCount('')
     }
   }, [open])
-  
+
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="h-14">
             <View>
-              <Text className="font-extrabold text-lg">
-                {`Product: ${productName}`}
-              </Text>
+              <Text className="text-lg">{`${t('count-modal.product')}: `}<Text className="text-lg font-bold">{productName}</Text></Text>
             </View>
           </AlertDialogTitle>
           <AlertDialogDescription>
             <View className="h-12">
               <Input
+                autoFocus
                 className="h-5 rounded-md w-full"
                 keyboardType="numeric"
-                placeholder="number of items"
+                placeholder={t('count-modal.number-of-items')}
                 value={count.toString()}
                 onChangeText={onChangeCount}
               />
@@ -65,10 +66,10 @@ export default function CountModal({
               setClose();
             }}
           >
-            <Text>Ok</Text>
+            <Text>{t('count-modal.ok')}</Text>
           </AlertDialogCancel>
           <AlertDialogCancel onPress={setClose}>
-            <Text>Cancel</Text>
+            <Text>{t('count-modal.cancel')}</Text>
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

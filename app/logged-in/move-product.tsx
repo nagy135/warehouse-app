@@ -14,7 +14,7 @@ import { MoveProductStepEnum, Product, ProductStorage } from "~/lib/types";
 
 export default function MoveProductPage() {
   const isFocused = useIsFocused();
-  const { t, } = useTranslation()
+  const { t } = useTranslation()
 
   const [step, setStep] = useState<MoveProductStepEnum>(MoveProductStepEnum.SCAN_PRODUCT);
   const [product, setProduct] = useState<Product>();
@@ -40,8 +40,8 @@ export default function MoveProductPage() {
 
   const { modal: storageNotEnoughItemsModal, setOpen: openStorageNotEnoughItemsModal } = useNotificationModal({
     variant: 'danger',
-    title: t('move-section.not-enought-items'),
-    description: t('move-section.not-enought-items-description', { product: product?.name })
+    title: t('move-section.not-enough-items'),
+    description: t('move-section.not-enough-items-description', { product: product?.name })
   })
 
   const { modal: storageToNotFoundModal, setOpen: openStorageToNotFoundModal } = useNotificationModal({
@@ -52,7 +52,7 @@ export default function MoveProductPage() {
 
   const { modal: successModal, setOpen: openSuccessModal } = useNotificationModal({
     title: t('move-section.transfer-successful'),
-    description: t('move-section.transfer-successful-description'),
+    description: t('move-section.transfer-product-successful-description'),
     onClose: () => setStep(MoveProductStepEnum.SCAN_PRODUCT)
   });
 
@@ -76,7 +76,7 @@ export default function MoveProductPage() {
   const { modal: errorModal, setOpen: openErrorModal } = useNotificationModal({
     variant: "danger",
     title: t('move-section.transfer-error'),
-    description: t('move-section.transfer-error-description', { error }),
+    description: t('move-section.transfer-product-error-description', { error }),
   });
 
   return (

@@ -1,23 +1,21 @@
 import { useMutation } from '@tanstack/react-query'
 import { useSession } from '~/ctx'
 import { API_ROOT } from '~/lib/constants'
-import { EntryExitStatesEnum } from '~/lib/types'
+import { PositionExits } from '~/lib/types'
 
-type EntryExitMove = {
-    type: 'exit' | 'entry'
-    id: number
-    state?: EntryExitStatesEnum
+type checkPositionExits = {
+    sku: string
 }
 
-export default function useEntryExitMove(): {
+export default function useCheckPositionExits(): {
     isPending: boolean
     isError: boolean
     isSuccess: boolean
-    mutateAsync: (args: EntryExitMove) => Promise<void>
+    mutateAsync: (args: checkPositionExits) => Promise<PositionExits>
 } {
     const { session } = useSession()
-    const mutateRecords = async ({ type, id, state }: EntryExitMove) => {
-        const path = `${API_ROOT}/${type}/${state ?? 'moved'}`
+    const mutateRecords = async ({ sku }: checkPositionExits) => {
+        const path = `${API_ROOT}/position/sku?sku=${sku}`
         if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
             console.log(`changing: ${path}`)
         }
@@ -27,23 +25,20 @@ export default function useEntryExitMove(): {
                 Authorization: `Bearer ${session?.accessToken}`,
                 ContentType: 'application/json',
             },
-            body: JSON.stringify({
-                id,
-            }),
-            method: 'POST',
+            method: 'GET',
         })
         const data = await res.json()
         return data
     }
 
     const { isPending, isError, isSuccess, mutateAsync } = useMutation({
-        mutationKey: [`check-entry-exits`],
+        mutationKey: [`check-position-exits`],
         mutationFn: mutateRecords,
     })
     return {
         isPending,
         isError,
         isSuccess,
-        mutateAsync: (args: EntryExitMove) => mutateAsync(args),
+        mutateAsync: (args: checkPositionExits) => mutateAsync(args),
     }
 }

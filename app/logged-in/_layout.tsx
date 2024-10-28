@@ -89,7 +89,7 @@ export default function ActionLayout() {
         }}
       />
       <Stack.Screen
-        name="move-position"
+        name="move-storage"
         options={{
           headerTitle: () => (
             <MoveArrowFromTo from={t('titles.storage')} to={t('titles.new-position')} />
