@@ -20,7 +20,8 @@
         "product": "Produkt",
         "new-storage": "Nový úložný box",
         "storage": "Úložný box",
-        "new-position": "Nová pozícia"
+        "new-position": "Nová pozícia",
+        "entry-select-storage": "Príjem - výber úložného boxu"
     },
     "state": {
         "created": "Vytvorené",
@@ -47,6 +48,24 @@
         "search-by-name": "Hľadať podľa mena...",
         "redirect-to-entry": "Presmerovať na príjem",
         "redirect-confirm": "Naozaj chcete presmerovať na:"
+    },
+    "entry-detail": {
+        "scan-products": "Skenovanie produktov",
+        "product-not-found": "Produkt nebol nájdeny",
+        "product-not-found-description": "Naskenovaný SKU kód nepríslucha žiadnemu produktu.",
+        "storage-not-found": "Úložný box nebol nájdený",
+        "storage-to-not-found": "Naskenovaný SKU kód nepríslucha žiadnemu úložnému boxu",
+        "not-enough-items": "V tomto príjme nie je dostatok položiek s daným SKU",
+        "not-enough-items-description": "Skúste prosím znova, v tabuľke nájdete riadok s počtom položiek.",
+        "select-item": "Vyberte produkt pre skenovanie pozicie",
+        "scan-storage": "Oskenujte úložný box",
+        "count": "Počet",
+        "product": "Produkt",
+        "finish": "Dokončiť",
+        "entry-successful": "Príjem úspešne dokončený",
+        "entry-successful-description": "Všetky položky boli úspešne spracované",
+        "entry-error": "Nastala chyba",
+        "entry-error-description": "Príjem sa nepodarilo presunúť do stavu 'Dokončené'"
     },
     "exit-list": {
         "not-found": "Výdaj nebol nájdený",

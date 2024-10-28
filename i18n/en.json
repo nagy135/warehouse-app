@@ -20,7 +20,8 @@
         "product": "Product",
         "new-storage": "New storage",
         "storage": "Storage",
-        "new-position": "New position"
+        "new-position": "New position",
+        "entry-select-storage": "Entry - select storage box"
     },
     "state": {
         "created": "Created",
@@ -47,6 +48,24 @@
         "search-by-name": "Search by name...",
         "redirect-to-entry": "Redirect to entry",
         "redirect-confirm": "Are you sure you want to redirect to:"
+    },
+    "entry-detail": {
+        "scan-products": "Scan products",
+        "product-not-found": "Product not found",
+        "product-not-found-description": "The scanned SKU code does not match any product.",
+        "storage-not-found": "Storage box not found",
+        "storage-to-not-found": "The scanned SKU code does not match any storage box",
+        "not-enough-items": "There are not enough items with the specified SKU in this entry",
+        "not-enough-items-description": "Please try again; you can find the row with the item count in the table.",
+        "select-item": "Select product to scan position",
+        "scan-storage": "Scan storage box",
+        "count": "Count",
+        "product": "Product",
+        "finish": "Finish",
+        "entry-successful": "Entry completed successfully",
+        "entry-successful-description": "All items have been processed successfully",
+        "entry-error": "An error occurred",
+        "entry-error-description": "The entry could not be moved to the 'Completed' status"
     },
     "exit-list": {
         "not-found": "Exit not found",

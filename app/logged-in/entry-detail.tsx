@@ -1,7 +1,8 @@
 import { useIsFocused } from '@react-navigation/native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { MoveRight } from 'lucide-react-native'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, View } from 'react-native'
 import CountModal from '~/components/modal/count-modal'
 import ProductStorageList from '~/components/product-storage-list'
@@ -17,24 +18,20 @@ export default function DetailPage() {
     const entry = useLocalSearchParams<ToStringOrStringArray<Entry>>()
     const entryId = Number(entry.id)
     const isFocused = useIsFocused();
+    const { t } = useTranslation()
 
     const { data, isLoading, isRefetching, refetch: refetchEntries } = useRecordDetail<Entry>(entryId, 'entry')
     const { mutate: mutateChangeProductStorageState } = useChangeProductStorageState({ onSuccessCallback: refetchEntries })
     const { modal: countWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Not enough items in this entry with given SKU',
-        description: 'Please try again, in table there is line with how many items are there',
+        title: t('entry-detail.not-enough-items'),
+        description: t('entry-detail.not-enough-items-description'),
     })
 
     const { modal: skuNotFoundModal, setOpen: openSkuNotFoundModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Produkt nebol nájdeny',
-        description: 'Naskenovaný SKU kód nepríslucha žiadnemu produktu',
-    })
-    const { modal: notFinishedWarningModal, setOpen: openNotFinishedWarningModal } = useNotificationModal({
-        variant: 'danger',
-        title: 'This Entry is not finished yet',
-        description: 'Please scan all the products in this entry before transferring',
+        title: t('entry-detail.product-not-found'),
+        description: t('entry-detail.product-not-found-description'),
     })
 
     const [selectedProductSkuVariant, setSelectedProductSkuVariant] = useState<ProductSkuVariant>()
@@ -53,9 +50,9 @@ export default function DetailPage() {
             <View className="m-2 flex flex-row gap-3">
                 <View className={cn(atLeasOneProductScanned ? 'flex-auto' : 'flex-1')}>
                     {isFocused && <Scanner
-                        label="Skenovanie produktov"
+                        label={t('entry-detail.scan-products')}
                         variant="secondary"
-                        mockData="USBPUPRPLE1PIECE"
+                        mockData="sweetwaffles50123"
                         onScan={(skuCode) => {
                             const productStoragesWithScannedSku = data?.productStorages?.find((storage) => storage.productSkuVariant.sku === skuCode)
                             if (productStoragesWithScannedSku) {
@@ -125,7 +122,6 @@ export default function DetailPage() {
             />
             {skuNotFoundModal}
             {countWarningModal}
-            {notFinishedWarningModal}
         </View>
     )
 }

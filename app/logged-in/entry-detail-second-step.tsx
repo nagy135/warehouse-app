@@ -3,6 +3,7 @@ import { FlashList } from '@shopify/flash-list'
 import { router, useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, ScrollView, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import CountModal from '~/components/modal/count-modal'
@@ -24,6 +25,7 @@ export default function DetailPageSecondPage() {
     const entry = useLocalSearchParams<ToStringOrStringArray<{ id: string }>>()
     const entryId = Number(entry.id)
     const isFocused = useIsFocused();
+    const { t } = useTranslation()
     const { data, isLoading, isRefetching, refetch: refetchEntries } = useRecordDetail<Entry>(entryId, 'entry')
 
     const [selectedProductSkuVariant, setSelectedProductSkuVariant] = useState<ProductSkuVariant>()
@@ -35,20 +37,20 @@ export default function DetailPageSecondPage() {
 
     const { modal: countWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Not enough items scanned with given SKU',
-        description: 'Please try again, in table there is line with how many items are there',
+        title: t('entry-detail.not-enough-items'),
+        description: t('entry-detail.not-enough-items-description'),
     })
 
     const { modal: skuNotFoundModal, setOpen: openSkuNotFoundModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Storage nebol nájdeny',
-        description: 'Naskenovaný SKU kód nepríslucha žiadnemu storage',
+        title: t('entry-detail.storage-not-found'),
+        description: t('entry-detail.storage-to-not-found'),
     })
 
     const { modal: entryDoneModal, setOpen: openEntryDoneModal } = useNotificationModal({
         variant: 'default',
-        title: 'Entry has been processed',
-        description: 'Whole entry has been processed',
+        title: t('entry-detail.entry-successful'),
+        description: t('entry-detail.entry-successful-description'),
         onClose: () => {
             router.push({
                 pathname: '/logged-in/',
@@ -58,8 +60,8 @@ export default function DetailPageSecondPage() {
 
     const { modal: entryErrorModal, setOpen: openEntryErrorModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Entry has not been processed',
-        description: 'Error occurred',
+        title: t('entry-detail.entry-error'),
+        description: t('entry-detail.entry-error-description'),
     })
 
     const grouped = useMemo(() => (data?.productStorages ? groupBy(data?.productStorages, 'productSkuVariant.id') : {}), [data])
@@ -91,7 +93,7 @@ export default function DetailPageSecondPage() {
                 {selectedProductSkuVariant ? (
                     <View className="flex-1">
                         {isFocused && <Scanner
-                            label="Skenovanie úložiska"
+                            label={t('entry-detail.scan-storage')}
                             variant="secondary"
                             mockData="newfancybox123"
                             onScan={async (storageCode) => {
@@ -106,7 +108,7 @@ export default function DetailPageSecondPage() {
                     </View>
                 ) : (
                     <View className="flex-1">
-                        <Text className="text-xl text-center font-bold">Vyberte produkt pre skenovanie pozicie</Text>
+                        <Text className="text-xl text-center font-bold">{t('entry-detail.select-item')}</Text>
                     </View>
                 )}
             </View>
@@ -115,10 +117,10 @@ export default function DetailPageSecondPage() {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-1/3">
-                                <Text className="text-center font-bold text-md">Count</Text>
+                                <Text className="text-center font-bold text-md">{t('entry-detail.count')}</Text>
                             </TableHead>
                             <TableHead className="w-2/3">
-                                <Text className="font-bold text-md">Variant name</Text>
+                                <Text className="font-bold text-md">{t('entry-detail.product')}</Text>
                             </TableHead>
                         </TableRow>
                     </TableHeader>
@@ -202,7 +204,7 @@ export default function DetailPageSecondPage() {
                             }
                         }}
                     >
-                        <Text className="text-center">Finish</Text>
+                        <Text className="text-center">{t('entry-detail.finish')}</Text>
                     </Button>
                 </View>
             )}

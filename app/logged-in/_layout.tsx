@@ -56,7 +56,7 @@ export default function ActionLayout() {
       <Stack.Screen
         name="entry-detail-second-step"
         options={{
-          title: "Entry choose storage",
+          title: t('titles.entry-select-storage'),
           animation: "slide_from_right",
         }}
       />
@@ -77,7 +77,7 @@ export default function ActionLayout() {
       <Stack.Screen
         name="exit-detail"
         options={{
-          title:t('titles.exit'),
+          title: t('titles.exit'),
           animation: "slide_from_right",
         }}
       />
