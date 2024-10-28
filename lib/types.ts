@@ -76,6 +76,7 @@ export type Product = {
     sku: string
     createdAt: string
     createdById: string
+    productStorages: ProductStorage[]
 }
 
 // cast every value to string or string[] that isnt that already
@@ -85,15 +86,22 @@ export type ToStringOrStringArray<T> = {
 }
 
 export enum EntryExitStatesEnum {
-  CREATED = 'created',
-  REGISTERED = 'registered',
-  MOVED = 'moved',
-  CANCELED = 'canceled',
+    CREATED = 'created',
+    REGISTERED = 'registered',
+    MOVED = 'moved',
+    CANCELED = 'canceled',
 }
 
 export enum ExitProductStepEnum {
-  SCAN_LOCATION = 'SCAN_LOCATION',
-  SCAN_PRODUCT = 'SCAN_PRODUCT',
-  SET_COUNT = 'SET_COUNT',
-  SCAN_STORAGE = 'SCAN_STORAGE',
+    SCAN_LOCATION = 'SCAN_LOCATION',
+    SCAN_PRODUCT = 'SCAN_PRODUCT',
+    SET_COUNT = 'SET_COUNT',
+    SCAN_STORAGE = 'SCAN_STORAGE',
+}
+
+export enum MoveProductStepEnum {
+    SCAN_PRODUCT = 'SCAN_PRODUCT',
+    SCAN_STORAGE_FROM = 'SCAN_STORAGE_FROM',
+    SCAN_STORAGE_TO = 'SCAN_STORAGE_TO',
+    FINISH = 'FINISH',
 }

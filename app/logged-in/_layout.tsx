@@ -92,16 +92,16 @@ export default function ActionLayout() {
         name="move-position"
         options={{
           headerTitle: () => (
-            <MoveArrowFromTo from="storage" to="new position" />
+            <MoveArrowFromTo from={t('titles.storage')} to={t('titles.new-position')} />
           ),
           animation: "slide_from_right",
         }}
       />
       <Stack.Screen
-        name="move-storage"
+        name="move-product"
         options={{
           headerTitle: () => (
-            <MoveArrowFromTo from="product" to="new storage" />
+            <MoveArrowFromTo from={t('titles.product')} to={t('titles.new-storage')} />
           ),
           animation: "slide_from_right",
         }}

@@ -16,7 +16,11 @@
         "entry": "Entry",
         "exits": "Exits",
         "exit": "Exit",
-        "move": "Move"
+        "move": "Move",
+        "product": "Product",
+        "new-storage": "New storage",
+        "storage": "Storage",
+        "new-position": "New position"
     },
     "state": {
         "created": "Created",
@@ -62,6 +66,29 @@
         "reset_confirmation": "Are you sure you want to reset counting on this product storage?",
         "total": "Total:",
         "list": "A list of product storages"
+    },
+    "move-section": {
+        "product": "Product",
+        "box": "Storage",
+        "count": "Count",
+        "scan-product": "Scan product",
+        "original-storage": "Original storage",
+        "new-storage": "New storage",
+        "scan-original-storage": "Scan original storage",
+        "scan-new-storage": "Scan new storage",
+        "product-not-found": "Product not found",
+        "product-not-found-description": "The scanned SKU code does not match any product",
+        "storage-not-found": "Storage not found",
+        "storage-to-not-found": "The scanned SKU code does not match any storage",
+        "not-enought-items": "Not enough items",
+        "not-enought-items-description": "There are not enough items for {{product}} in the specified location",
+        "product-storage-not-found-description": "Product {{product}} is not located in the specified storage",
+        "transfer": "Transfer",
+        "reset": "Reset",
+        "transfer-successful": "Transfer completed successfully",
+        "transfer-successful-description": "The product has been transferred to the new storage.",
+        "transfer-error": "Error occurred",
+        "transfer-error-description": "The product transfer failed. Error: {{error}}"
     },
     "not-found": {
         "screen-does-not-exist": "This screen doesn't exist.",

@@ -14,19 +14,16 @@ export default function useTransferProductToStorage({
 	isSuccess: boolean;
 	error: string;
 	mutate: (args: {
-		productSkuVariantSKU: string;
-		fromStorageSKU: string;
+		productSkuVariantIds: number[];
 		toStorageSKU: string;
 	}) => void;
 } {
 	const { session } = useSession();
 	const mutateRecords = async ({
-		productSkuVariantSKU,
-		fromStorageSKU,
+		productSkuVariantIds,
 		toStorageSKU,
 	}: {
-		productSkuVariantSKU: string;
-		fromStorageSKU: string;
+		productSkuVariantIds: number[];
 		toStorageSKU: string;
 	}) => {
 		const path = `${API_ROOT}/product-sku-variant/transfer`;
@@ -40,8 +37,7 @@ export default function useTransferProductToStorage({
 				ContentType: "application/json",
 			},
 			body: JSON.stringify({
-				productSkuVariantSKU,
-				fromStorageSKU,
+				productSkuVariantIds,
 				toStorageSKU,
 			}),
 			method: "POST",

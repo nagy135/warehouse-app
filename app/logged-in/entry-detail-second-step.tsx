@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native'
 import { FlashList } from '@shopify/flash-list'
 import { router, useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
@@ -12,12 +13,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~
 import { Text } from '~/components/ui/text'
 import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state'
 import useCheckStorageExits from '~/lib/hooks/api/use-check-storage-exits'
+import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move'
 import useRecordDetail from '~/lib/hooks/api/use-record-detail'
 import useNotificationModal from '~/lib/hooks/use-notification-modal'
 import { Entry, ProductSkuVariant, ToStringOrStringArray } from '~/lib/types'
 import { cn, groupBy } from '~/lib/utils'
-import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move'
-import { useIsFocused } from '@react-navigation/native'
 
 export default function DetailPageSecondPage() {
     const insets = useSafeAreaInsets()

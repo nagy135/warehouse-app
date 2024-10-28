@@ -16,7 +16,11 @@
         "entry": "Príjem",
         "exits": "Výdaje",
         "exit": "Výdaj",
-        "move": "Presun"
+        "move": "Presun",
+        "product": "Produkt",
+        "new-storage": "Nové úložísko",
+        "storage": "Úložísko",
+        "new-position": "Nová pozícia"
     },
     "state": {
         "created": "Vytvorené",
@@ -62,6 +66,29 @@
         "reset_confirmation": "Naozaj chcete obnoviť počítanie tohto produktu?",
         "total": "Celkovo:",
         "list": "Zoznam produktov"
+    },
+    "move-section": {
+        "product": "Produkt",
+        "box": "Úložísko",
+        "count": "Počet",
+        "scan-product": "Oskenujte produkt",
+        "original-storage": "Povôdné úložísko",
+        "new-storage": "Nové úložísko",
+        "scan-original-storage": "Oskenujte povôdné úložísko",
+        "scan-new-storage": "Oskenujte nové úložísko",
+        "product-not-found": "Produkt nebol nájdeny",
+        "product-not-found-description": "Naskenovaný SKU kód nepríslucha žiadnemu produktu",
+        "storage-not-found": "Úložísko nebolo nájdene",
+        "storage-to-not-found": "Naskenovaný SKU kód nepríslucha žiadnemu úložísku",
+        "not-enought-items": "Nedostatok položiek",
+        "not-enought-items-description": "Na danej pozícii nie je dostatok položiek {{product}}",
+        "product-storage-not-found-description": "Produkt {{product}} sa nenachádza v danom úložísku",
+        "transfer": "Presunúť",
+        "reset": "Reset",
+        "transfer-successful": "Presun úspešne dokončený",
+        "transfer-successful-description": "Produkt bol presunutý do nového úložiska.",
+        "transfer-error": "Nastala chyba",
+        "transfer-error-description": "Presun produktu sa nepodaril. Chyba: {{error}}"
     },
     "not-found": {
         "screen-does-not-exist": "Táto obrazovka neexistuje.",
