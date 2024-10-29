@@ -144,6 +144,22 @@
         "cancel": "Zrušiť",
         "continue": "Pokračovať"
     },
+    "exit-product-modal": {
+        "scanning-product": "Skenovanie produktu",
+        "scan-product": "Oskenujte produkt",
+        "scanning-storage": "Skenovanie úložného boxu",
+        "scan-storage": "Oskenujte úložný box",
+        "product": "Produkt",
+        "number-of-items": "Počet položiek",
+        "cancel": "Zrušiť",
+        "ok": "Ok",
+        "product-not-found": "Produkt nebol nájdeny",
+        "product-not-found-description": "Naskenovaný SKU kód nepríslucha žiadnemu produktu na naskenovanej pozícií.",
+        "storage-not-found": "Úložný box nebol nájdený",
+        "storage-not-found-description": "Naskenovaný SKU kód nepríslucha žiadnemu úložnému boxu",
+        "not-enough-items": "Na danej pozícii nie je dostatok položiek s daným kódom SKU",
+        "not-enough-items-description": "Na danej pozícii sa nachadzá počet položiek:"
+    },
     "not-found": {
         "screen-does-not-exist": "Táto obrazovka neexistuje.",
         "go-to-home": "Prejsť na úvodnú obrazovku."

@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import {
@@ -11,11 +12,11 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
-import { ExitProductStepEnum, ProductSkuVariant, ProductStorage } from "~/lib/types";
-import Scanner from "../scanner";
-import { useIsFocused } from "@react-navigation/native";
-import useNotificationModal from "~/lib/hooks/use-notification-modal";
 import useCheckStorageExits from "~/lib/hooks/api/use-check-storage-exits";
+import useNotificationModal from "~/lib/hooks/use-notification-modal";
+import { ExitProductStepEnum, ProductStorage } from "~/lib/types";
+import Scanner from "../scanner";
+import { useTranslation } from "react-i18next";
 
 export default function ExitProductModal({
   open,
@@ -35,6 +36,7 @@ export default function ExitProductModal({
   const [count, setCount] = useState("");
   const [selectedProductStorages, setSelectedProductStorages] = useState<ProductStorage[]>()
   const isFocused = useIsFocused();
+  const { t } = useTranslation()
   const notMovedSelectedProductStoragesCount = selectedProductStorages?.filter(storage => storage.state === "none").length || 0
 
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits()
@@ -45,20 +47,20 @@ export default function ExitProductModal({
 
   const { modal: ProductSkuNotFoundModal, setOpen: openProductSkuNotFoundModal } = useNotificationModal({
     variant: 'danger',
-    title: 'Produkt nebol nájdeny',
-    description: 'Naskenovaný SKU kód nepríslucha žiadnemu produktu na naskenovanej pozícií',
+    title: t('exit-product-modal.product-not-found'),
+    description: t('exit-product-modal.product-not-found-description'),
   })
 
   const { modal: StorageSkuNotFoundModal, setOpen: openStorageSkuNotFoundModal } = useNotificationModal({
     variant: 'danger',
-    title: 'Úložisko nebolo nájdené',
-    description: 'Naskenovaný SKU kód nepríslucha žiadnemu úložisku',
+    title: t('exit-product-modal.storage-not-found'),
+    description: t('exit-product-modal.storage-not-found-description'),
   })
 
   const { modal: CountWarningModal, setOpen: openCountWarningModal } = useNotificationModal({
     variant: 'danger',
-    title: 'Na danej pozícii nie je dostatok položiek s daným kódom SKU',
-    description: `Na tejto pozícii sa nachadzá počet položiek: ${notMovedSelectedProductStoragesCount}`,
+    title: t('exit-product-modal.not-enough-items'),
+    description: `${t('exit-product-modal.not-enough-items-description')} ${notMovedSelectedProductStoragesCount}`,
   })
 
   useEffect(() => {
@@ -71,8 +73,8 @@ export default function ExitProductModal({
     switch (step) {
       case ExitProductStepEnum.SCAN_PRODUCT:
         return {
-          title: "Skenovanie produktu", body: isFocused && <Scanner
-            label="Oskenujte produkt"
+          title: t('exit-product-modal.scanning-product'), body: isFocused && <Scanner
+            label={t('exit-product-modal.scan-product')}
             variant="secondary"
             mockData="USBPUPRPLE1PIECE"
             onScan={(skuCode) => {
@@ -88,18 +90,18 @@ export default function ExitProductModal({
         }
       case ExitProductStepEnum.SET_COUNT:
         return {
-          title: `Product: ${selectedProductStorages?.[0].productSkuVariant.name}`, body: <Input
+          title: `${t('exit-product-modal.product')}: ${selectedProductStorages?.[0].productSkuVariant.name}`, body: <Input
             className="h-5 rounded-md w-full"
             keyboardType="numeric"
-            placeholder="number of items"
+            placeholder={t('exit-product-modal.number-of-items')}
             value={count.toString()}
             onChangeText={onChangeCount}
           />
         }
       case ExitProductStepEnum.SCAN_STORAGE:
         return {
-          title: "Skenovanie boxu", body: isFocused && <Scanner
-            label="Oskenujte box"
+          title: t('exit-product-modal.scanning-storage'), body: isFocused && <Scanner
+            label={t('exit-product-modal.scan-storage')}
             variant="secondary"
             mockData="StorageA4"
             onScan={async (storageCode) => {
@@ -143,10 +145,10 @@ export default function ExitProductModal({
               }
             }}
           >
-            <Text>Ok</Text>
+            <Text>{t('exit-product-modal.ok')}</Text>
           </AlertDialogCancel>}
           <AlertDialogCancel onPress={setClose}>
-            <Text>Cancel</Text>
+            <Text>{t('exit-product-modal.cancel')}</Text>
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
