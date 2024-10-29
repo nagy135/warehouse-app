@@ -26,10 +26,10 @@ export default function useTransferProductToStorage({
 		productSkuVariantIds: number[];
 		toStorageSKU: string;
 	}) => {
-		const path = `${API_ROOT}/product-sku-variant/transfer`;
+		const path = `${API_ROOT}/product-storages/transfer`;
 		if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
-      		console.log(`changing: ${path}`);
-    	}
+			console.log(`changing: ${path}`);
+		}
 
 		const res = await fetch(path, {
 			headers: {
@@ -37,8 +37,8 @@ export default function useTransferProductToStorage({
 				ContentType: "application/json",
 			},
 			body: JSON.stringify({
-				productSkuVariantIds,
-				toStorageSKU,
+				ids: productSkuVariantIds,
+				storageSku: toStorageSKU,
 			}),
 			method: "POST",
 		});

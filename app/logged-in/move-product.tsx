@@ -63,7 +63,7 @@ export default function MoveProductPage() {
     setToStorage(undefined);
   }
 
-  const { mutate: mutateTransferProduct, error } = useTransferProductToStorage({
+  const { mutate: mutateTransferProductStorages, error } = useTransferProductToStorage({
     onSuccessCallback: () => {
       resetProcess()
       openSuccessModal();
@@ -99,7 +99,7 @@ export default function MoveProductPage() {
         )}
         {isFocused && step === MoveProductStepEnum.SCAN_STORAGE_FROM && <Scanner
           label={t('move-section.scan-original-storage')}
-          mockData="secondspotexactlyforsourwaffles123"
+          mockData="oldbrokenpallet123"
           onScan={(data) => {
             const storage = product?.productStorages.find(productStorage => productStorage.storage.sku === data)
             if (storage) {
@@ -140,8 +140,8 @@ export default function MoveProductPage() {
             variant="secondary"
             className="flex-1 border"
             onPress={() => {
-              const productSkuVariantIds = product?.productStorages.filter(productStorage => productStorage.storage.sku === fromStorage.storage.sku).slice(0, productCount).map(item => item.id) || []
-              mutateTransferProduct({ productSkuVariantIds: productSkuVariantIds, toStorageSKU: toStorage.sku });
+              const productStorageIds = product?.productStorages.filter(productStorage => productStorage.storage.sku === fromStorage.storage.sku).slice(0, productCount).map(item => item.id) || []
+              mutateTransferProductStorages({ productSkuVariantIds: productStorageIds, toStorageSKU: toStorage.sku });
             }}
           >
             <Text>{t('move-section.transfer')}</Text>
