@@ -75,6 +75,16 @@
         "redirect-confirm": "Naozaj chcete presmerovať na:",
         "finish": "Dokončiť"
     },
+    "exit-detail": {
+        "scan-position": "Oskenujte pozíciu",
+        "position-not-found": "Pozícia nebola nájdená",
+        "position-not-found-description": "Naskenovaný SKU kód neprislúcha pozícii žiadneho produktu v tomto výdaji.",
+        "exit-successful": "Výdaj úspešne dokončený",
+        "exit-successful-description": "Všetky položky boli úspešne spracované",
+        "exit-error": "Nastala chyba",
+        "exit-error-description": "Výdaj sa nepodarilo presunúť do stavu 'Dokončené'",
+        "exit-move-error-description": "Zvolené položky sa nepodarilo presunúť do dalšieho stavu"
+    },
     "product-storage-list": {
         "scanned": "Oskenované",
         "moved": "Presunuté",
@@ -123,6 +133,16 @@
         "number-of-items": "Počet položiek",
         "cancel": "Zrušiť",
         "ok": "Ok"
+    },
+    "confirmation-modal": {
+        "are-you-sure": "Ste si istý?",
+        "action-can-not-be-undone": "Táto akcia je nezvratná",
+        "cancel": "Zrušiť",
+        "continue": "Pokračovať"
+    },
+    "redirect-modal": {
+        "cancel": "Zrušiť",
+        "continue": "Pokračovať"
     },
     "not-found": {
         "screen-does-not-exist": "Táto obrazovka neexistuje.",

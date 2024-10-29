@@ -9,10 +9,10 @@ export default function NotFoundScreen() {
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
       <View>
-        <Text>{t('screen-does-not-exist')}</Text>
+        <Text>{t('not-found.screen-does-not-exist')}</Text>
 
         <Link href="/">
-          <Text>{t('go-to-home')}</Text>
+          <Text>{t('not-found.go-to-home')}</Text>
         </Link>
       </View>
     </>

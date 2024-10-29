@@ -13,11 +13,12 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export default function ConfirmationModal({
   title,
-  description = "Are you sure?",
-  buttonTitle = "This action cant be undone",
+  description,
+  buttonTitle,
   button,
   onConfirm,
 }: {
@@ -27,6 +28,7 @@ export default function ConfirmationModal({
   button?: ReactNode;
   onConfirm: () => void;
 }) {
+  const { t } = useTranslation()
   return (
     <AlertDialog>
       <View className="flex items-end">
@@ -35,7 +37,7 @@ export default function ConfirmationModal({
             button
           ) : (
             <Button size="lg" variant="outline">
-              <Text>{buttonTitle ?? "-"}</Text>
+              <Text>{buttonTitle ?? t('confirmation-modal.action-can-not-be-undone')}</Text>
             </Button>
           )}
         </AlertDialogTrigger>
@@ -43,14 +45,14 @@ export default function ConfirmationModal({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title ?? "-"}</AlertDialogTitle>
-          <AlertDialogDescription>{description ?? "-"}</AlertDialogDescription>
+          <AlertDialogDescription>{description ?? t('confirmation-modal.are-you-sure')}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>
-            <Text>Cancel</Text>
+            <Text>{t('confirmation-modal.cancel')}</Text>
           </AlertDialogCancel>
           <AlertDialogAction onPress={onConfirm}>
-            <Text>Continue</Text>
+            <Text>{t('confirmation-modal.continue')}</Text>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

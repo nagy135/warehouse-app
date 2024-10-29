@@ -75,6 +75,16 @@
         "redirect-confirm": "Are you sure you want to redirect to:",
         "finish": "Finish"
     },
+    "exit-detail": {
+        "scan-position": "Scan Position",
+        "position-not-found": "Position Not Found",
+        "position-not-found-description": "The scanned SKU code does not correspond to any product position in this exit.",
+        "exit-successful": "Exit Successfully Completed",
+        "exit-successful-description": "All items have been successfully processed",
+        "exit-error": "An Error Occurred",
+        "exit-error-description": "The exit could not be moved to the 'Completed' status",
+        "exit-move-error-description": "The selected items could not be moved to the next status"
+    },
     "product-storage-list": {
         "scanned": "Scanned",
         "moved": "Moved",
@@ -124,6 +134,16 @@
         "number-of-items": "Number of items",
         "cancel": "Cancel",
         "ok": "Ok"
+    },
+    "confirmation-modal": {
+        "are-you-sure": "Are you sure?",
+        "action-can-not-be-undone": "This action cannot be undone",
+        "cancel": "Cancel",
+        "continue": "Continue"
+    },
+    "redirect-modal": {
+        "cancel": "Cancel",
+        "continue": "Continue"
     },
     "not-found": {
         "screen-does-not-exist": "This screen doesn't exist.",

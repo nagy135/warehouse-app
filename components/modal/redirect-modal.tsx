@@ -12,6 +12,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { View } from "react-native";
 import { Href, router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export default function RedirectModal({
   open,
@@ -26,6 +27,7 @@ export default function RedirectModal({
   hrefObject: Href<string | object>;
   setClose: () => void;
 }) {
+  const { t } = useTranslation()
   return (
     <AlertDialog open={open}>
       <View className="flex items-end"></View>
@@ -36,7 +38,7 @@ export default function RedirectModal({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onPress={setClose}>
-            <Text>Cancel</Text>
+            <Text>{t('redirect-modal.cancel')}</Text>
           </AlertDialogCancel>
           <AlertDialogAction
             onPress={() => {
@@ -44,7 +46,7 @@ export default function RedirectModal({
               setClose();
             }}
           >
-            <Text>Go</Text>
+            <Text>{t('redirect-modal.continue')}</Text>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -29,19 +29,19 @@ export default function DetailPage() {
 
     const { modal: PositionSkuNotFoundModal, setOpen: openPositionSkuNotFoundModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Pozícia nebola nájdená',
-        description: 'Naskenovaná pozícia neprislúcha pozícii žiadneho produktu v tomto výdaji',
+        title: t('exit-detail.position-not-found'),
+        description: t('exit-detail.position-not-found-description'),
     })
     const { modal: MoveErrorModal, setOpen: openMoveErrorModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Chyba',
-        description: 'Presun položiek sa nepodaril',
+        title: t('exit-detail.exit-error'),
+        description: t('exit-detail.exit-move-error-description'),
     })
 
     const { modal: ExitDoneModal, setOpen: openExitDoneModal } = useNotificationModal({
         variant: 'default',
-        title: 'Výdaj spracovaný',
-        description: 'Výdaj bol úspešne dokončený',
+        title: t('exit-detail.exit-successful'),
+        description: t('exit-detail.exit-successful-description'),
         onClose: () => {
             router.push({
                 pathname: '/logged-in/',
@@ -51,8 +51,8 @@ export default function DetailPage() {
 
     const { modal: ExitErrorModal, setOpen: openExitErrorModal } = useNotificationModal({
         variant: 'danger',
-        title: 'Chyba',
-        description: 'Zmena stavu výdaja skončila chybou',
+        title: t('exit-detail.exit-error'),
+        description: t('exit-detail.exit-error-description'),
     })
 
 
@@ -76,7 +76,7 @@ export default function DetailPage() {
             <View className="m-2 flex flex-row gap-3">
                 <View className='flex-1'>
                     {isFocused && step === ExitProductStepEnum.SCAN_LOCATION && <Scanner
-                        label="Skenovanie pozície"
+                        label={t('exit-detail.scan-position')}
                         variant="secondary"
                         mockData="secondshelftontheleft123"
                         onScan={(skuCode) => {
