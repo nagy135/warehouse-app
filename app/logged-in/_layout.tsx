@@ -91,6 +91,13 @@ export default function ActionLayout() {
           }}
         />
         <Stack.Screen
+          name="return-index"
+          options={{
+            title: t('titles.returnClaim'),
+            animation: "slide_from_right",
+          }}
+        />
+        <Stack.Screen
           name="move-storage"
           options={{
             headerTitle: () => (

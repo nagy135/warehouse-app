@@ -4,11 +4,13 @@
     "exits": "Výdaje",
     "exit": "Výdaj",
     "move": "Presun",
+    "returnClaim": "Vratka/Reklamácia",
     "entryNumber": "Číslo príjemky",
     "welcome": "Vitajte",
     "loading": "Načitávanie",
     "scan": "Skenovať",
     "not-found-title": "Nenájdené",
+    "total": "Celkovo:",
     "titles": {
         "home": "Domov",
         "storages": "Úložné boxi",
@@ -17,6 +19,7 @@
         "exits": "Výdaje",
         "exit": "Výdaj",
         "move": "Presun",
+        "returnClaim": "Vratka/Reklamácia",
         "product": "Produkt",
         "new-storage": "Nový úložný box",
         "storage": "Úložný box",
@@ -84,6 +87,18 @@
         "exit-error": "Nastala chyba",
         "exit-error-description": "Výdaj sa nepodarilo presunúť do stavu 'Dokončené'",
         "exit-move-error-description": "Zvolené položky sa nepodarilo presunúť do dalšieho stavu"
+    },
+    "return-detail": {
+        "error": "Nastala chyba",
+        "scan-package": "Oskenujte balík",
+        "error-package-not-found": "Naskenované číslo balíka neprislúcha žiadnemu výdaju.",
+        "tracking-number": "Číslo zasielky",
+        "state": "Stav",
+        "scanned": "Oskenované",
+        "not-scanned": "Neoskonované",
+        "packages-list": "Zoznam balíkov",
+        "return": "Vratka",
+        "claim": "Reklamácia"
     },
     "product-storage-list": {
         "scanned": "Oskenované",

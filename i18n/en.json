@@ -4,11 +4,13 @@
     "exits": "Exits",
     "exit": "Exit",
     "move": "Move",
+    "returnClaim": "Return/Claim",
     "entryNumber": "Entry number",
     "welcome": "Welcome",
     "loading": "Loading",
     "scan": "Scan",
     "not-found-title": "Not found",
+    "total": "Total:",
     "titles": {
         "home": "Home",
         "storages": "Storage boxes",
@@ -17,6 +19,7 @@
         "exits": "Exits",
         "exit": "Exit",
         "move": "Move",
+        "returnClaim": "Return/Claim",
         "product": "Product",
         "new-storage": "New storage box",
         "storage": "Storage box",
@@ -84,6 +87,18 @@
         "exit-error": "An Error Occurred",
         "exit-error-description": "The exit could not be moved to the 'Completed' status",
         "exit-move-error-description": "The selected items could not be moved to the next status"
+    },
+    "return-detail": {
+        "error": "An Error Occurred",
+        "scan-package": "Scan package",
+        "error-package-not-found": "The scanned tracking number not correspond to any exit.",
+        "tracking-number": "Tracking number",
+        "state": "State",
+        "scanned": "Scanned",
+        "not-scanned": "Not scanned",
+        "packages-list": "A list of packages",
+        "return": "Return",
+        "claim": "Claim"
     },
     "product-storage-list": {
         "scanned": "Scanned",

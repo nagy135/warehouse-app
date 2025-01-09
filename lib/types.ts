@@ -24,6 +24,32 @@ export type Exit = {
     state: EntryExitStatesEnum
 }
 
+export type Package = {
+    id: number
+    name: string
+    sku: string
+    processed: boolean
+    createdAt: string
+    createdById: string
+    deliveryId: string
+    exitId: string
+    externalId: string
+    trackingNumber: string
+    state: EntryExitStatesEnum
+    productStorages: ProductStorage[]
+}
+
+export type ExitWithPackages = {
+    id: number
+    name: string
+    sku: string
+    processed: boolean
+    createdAt: string
+    createdById: string
+    packages?: Package[]
+    state: EntryExitStatesEnum
+}
+
 export type PositionExits = {
     id: number
     name: string

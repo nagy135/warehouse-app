@@ -31,6 +31,11 @@ export default function LoggedInPage() {
             <Text>{t('move')}</Text>
           </Button>
         </Link>
+        <Link href="/logged-in/return-index" asChild>
+          <Button className="text-2xl font-bold" variant="outline" size="lg">
+            <Text>{t('returnClaim')}</Text>
+          </Button>
+        </Link>
       </View>
     </View>
   );
