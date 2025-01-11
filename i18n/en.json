@@ -11,6 +11,10 @@
     "scan": "Scan",
     "not-found-title": "Not found",
     "total": "Total:",
+    "count": "Count",
+    "finish": "Finish",
+    "confirmation": "Confirmation",
+    "product": "Product",
     "titles": {
         "home": "Home",
         "storages": "Storage boxes",
@@ -91,14 +95,23 @@
     "return-detail": {
         "error": "An Error Occurred",
         "scan-package": "Scan package",
+        "scan-next-package": "Scan the next package",
+        "scan-products": "Scan products",
         "error-package-not-found": "The scanned tracking number not correspond to any exit.",
+        "error-package-not-found-in-exit": "The scanned tracking number not correspond to exit",
         "tracking-number": "Tracking number",
         "state": "State",
         "scanned": "Scanned",
         "not-scanned": "Not scanned",
         "packages-list": "A list of packages",
         "return": "Return",
-        "claim": "Claim"
+        "claim": "Claim",
+        "exit-name": "Exit name",
+        "number-of-packages": "Number of packages",
+        "not-enough-items-return": "There are not enough items with the specified SKU in this return",
+        "not-enough-items-claim": "There are not enough items with the specified SKU in this claim",
+        "not-enough-items-description": "Please try again; you can find the row with the item count in the table.",
+        "finish_confirmation": "Are you sure you scanned all the products and want to close the claim?"
     },
     "product-storage-list": {
         "scanned": "Scanned",
@@ -109,7 +122,8 @@
         "reset": "Reset",
         "reset_confirmation": "Are you sure you want to reset counting on this product storage?",
         "total": "Total:",
-        "list": "A list of product storages"
+        "list": "A list of product storages",
+        "sku": "SKU"
     },
     "move-section": {
         "product": "Product",

@@ -1,66 +1,96 @@
-import { useIsFocused } from "@react-navigation/native";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { View } from "react-native";
-import ReturnOrClaimModal from "~/components/modal/return-or-claim-modal";
-import PackageList from "~/components/package-list";
-import Scanner from "~/components/scanner";
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ScanPackage from '~/components/claim/scan-package';
+import ScanPackages from '~/components/claim/scan-packages';
+import ScanProducts from '~/components/claim/scan-products';
 import { Text } from '~/components/ui/text';
-import useFindExitByTrackingNumber from "~/lib/hooks/api/use-find-exit-by-tracking-number";
-import useNotificationModal from "~/lib/hooks/use-notification-modal";
-import { ExitWithPackages } from "~/lib/types";
+import useNotificationModal from '~/lib/hooks/use-notification-modal';
+import { ExitWithPackages } from '~/lib/types';
 
-export default function MovePage() {
-  const { t } = useTranslation()
-  const isFocused = useIsFocused();
-  const [exit, setExit] = useState<ExitWithPackages>()
-  const [openReturnOrClaimModal, setOpenReturnOrClaimModal] = useState(false)
-  const [type, setType] = useState<'claim' | 'return' | undefined>()
-  const [scannedTrackingNumbers, setScannedTrackingNumbers] = useState(new Set<string>())
-  const { mutateAsync: findExitByTrackingNumber } = useFindExitByTrackingNumber()
+export enum ClaimStepEnum {
+  SCAN_PACKAGE = 'SCAN_PACKAGE',
+  SCAN_PACKAGES = 'SCAN_PACKAGES',
+  SCAN_PRODUCTS = 'SCAN_PRODUCTS',
+}
 
-  const { modal: PackageNotFoundModal, setOpen: openPackageNotFoundModal } = useNotificationModal({
-    variant: 'danger',
-    title: t('return-detail.error'),
-    description: t('return-detail.error-package-not-found'),
-  })
+export type ClaimType = 'claim' | 'return' | undefined;
+
+export default function ReturnPage() {
+  const { t } = useTranslation();
+  const [exit, setExit] = useState<ExitWithPackages>();
+  const [openReturnOrClaimModal, setOpenReturnOrClaimModal] = useState(false);
+  const [type, setType] = useState<ClaimType>();
+  const [scannedTrackingNumbers, setScannedTrackingNumbers] = useState(
+    new Set<string>(),
+  );
+
+  const [step, setStep] = useState<ClaimStepEnum>(ClaimStepEnum.SCAN_PACKAGE);
+
+  const { modal: PackageNotFoundModal, setOpen: openPackageNotFoundModal } =
+    useNotificationModal({
+      variant: 'danger',
+      title: t('return-detail.error'),
+      description: exit ? (
+        <Text>
+          {t('return-detail.error-package-not-found-in-exit')}
+          {'\n'}
+          <Text className="font-bold">{exit.name}</Text>
+        </Text>
+      ) : (
+        t('return-detail.error-package-not-found')
+      ),
+    });
+
+  const addTrackingNumber = (trackingNumber: string) => {
+    setScannedTrackingNumbers((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(trackingNumber);
+      return newSet;
+    });
+  };
+
+  useEffect(() => {
+    if (exit && scannedTrackingNumbers.size === exit.packages?.length) {
+      setStep(ClaimStepEnum.SCAN_PRODUCTS);
+    }
+  }, [scannedTrackingNumbers]);
+
+  const componentForStep = () => {
+    switch (step) {
+      case ClaimStepEnum.SCAN_PACKAGE:
+        return (
+          <ScanPackage
+            addTrackingNumber={addTrackingNumber}
+            openPackageNotFoundModal={openPackageNotFoundModal}
+            setExit={setExit}
+            setOpenReturnOrClaimModal={setOpenReturnOrClaimModal}
+            setStep={setStep}
+          />
+        );
+      case ClaimStepEnum.SCAN_PACKAGES:
+        return (
+          exit && (
+            <ScanPackages
+              addTrackingNumber={addTrackingNumber}
+              openPackageNotFoundModal={openPackageNotFoundModal}
+              setOpenReturnOrClaimModal={setOpenReturnOrClaimModal}
+              openReturnOrClaimModal={openReturnOrClaimModal}
+              scannedTrackingNumbers={scannedTrackingNumbers}
+              setType={setType}
+              type={type}
+              exit={exit}
+            />
+          )
+        );
+      case ClaimStepEnum.SCAN_PRODUCTS:
+        return exit && <ScanProducts type={type} exit={exit} />;
+    }
+  };
+
   return (
     <>
-      {exit ? <View className="h-full px-2 container">
-        {type && <Text className="font-bold text-xl text-center mt-2">{type === "claim" ? t('return-detail.claim') : t('return-detail.return')}: {exit.name}</Text>}
-        <PackageList data={exit?.packages} scannedTrackingNumbers={scannedTrackingNumbers} />
-        <ReturnOrClaimModal
-          open={openReturnOrClaimModal}
-          onConfirm={(selectedType) => {
-            setType(selectedType)
-            setOpenReturnOrClaimModal(false)
-          }}
-          title="Výdaj nájdeny"
-          description={
-            <Text>
-              <Text>Názov výdaja: <Text className="font-bold">{exit.name}</Text></Text>{"\n"}
-              <Text>Počet balíkov: <Text className="font-bold">{exit.packages?.length}</Text></Text>
-            </Text>
-          }
-        />
-      </View > : <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
-        <View className="flex-1 justify-center w-full gap-5 p-3">
-          {isFocused && <Scanner
-            label={t('return-detail.scan-package')}
-            variant="secondary"
-            mockData="96505600117628"
-            onScan={(trackingNumber) => {
-              findExitByTrackingNumber({ trackingNumber }).then((resp) => {
-                setOpenReturnOrClaimModal(true)
-                scannedTrackingNumbers.add(trackingNumber)
-                setExit(resp.exit)
-              }).catch(() => { openPackageNotFoundModal() })
-            }}
-          />}
-          {PackageNotFoundModal}
-        </View>
-      </View>
-      }
+      {componentForStep()}
+      {PackageNotFoundModal}
     </>
   );
 }

@@ -23,7 +23,6 @@ export default function ReturnOrClaimModal({
   onConfirm: (type: 'return' | 'claim') => void;
 }) {
   const { t } = useTranslation()
-  console.log("open", open)
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>

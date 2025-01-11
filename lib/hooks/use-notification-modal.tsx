@@ -8,7 +8,7 @@ export default function useNotificationModal({
     onClose
 }: {
     title: string
-    description: string
+    description: ReactNode
     variant?: 'default' | 'danger'
     onClose?: () => void
 }): {

@@ -1,23 +1,27 @@
 import { useMutation } from '@tanstack/react-query';
+import { ScannedProductStorages } from '~/components/claim/scan-products';
 import { useSession } from '~/ctx';
 import { API_ROOT } from '~/lib/constants';
-import { EntryExitStatesEnum } from '~/lib/types';
 
-type EntryExitMove = {
-  type: 'exit' | 'entry';
-  id: number;
-  state?: EntryExitStatesEnum;
+type FinishClaimReturn = {
+  type: 'claim' | 'return';
+  exitId: number;
+  products: ScannedProductStorages[];
 };
 
-export default function useEntryExitMove(): {
+export default function useFinishClaimReturn(): {
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutateAsync: (args: EntryExitMove) => Promise<void>;
+  mutateAsync: (args: FinishClaimReturn) => Promise<void>;
 } {
   const { session } = useSession();
-  const mutateRecords = async ({ type, id, state }: EntryExitMove) => {
-    const path = `${API_ROOT}/${type}/${state ?? 'moved'}`;
+  const mutateRecords = async ({
+    type,
+    exitId,
+    products: skuVariants,
+  }: FinishClaimReturn) => {
+    const path = `${API_ROOT}/${type}`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`changing: ${path}`);
     }
@@ -28,7 +32,8 @@ export default function useEntryExitMove(): {
         ContentType: 'application/json',
       },
       body: JSON.stringify({
-        id,
+        exitId,
+        skuVariants,
       }),
       method: 'POST',
     });
@@ -37,13 +42,13 @@ export default function useEntryExitMove(): {
   };
 
   const { isPending, isError, isSuccess, mutateAsync } = useMutation({
-    mutationKey: [`move-entry-exit`],
+    mutationKey: [`finish-claim-return`],
     mutationFn: mutateRecords,
   });
   return {
     isPending,
     isError,
     isSuccess,
-    mutateAsync: (args: EntryExitMove) => mutateAsync(args),
+    mutateAsync: (args: FinishClaimReturn) => mutateAsync(args),
   };
 }

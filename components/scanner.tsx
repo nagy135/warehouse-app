@@ -1,16 +1,16 @@
-import { Button, ButtonProps } from "./ui/button";
-import { Text } from "./ui/text";
-import useScanner from "~/lib/hooks/use-scanner";
+import { Button, ButtonProps } from './ui/button';
+import { Text } from './ui/text';
+import useScanner from '~/lib/hooks/use-scanner';
 
 export default function Scanner({
-  size = "lg",
-  label = "",
-  variant = "default",
+  size = 'lg',
+  label = '',
+  variant = 'default',
   onScan,
   mockData,
 }: {
-  size?: ButtonProps["size"];
-  variant?: ButtonProps["variant"];
+  size?: ButtonProps['size'];
+  variant?: ButtonProps['variant'];
   label?: string;
   mockData?: string;
   onScan?: (data: string, label: string) => void;
@@ -19,15 +19,15 @@ export default function Scanner({
 
   return (
     <>
-      {process.env.EXPO_PUBLIC_MOCK_SCANNER === "true" ? (
+      {process.env.EXPO_PUBLIC_MOCK_SCANNER === 'true' ? (
         <Button onPress={() => startScan()} size={size} variant={variant}>
           <Text className="text-2xl font-bold">
-            {scanning ? "..." : `${label}`}
+            {scanning ? '...' : `${label}`}
           </Text>
         </Button>
       ) : (
-        <Text className="text-2xl text-center font-bold">
-          {scanning ? "..." : `${label}`}
+        <Text className="text-center text-2xl font-bold">
+          {scanning ? '...' : `${label}`}
         </Text>
       )}
     </>

@@ -5,21 +5,10 @@ import { ScrollView, useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '~/components/ui/table'
 import { Text } from '~/components/ui/text'
-import { Package, ProductStorage } from '~/lib/types'
+import { Package } from '~/lib/types'
 import { cn } from '~/lib/utils'
 
 const minWidth = 120;
-
-export type GroupedProductStorage = {
-    productStorage: ProductStorage
-    productStorages?: ProductStorage[]
-    count: number
-    counted: number
-    moved?: number
-    notMoved?: number
-    allIds: number[]
-    positions?: string[]
-}
 
 export default function PackageList({
     data,
@@ -58,6 +47,7 @@ export default function PackageList({
                             contentContainerStyle={{
                                 paddingBottom: insets.bottom,
                             }}
+                            extraData={scannedTrackingNumbers}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item: { trackingNumber }, index }) => {
                                 const alreadyScanned = scannedTrackingNumbers.has(trackingNumber)
@@ -82,7 +72,7 @@ export default function PackageList({
                                             <TableRow>
                                                 <TableCell className="justify-center">
                                                     <Text className="text-foreground">
-                                                        <Text className="font-bold">{t('total')}: </Text>
+                                                        <Text className="font-bold">{t('total')} </Text>
                                                         {data?.length}
                                                     </Text>
                                                 </TableCell>

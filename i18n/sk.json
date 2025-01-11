@@ -11,6 +11,10 @@
     "scan": "Skenovať",
     "not-found-title": "Nenájdené",
     "total": "Celkovo:",
+    "count": "Počet",
+    "finish": "Dokončiť",
+    "confirmation": "Potvrdenie",
+    "product": "Produkt",
     "titles": {
         "home": "Domov",
         "storages": "Úložné boxi",
@@ -91,14 +95,23 @@
     "return-detail": {
         "error": "Nastala chyba",
         "scan-package": "Oskenujte balík",
+        "scan-next-package": "Oskenujte dalši balík",
+        "scan-products": "Oskenujte produkty",
         "error-package-not-found": "Naskenované číslo balíka neprislúcha žiadnemu výdaju.",
+        "error-package-not-found-in-exit": "Naskenované číslo balíka neprislúcha výdaju",
         "tracking-number": "Číslo zasielky",
         "state": "Stav",
         "scanned": "Oskenované",
-        "not-scanned": "Neoskonované",
+        "not-scanned": "Neoskenované",
         "packages-list": "Zoznam balíkov",
         "return": "Vratka",
-        "claim": "Reklamácia"
+        "claim": "Reklamácia",
+        "exit-name": "Názov výdaja",
+        "number-of-packages": "Počet balíkov",
+        "not-enough-items-return": "V tejto vratke nie je dostatok položiek s daným SKU",
+        "not-enough-items-claim": "V tejto reklamácií nie je dostatok položiek s daným SKU",
+        "not-enough-items-description": "Skúste prosím znova, v tabuľke nájdete riadok s počtom položiek.",
+        "finish_confirmation": "Naozaj ste naskenovali všetky produkty a chcete uzatvrieť reklamáciu?"
     },
     "product-storage-list": {
         "scanned": "Oskenované",
@@ -109,7 +122,8 @@
         "reset": "Obnoviť",
         "reset_confirmation": "Naozaj chcete obnoviť počítanie tohto produktu?",
         "total": "Celkovo:",
-        "list": "Zoznam produktov"
+        "list": "Zoznam produktov",
+        "sku": "SKU"
     },
     "move-section": {
         "product": "Produkt",

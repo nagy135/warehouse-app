@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
+import React, { ReactNode } from 'react';
+import { Button } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,9 +11,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "~/components/ui/alert-dialog";
-import { View } from "react-native";
-import { useTranslation } from "react-i18next";
+} from '~/components/ui/alert-dialog';
+import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function ConfirmationModal({
   title,
@@ -28,7 +28,7 @@ export default function ConfirmationModal({
   button?: ReactNode;
   onConfirm: () => void;
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <AlertDialog>
       <View className="flex items-end">
@@ -37,15 +37,20 @@ export default function ConfirmationModal({
             button
           ) : (
             <Button size="lg" variant="outline">
-              <Text>{buttonTitle ?? t('confirmation-modal.action-can-not-be-undone')}</Text>
+              <Text>
+                {buttonTitle ??
+                  t('confirmation-modal.action-can-not-be-undone')}
+              </Text>
             </Button>
           )}
         </AlertDialogTrigger>
       </View>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{title ?? "-"}</AlertDialogTitle>
-          <AlertDialogDescription>{description ?? t('confirmation-modal.are-you-sure')}</AlertDialogDescription>
+          <AlertDialogTitle>{title ?? '-'}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {description ?? t('confirmation-modal.are-you-sure')}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>

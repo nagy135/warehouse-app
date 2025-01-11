@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Text } from "~/components/ui/text";
 import {
   AlertDialog,
@@ -18,7 +18,7 @@ export default function NotificationModal({
   variant = "default",
 }: {
   title: string;
-  description: string;
+  description: ReactNode;
   open: boolean;
   variant?: "default" | "danger";
   setClose: () => void;
