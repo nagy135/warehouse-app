@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { GroupByResult } from "./types";
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { GroupByResult } from './types';
 
 // NOTE: for testing slower fetches
 export const sleep = (ms: number) =>
@@ -13,11 +13,11 @@ export function cn(...inputs: ClassValue[]) {
 export function groupBy<T>(array: T[], key: string): GroupByResult<T> {
   return array.reduce((result: GroupByResult<T>, item: T) => {
     // Split the key by dots to handle nested properties
-    const keys = key.split(".");
+    const keys = key.split('.');
     // Use reduce to traverse through the nested properties
     const value = keys.reduce(
       (obj: any, key: string) => (obj ? obj[key] : undefined),
-      item
+      item,
     );
 
     if (value !== undefined) {

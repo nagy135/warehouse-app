@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -8,34 +8,34 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
-} from "~/components/ui/alert-dialog";
-import { Input } from "~/components/ui/input";
-import { Text } from "~/components/ui/text";
+  AlertDialogTitle,
+} from '~/components/ui/alert-dialog';
+import { Input } from '~/components/ui/input';
+import { Text } from '~/components/ui/text';
 
 export default function CountModal({
   open,
   setClose,
   onConfirm,
-  productName
+  productName,
 }: {
   open: boolean;
   setClose: () => void;
   onConfirm: (count: number) => void;
   productName?: string;
 }) {
-  const [count, setCount] = useState("");
-  const { t } = useTranslation()
+  const [count, setCount] = useState('');
+  const { t } = useTranslation();
 
   const onChangeCount = (text: string) => {
-    setCount(text.replace(/[^0-9]/g, ""));
+    setCount(text.replace(/[^0-9]/g, ''));
   };
 
   useEffect(() => {
     if (!open) {
-      setCount('')
+      setCount('');
     }
-  }, [open])
+  }, [open]);
 
   return (
     <AlertDialog open={open}>
@@ -43,14 +43,17 @@ export default function CountModal({
         <AlertDialogHeader>
           <AlertDialogTitle className="h-14">
             <View>
-              <Text className="text-lg">{`${t('count-modal.product')}: `}<Text className="text-lg font-bold">{productName}</Text></Text>
+              <Text className="text-lg">
+                {`${t('count-modal.product')}: `}
+                <Text className="text-lg font-bold">{productName}</Text>
+              </Text>
             </View>
           </AlertDialogTitle>
           <AlertDialogDescription>
             <View className="h-12">
               <Input
                 autoFocus
-                className="h-5 rounded-md w-full"
+                className="h-5 w-full rounded-md"
                 keyboardType="numeric"
                 placeholder={t('count-modal.number-of-items')}
                 value={count.toString()}

@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { Text } from "~/components/ui/text";
+import React, { ReactNode } from 'react';
+import { Text } from '~/components/ui/text';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,8 +8,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "~/components/ui/alert-dialog";
-import { useTranslation } from "react-i18next";
+} from '~/components/ui/alert-dialog';
+import { useTranslation } from 'react-i18next';
 
 export default function ReturnOrClaimModal({
   open,
@@ -22,14 +22,12 @@ export default function ReturnOrClaimModal({
   open: boolean;
   onConfirm: (type: 'return' | 'claim') => void;
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <AlertDialog open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {title}
-          </AlertDialogTitle>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

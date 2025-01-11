@@ -1,16 +1,16 @@
-import { View } from "react-native";
+import { View } from 'react-native';
 
-import { Text } from "~/components/ui/text";
-import { Redirect, Stack } from "expo-router";
+import { Text } from '~/components/ui/text';
+import { Redirect, Stack } from 'expo-router';
 
-import { useSession } from "../../ctx";
-import { MoveRight } from "lucide-react-native";
-import { useTranslation } from "react-i18next";
-import { NavigationContainer } from "@react-navigation/native";
+import { useSession } from '../../ctx';
+import { MoveRight } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -37,82 +37,88 @@ export default function ActionLayout() {
           name="index"
           options={{
             title: t('titles.home'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="storages-group"
           options={{
             title: t('titles.storages'),
-            animation: "fade_from_bottom",
-            presentation: "fullScreenModal",
+            animation: 'fade_from_bottom',
+            presentation: 'fullScreenModal',
           }}
         />
         <Stack.Screen
           name="entries-index"
           options={{
             title: t('titles.entries'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="entry-detail-second-step"
           options={{
             title: t('titles.entry-select-storage'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="entry-detail"
           options={{
             title: t('titles.entry'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="exits-index"
           options={{
             title: t('titles.exits'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="exit-detail"
           options={{
             title: t('titles.exit'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="move-index"
           options={{
             title: t('titles.move'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="return-index"
           options={{
             title: t('titles.returnClaim'),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="move-storage"
           options={{
             headerTitle: () => (
-              <MoveArrowFromTo from={t('titles.storage')} to={t('titles.new-position')} />
+              <MoveArrowFromTo
+                from={t('titles.storage')}
+                to={t('titles.new-position')}
+              />
             ),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
         <Stack.Screen
           name="move-product"
           options={{
             headerTitle: () => (
-              <MoveArrowFromTo from={t('titles.product')} to={t('titles.new-storage')} />
+              <MoveArrowFromTo
+                from={t('titles.product')}
+                to={t('titles.new-storage')}
+              />
             ),
-            animation: "slide_from_right",
+            animation: 'slide_from_right',
           }}
         />
       </Stack>

@@ -1,5 +1,5 @@
-import React, { createContext, Reducer, useContext, useReducer } from "react";
-import { ProductSkuVariant, ProductStorage } from "~/lib/types";
+import React, { createContext, Reducer, useContext, useReducer } from 'react';
+import { ProductSkuVariant, ProductStorage } from '~/lib/types';
 
 export type ProductSkuVariantWithCount = ProductSkuVariant & {
   count?: number;
@@ -89,9 +89,7 @@ const PagesStateContext = createContext<{
   dispatch: React.Dispatch<Actions>;
 }>({ state: initialState, dispatch: () => null });
 
-const PageStateProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+const PageStateProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer<
     Reducer<PagesStateContextState, Actions>
   >(reducer, initialState);

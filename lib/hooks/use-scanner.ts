@@ -1,5 +1,5 @@
-import * as ExpoZebraScanner from "expo-zebra-scanner";
-import { useEffect, useState } from "react";
+import * as ExpoZebraScanner from 'expo-zebra-scanner';
+import { useEffect, useState } from 'react';
 
 const randomString = () => Math.random().toString(36).slice(2, 7);
 
@@ -14,10 +14,10 @@ export default function useScanner({
   const [label, setLabel] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
   useEffect(() => {
-    if (scanning && process.env.EXPO_PUBLIC_MOCK_SCANNER == "true") {
+    if (scanning && process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true') {
       setTimeout(() => {
         const scanLabelType = randomString();
-        const scanData = "123billa";
+        const scanData = '123billa';
 
         setData(scanData);
         setLabel(scanLabelType);

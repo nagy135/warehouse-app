@@ -1,6 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import { useSession } from "~/ctx";
-import { API_ROOT } from "~/lib/constants";
+import { useMutation } from '@tanstack/react-query';
+import { useSession } from '~/ctx';
+import { API_ROOT } from '~/lib/constants';
 
 export default function useTransferEntryOrExitProductStorages({
   onSuccessCallback,
@@ -29,28 +29,28 @@ export default function useTransferEntryOrExitProductStorages({
     entryId?: number;
     toStorageSKU: string;
   }) => {
-    const path = `${API_ROOT}/${exitId ? "exit" : "entry"}/transfer`;
-    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") { 
+    const path = `${API_ROOT}/${exitId ? 'exit' : 'entry'}/transfer`;
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`changing: ${path}`);
     }
 
     const res = await fetch(path, {
       headers: {
         Authorization: `Bearer ${session?.accessToken}`,
-        ContentType: "application/json",
+        ContentType: 'application/json',
       },
       body: JSON.stringify({
         id: exitId ? exitId : entryId,
         toStorageSKU,
       }),
-      method: "POST",
+      method: 'POST',
     });
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(JSON.stringify(data.error ?? "unknown"));
+      throw new Error(JSON.stringify(data.error ?? 'unknown'));
     }
 
-    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") { 
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`returned: ${JSON.stringify(data)}`);
     }
     return data;
@@ -65,7 +65,7 @@ export default function useTransferEntryOrExitProductStorages({
     isPending,
     isError,
     isSuccess,
-    error: error?.message ?? "",
+    error: error?.message ?? '',
     mutate: (args) => mutate(args),
   };
 }

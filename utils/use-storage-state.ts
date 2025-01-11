@@ -1,6 +1,6 @@
-import * as SecureStore from "expo-secure-store";
-import * as React from "react";
-import { Platform } from "react-native";
+import * as SecureStore from 'expo-secure-store';
+import * as React from 'react';
+import { Platform } from 'react-native';
 
 type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
 
@@ -11,22 +11,22 @@ export type SessionData = {
 };
 
 function useAsyncState<T>(
-  initialValue: [boolean, T | null] = [true, null]
+  initialValue: [boolean, T | null] = [true, null],
 ): UseStateHook<T> {
   return React.useReducer(
     (
       state: [boolean, T | null],
-      action: T | null = null
+      action: T | null = null,
     ): [boolean, T | null] => [false, action],
-    initialValue
+    initialValue,
   ) as UseStateHook<T>;
 }
 
 export async function setStorageItemAsync(
   key: string,
-  value: SessionData | null
+  value: SessionData | null,
 ) {
-  if (Platform.OS === "web") {
+  if (Platform.OS === 'web') {
     try {
       if (value === null) {
         localStorage.removeItem(key);
@@ -34,7 +34,7 @@ export async function setStorageItemAsync(
         localStorage.setItem(key, JSON.stringify(value));
       }
     } catch (e) {
-      console.error("Local storage is unavailable:", e);
+      console.error('Local storage is unavailable:', e);
     }
   } else {
     if (value == null) {
@@ -51,17 +51,17 @@ export function useStorageState(key: string): UseStateHook<SessionData> {
 
   // Get
   React.useEffect(() => {
-    if (Platform.OS === "web") {
+    if (Platform.OS === 'web') {
       try {
-        if (typeof localStorage !== "undefined") {
+        if (typeof localStorage !== 'undefined') {
           setState(
             JSON.parse(
-              localStorage.getItem(key) ?? "{}"
-            ) as unknown as SessionData
+              localStorage.getItem(key) ?? '{}',
+            ) as unknown as SessionData,
           );
         }
       } catch (e) {
-        console.error("Local storage is unavailable:", e);
+        console.error('Local storage is unavailable:', e);
       }
     } else {
       SecureStore.getItemAsync(key).then((value) => {
@@ -76,7 +76,7 @@ export function useStorageState(key: string): UseStateHook<SessionData> {
       setState(value);
       setStorageItemAsync(key, value);
     },
-    [key]
+    [key],
   );
 
   return [state, setValue];

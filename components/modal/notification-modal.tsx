@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import { Text } from "~/components/ui/text";
+import React, { ReactNode } from 'react';
+import { Text } from '~/components/ui/text';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,29 +8,29 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "~/components/ui/alert-dialog";
+} from '~/components/ui/alert-dialog';
 
 export default function NotificationModal({
   open,
   setClose,
   title,
   description,
-  variant = "default",
+  variant = 'default',
 }: {
   title: string;
   description: ReactNode;
   open: boolean;
-  variant?: "default" | "danger";
+  variant?: 'default' | 'danger';
   setClose: () => void;
 }) {
   return (
     <AlertDialog open={open}>
       <AlertDialogContent
-        className={variant == "danger" ? "border-2 border-red-500" : ""}
+        className={variant == 'danger' ? 'border-2 border-red-500' : ''}
       >
         <AlertDialogHeader>
           <AlertDialogTitle
-            className={variant === "danger" ? "color-red-500" : ""}
+            className={variant === 'danger' ? 'color-red-500' : ''}
           >
             {title}
           </AlertDialogTitle>

@@ -1,10 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "~/ctx";
-import { API_ROOT } from "~/lib/constants";
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from '~/ctx';
+import { API_ROOT } from '~/lib/constants';
 
 export default function useRecordDetail<T>(
   id: number,
-  path: string
+  path: string,
 ): {
   data: T | undefined;
   isLoading: boolean;
@@ -14,7 +14,7 @@ export default function useRecordDetail<T>(
 } {
   const { session } = useSession();
   const fetchRecords = async () => {
-    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == "true") {
+    if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`fetching: ${API_ROOT}/${path}?id=${id}`);
     }
 

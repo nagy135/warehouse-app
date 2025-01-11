@@ -1,62 +1,65 @@
-import * as React from "react";
-import { Alert, View } from "react-native";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
-import { useSession } from "~/ctx";
-import { router } from "expo-router";
+import * as React from 'react';
+import { Alert, View } from 'react-native';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Button } from '~/components/ui/button';
+import { useSession } from '~/ctx';
+import { router } from 'expo-router';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "~/components/ui/card";
-import { Progress } from "~/components/ui/progress";
-import { Text } from "~/components/ui/text";
-import { Input } from "~/components/ui/input";
-import { useRef } from "react";
-import { useTranslation } from "react-i18next";
+} from '~/components/ui/card';
+import { Progress } from '~/components/ui/progress';
+import { Text } from '~/components/ui/text';
+import { Input } from '~/components/ui/input';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AVATAR_URI =
-  "https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg";
+  'https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(true);
-  const [email, setEmail] = React.useState("user@user.com");
-  const [password, setPassword] = React.useState("user");
+  const [email, setEmail] = React.useState('user@user.com');
+  const [password, setPassword] = React.useState('user');
   const [progress, setProgress] = React.useState(0);
   const [loggingIn, setLoggingIn] = React.useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { signIn } = useSession();
-  const { t } = useTranslation()
-  
+  const { t } = useTranslation();
+
   React.useEffect(() => {
     if (!loggingIn) return;
     if (progress >= 100) {
       signIn(email, password)
         .then(() => {
-          router.replace("/logged-in");
+          router.replace('/logged-in');
         })
         .catch(() => {
           Alert.alert(t('login.error'), t('login.could-not-log-in'), [
             {
-              text: "OK",
+              text: 'OK',
               onPress: () => {
                 setProgress(0);
                 setLoggingIn(false);
                 clearTimeout(timerRef.current!);
               },
-              style: "default",
+              style: 'default',
             },
           ]);
         });
     } else {
-      if (process.env.EXPO_PUBLIC_FAKE_LOGIN_LOADER == "false") {
+      if (process.env.EXPO_PUBLIC_FAKE_LOGIN_LOADER == 'false') {
         setProgress(100);
         return;
       }
-      timerRef.current = setTimeout(() => {
-        setProgress(progress + 10);
-      }, (Math.random() * 1000) / 2);
+      timerRef.current = setTimeout(
+        () => {
+          setProgress(progress + 10);
+        },
+        (Math.random() * 1000) / 2,
+      );
     }
   }, [progress, setProgress, loggingIn]);
 
@@ -64,10 +67,10 @@ export default function LoginForm() {
     setLoggingIn(true);
   }, [email, password]);
   return (
-    <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
-      <Card className="w-full max-w-sm p-6 rounded-2xl">
+    <View className="flex-1 items-center justify-center gap-5 bg-secondary/30 p-6">
+      <Card className="w-full max-w-sm rounded-2xl p-6">
         <CardHeader className="items-center">
-          <Avatar alt="Rick Sanchez's Avatar" className="w-24 h-24">
+          <Avatar alt="Rick Sanchez's Avatar" className="h-24 w-24">
             <AvatarImage source={{ uri: AVATAR_URI }} />
             <AvatarFallback>
               <Text>USER</Text>
