@@ -15,8 +15,8 @@ import useFinishClaimReturn from '~/lib/hooks/api/use-claim-return-finish';
 import StorageModal from '../modal/storage-modal';
 
 export type ScannedProductStorages = {
-  productSkuVariantId: number;
   count: number;
+  productSkuVariantId: number;
   storageSku: string;
 };
 
@@ -121,7 +121,7 @@ export default function ScanProducts({
       {isFocused && (
         <Scanner
           label={t('return-detail.scan-products')}
-          mockData="sweetwaffles50123"
+          mockData="bluepancakes1k123"
           onScan={(scannedSku) => {
             const productStorage = productStorages?.find(
               (productStorage) =>
@@ -182,9 +182,9 @@ export default function ScanProducts({
             description={t('return-detail.finish_confirmation')}
             onConfirm={() => {
               mutateFinishClaimReturn({
-                exitId: exit.id,
-                products: scannedProductStorages,
-                type: type,
+                id: exit.id,
+                cloneInWarehouse: scannedProductStorages,
+                type: 'claimed',
               });
             }}
           />
@@ -195,9 +195,9 @@ export default function ScanProducts({
               className="w-full"
               onPress={() => {
                 mutateFinishClaimReturn({
-                  exitId: exit.id,
-                  products: scannedProductStorages,
-                  type: type,
+                  id: exit.id,
+                  cloneInWarehouse: scannedProductStorages,
+                  type: 'returned',
                 });
               }}
             >

@@ -5,7 +5,6 @@ import { ClaimStepEnum } from '~/app/logged-in/return-index';
 import Scanner from '~/components/scanner';
 import useFindExitByTrackingNumber from '~/lib/hooks/api/use-find-exit-by-tracking-number';
 import { ExitWithPackages } from '~/lib/types';
-import { exitMock } from './data';
 
 export default function ScanPackage({
   addTrackingNumber,
@@ -37,8 +36,7 @@ export default function ScanPackage({
                 .then((resp) => {
                   setOpenReturnOrClaimModal(true);
                   addTrackingNumber(trackingNumber);
-                  // setExit(resp.exit);
-                  setExit(exitMock.exit); //TODO:
+                  setExit(resp.exit);
                   setStep(
                     (resp.exit.packages?.length || 0) > 1
                       ? ClaimStepEnum.SCAN_PACKAGES

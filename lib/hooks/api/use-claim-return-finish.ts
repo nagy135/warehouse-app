@@ -4,9 +4,9 @@ import { useSession } from '~/ctx';
 import { API_ROOT } from '~/lib/constants';
 
 type FinishClaimReturn = {
-  type: 'claim' | 'return';
-  exitId: number;
-  products: ScannedProductStorages[];
+  type: 'claimed' | 'returned';
+  id: number;
+  cloneInWarehouse: ScannedProductStorages[];
 };
 
 export default function useFinishClaimReturn(): {
@@ -18,10 +18,10 @@ export default function useFinishClaimReturn(): {
   const { session } = useSession();
   const mutateRecords = async ({
     type,
-    exitId,
-    products: skuVariants,
+    id,
+    cloneInWarehouse,
   }: FinishClaimReturn) => {
-    const path = `${API_ROOT}/${type}`;
+    const path = `${API_ROOT}/exit/${type}`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`changing: ${path}`);
     }
@@ -32,8 +32,8 @@ export default function useFinishClaimReturn(): {
         ContentType: 'application/json',
       },
       body: JSON.stringify({
-        exitId,
-        skuVariants,
+        id,
+        cloneInWarehouse,
       }),
       method: 'POST',
     });
