@@ -1,6 +1,7 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { router } from 'expo-router';
 import { View } from 'react-native';
 import { ClaimType } from '~/app/logged-in/claim-index';
 import CountModal from '~/components/modal/count-modal';
@@ -33,6 +34,37 @@ export default function ScanProducts({
   const [scannedProductStorages, setScannedProductStorages] = useState<
     ScannedProductStorages[]
   >([]);
+
+  const onFinish = (type: 'claimed' | 'returned') => {
+    mutateFinishClaimReturn({
+      id: exit.id,
+      cloneInWarehouse: scannedProductStorages,
+      type,
+    })
+      .then(openFinishSuccessModal)
+      .catch(openFinishErrorModal);
+  };
+
+  const { modal: finishSuccessModal, setOpen: openFinishSuccessModal } =
+    useNotificationModal({
+      title:
+        type === 'claim'
+          ? t('return-detail.claim-successful')
+          : t('return-detail.return-successful'),
+      description: t('return-detail.item-returned'),
+      onClose: () => {
+        router.push({
+          pathname: '/logged-in',
+        });
+      },
+    });
+
+  const { modal: finishErrorModal, setOpen: openFinishErrorModal } =
+    useNotificationModal({
+      variant: 'danger',
+      title: t('return-detail.error'),
+      description: t('return-detail.error-exit-returned-claim'),
+    });
 
   const { modal: countWarningModal, setOpen: openCountWarningModal } =
     useNotificationModal({
@@ -170,6 +202,8 @@ export default function ScanProducts({
       {skuNotFoundModal}
       {countWarningModal}
       {storageNotFoundModal}
+      {finishErrorModal}
+      {finishSuccessModal}
       <View className="absolute bottom-10 left-0 right-0 p-4">
         {type === 'claim' && !!scannedProductStorages.length && (
           <ConfirmationModal
@@ -180,27 +214,12 @@ export default function ScanProducts({
             }
             title={t('confirmation')}
             description={t('return-detail.finish_confirmation')}
-            onConfirm={() => {
-              mutateFinishClaimReturn({
-                id: exit.id,
-                cloneInWarehouse: scannedProductStorages,
-                type: 'claimed',
-              });
-            }}
+            onConfirm={() => onFinish('claimed')}
           />
         )}
         {type === 'return' &&
           scannedProductStorages.length === productStorages?.length && (
-            <Button
-              className="w-full"
-              onPress={() => {
-                mutateFinishClaimReturn({
-                  id: exit.id,
-                  cloneInWarehouse: scannedProductStorages,
-                  type: 'returned',
-                });
-              }}
-            >
+            <Button className="w-full" onPress={() => onFinish('returned')}>
               <Text className="text-center">{t('finish')}</Text>
             </Button>
           )}

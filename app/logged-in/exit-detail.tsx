@@ -66,7 +66,7 @@ export default function DetailPage() {
       description: t('exit-detail.exit-successful-description'),
       onClose: () => {
         router.push({
-          pathname: '/logged-in/',
+          pathname: '/logged-in',
         });
       },
     });
@@ -148,7 +148,7 @@ export default function DetailPage() {
                   .catch(openExitErrorModal);
               } else {
                 router.push({
-                  pathname: '/logged-in/',
+                  pathname: '/logged-in',
                 });
               }
             }}

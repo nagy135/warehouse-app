@@ -70,7 +70,7 @@ export default function DetailPageSecondPage() {
       description: t('entry-detail.entry-successful-description'),
       onClose: () => {
         router.push({
-          pathname: '/logged-in/',
+          pathname: '/logged-in',
         });
       },
     });
@@ -259,7 +259,7 @@ export default function DetailPageSecondPage() {
                   .catch(openEntryErrorModal);
               } else {
                 router.push({
-                  pathname: '/logged-in/',
+                  pathname: '/logged-in',
                 });
               }
             }}
