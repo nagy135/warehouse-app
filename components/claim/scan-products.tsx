@@ -2,7 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { ClaimType } from '~/app/logged-in/return-index';
+import { ClaimType } from '~/app/logged-in/claim-index';
 import CountModal from '~/components/modal/count-modal';
 import Scanner from '~/components/scanner';
 import { Text } from '~/components/ui/text';

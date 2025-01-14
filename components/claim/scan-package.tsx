@@ -1,10 +1,10 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { ClaimStepEnum } from '~/app/logged-in/return-index';
+import { ClaimStepEnum } from '~/app/logged-in/claim-index';
 import Scanner from '~/components/scanner';
 import useFindExitByTrackingNumber from '~/lib/hooks/api/use-find-exit-by-tracking-number';
-import { ExitWithPackages } from '~/lib/types';
+import { EntryExitStatesEnum, ExitWithPackages } from '~/lib/types';
 
 export default function ScanPackage({
   addTrackingNumber,
@@ -34,6 +34,13 @@ export default function ScanPackage({
             onScan={(trackingNumber) => {
               findExitByTrackingNumber({ trackingNumber })
                 .then((resp) => {
+                  if (
+                    resp.exit.state === EntryExitStatesEnum.CLAIMED ||
+                    resp.exit.state === EntryExitStatesEnum.RETURNED
+                  ) {
+                    setExit(resp.exit);
+                    return;
+                  }
                   setOpenReturnOrClaimModal(true);
                   addTrackingNumber(trackingNumber);
                   setExit(resp.exit);

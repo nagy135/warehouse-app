@@ -99,6 +99,8 @@
     "scan-products": "Scan products",
     "error-package-not-found": "The scanned tracking number not correspond to any exit.",
     "error-package-not-found-in-exit": "The scanned tracking number not correspond to exit",
+    "error-exit-already-claimed": "The scanned tracking number corresponds to an exit that has already been claimed",
+    "error-exit-already-returned": "The scanned tracking number corresponds to an exit that has already been returned.",
     "tracking-number": "Tracking number",
     "state": "State",
     "scanned": "Scanned",

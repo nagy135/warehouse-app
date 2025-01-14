@@ -123,6 +123,8 @@ export enum EntryExitStatesEnum {
   REGISTERED = 'registered',
   MOVED = 'moved',
   CANCELED = 'canceled',
+  CLAIMED = 'claimed',
+  RETURNED = 'returned',
 }
 
 export enum ExitProductStepEnum {

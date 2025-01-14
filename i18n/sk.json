@@ -99,6 +99,8 @@
     "scan-products": "Oskenujte produkty",
     "error-package-not-found": "Naskenované číslo balíka neprislúcha žiadnemu výdaju.",
     "error-package-not-found-in-exit": "Naskenované číslo balíka neprislúcha výdaju",
+    "error-exit-already-claimed": "Naskenované číslo balíka prislúcha výdaju ktorý už bol reklamovaný.",
+    "error-exit-already-returned": "Naskenované číslo balíka prislúcha výdaju ktorý už bol vrátený.",
     "tracking-number": "Číslo zasielky",
     "state": "Stav",
     "scanned": "Oskenované",

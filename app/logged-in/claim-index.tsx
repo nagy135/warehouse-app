@@ -5,7 +5,7 @@ import ScanPackages from '~/components/claim/scan-packages';
 import ScanProducts from '~/components/claim/scan-products';
 import { Text } from '~/components/ui/text';
 import useNotificationModal from '~/lib/hooks/use-notification-modal';
-import { ExitWithPackages } from '~/lib/types';
+import { EntryExitStatesEnum, ExitWithPackages } from '~/lib/types';
 
 export enum ClaimStepEnum {
   SCAN_PACKAGE = 'SCAN_PACKAGE',
@@ -41,6 +41,19 @@ export default function ReturnPage() {
       ),
     });
 
+  const {
+    modal: ExitAlreadyClaimedOrReturned,
+    setOpen: openExitAlreadyClaimedOrReturned,
+  } = useNotificationModal({
+    variant: 'danger',
+    title: t('return-detail.error'),
+    description:
+      exit?.state === EntryExitStatesEnum.CLAIMED
+        ? t('return-detail.error-exit-already-claimed')
+        : t('return-detail.error-exit-already-returned'),
+    onClose: () => setStep(ClaimStepEnum.SCAN_PACKAGE),
+  });
+
   const addTrackingNumber = (trackingNumber: string) => {
     setScannedTrackingNumbers((prev) => {
       const newSet = new Set(prev);
@@ -54,6 +67,15 @@ export default function ReturnPage() {
       setStep(ClaimStepEnum.SCAN_PRODUCTS);
     }
   }, [scannedTrackingNumbers]);
+
+  useEffect(() => {
+    if (
+      exit?.state === EntryExitStatesEnum.CLAIMED ||
+      exit?.state === EntryExitStatesEnum.RETURNED
+    ) {
+      openExitAlreadyClaimedOrReturned();
+    }
+  }, [exit]);
 
   const componentForStep = () => {
     switch (step) {
@@ -91,6 +113,7 @@ export default function ReturnPage() {
     <>
       {componentForStep()}
       {PackageNotFoundModal}
+      {ExitAlreadyClaimedOrReturned}
     </>
   );
 }
