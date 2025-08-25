@@ -24,7 +24,7 @@ export default function RedirectModal({
   open: boolean;
   title: string;
   description: string | ReactNode;
-  hrefObject: Href<string | object>;
+  hrefObject: Href;
   setClose: () => void;
 }) {
   const { t } = useTranslation();

@@ -10,8 +10,10 @@ import {
   CardTitle,
 } from '~/components/ui/card';
 import { Text } from '~/components/ui/text';
+import { Badge } from '~/components/ui/badge';
 import { EntryExitStatesEnum, type Exit } from '~/lib/types';
 import { cn } from '~/lib/utils';
+import { ShieldCheck } from '~/lib/icons/ShieldCheck';
 
 export default function ExitCard({ exit }: { exit: Exit }) {
   const { t } = useTranslation();
@@ -19,7 +21,12 @@ export default function ExitCard({ exit }: { exit: Exit }) {
     <Card
       className={cn(
         'w-full',
-        exit.state === EntryExitStatesEnum.MOVED && 'bg-green-100',
+        (exit.state === EntryExitStatesEnum.MOVED ||
+          exit.state === EntryExitStatesEnum.PACKAGED ||
+          exit.state === EntryExitStatesEnum.SENT)
+          ? 'bg-green-100'
+          : '',
+        exit.isIncomplete && 'bg-red-100',
       )}
     >
       <TouchableOpacity
@@ -34,8 +41,16 @@ export default function ExitCard({ exit }: { exit: Exit }) {
             {t('exit-list.exit-number')}: {exit.id}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-row items-center justify-between">
           <Text>{t(`state.${exit.state}`)}</Text>
+          {exit.isIncomplete && <Badge variant="destructive">
+            <Text>{t('exit-list.incomplete')}</Text>
+          </Badge>}
+          {exit.priority && <Badge variant="blue">
+            <ShieldCheck className="mr-1 text-foreground"
+              size={20}
+              strokeWidth={1.25} />
+          </Badge>}
         </CardContent>
         <CardFooter>
           <Text>{t('dateTime', { date: exit.createdAt })}</Text>

@@ -19,8 +19,11 @@ export type Exit = {
   sku: string;
   processed: boolean;
   createdAt: string;
+  isIncomplete: boolean;
+  priority: boolean;
   createdById: string;
   productStorages?: ProductStorage[];
+  productExpirationDateMap?: Record<string, string>;
   state: EntryExitStatesEnum;
 };
 
@@ -57,6 +60,13 @@ export type PositionExits = {
   storages: Storage[];
 };
 
+export type StoredProduct = {
+  id: number;
+  productId: number;
+  storage: Storage;
+  product: Product;
+};
+
 export type Storage = {
   id: number;
   name: string;
@@ -73,8 +83,7 @@ export type Position = {
 
 export type ProductStorage = {
   id: number;
-  productSkuVariant: ProductSkuVariant;
-  productSkuVariantId: number;
+  product: Product;
   storage: Storage;
   state: 'counted' | 'moved' | 'none';
 };
@@ -125,6 +134,8 @@ export enum EntryExitStatesEnum {
   CANCELED = 'canceled',
   CLAIMED = 'claimed',
   RETURNED = 'returned',
+  PACKAGED = 'packaged',
+  SENT = 'sent',
 }
 
 export enum ExitProductStepEnum {

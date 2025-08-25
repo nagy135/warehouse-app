@@ -9,6 +9,7 @@
   "welcome": "Welcome",
   "loading": "Loading",
   "scan": "Scan",
+  "piece": "pc.",
   "not-found-title": "Not found",
   "total": "Total:",
   "count": "Count",
@@ -33,8 +34,10 @@
   "state": {
     "created": "Created",
     "registered": "Registered",
-    "moved": "Finished",
-    "canceled": "Canceled"
+    "moved": "Moved",
+    "canceled": "Canceled",
+    "sent": "Sent",
+    "packaged": "Packaged"
   },
   "storages": {
     "count": "Count",
@@ -80,7 +83,8 @@
     "exit-number": "Exit number",
     "redirect-to-exit": "Redirect to exit",
     "redirect-confirm": "Are you sure you want to redirect to:",
-    "finish": "Finish"
+    "finish": "Finish",
+    "incomplete": "Incomplete"
   },
   "exit-detail": {
     "scan-position": "Scan Position",

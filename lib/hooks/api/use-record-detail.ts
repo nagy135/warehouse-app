@@ -28,7 +28,7 @@ export default function useRecordDetail<T>(
   };
 
   const { data, error, isLoading, isRefetching, refetch } = useQuery({
-    queryKey: [`get-${path}-detail`],
+    queryKey: [`get-${path}-detail`, id],
     queryFn: fetchRecords,
   });
   return { data, error, isLoading, isRefetching, refetch };

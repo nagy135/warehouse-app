@@ -1,15 +1,19 @@
 import { useIsFocused } from '@react-navigation/native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
+import ExitWorkflow from '~/components/exitWorkFlow/ExitWorkflow';
+import StatsTile from '~/components/exitWorkFlow/StatsTile';
 import ExitProductModal from '~/components/modal/exit-product-modal';
 import ProductStorageList from '~/components/product-storage-list';
 import Scanner from '~/components/scanner';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
+import { buildProductPositionList, summarizeProductCounts } from '~/lib/exitDetailUtils';
 import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state';
 import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move';
+import useGetStoredProductsQuery from '~/lib/hooks/api/use-get-stored-products-query';
 import useRecordDetail from '~/lib/hooks/api/use-record-detail';
 import useNotificationModal from '~/lib/hooks/use-notification-modal';
 import {
@@ -23,74 +27,28 @@ import {
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
   const exitId = Number(exit.id);
-  const isFocused = useIsFocused();
-  const [step, setStep] = useState<ExitProductStepEnum>(
-    ExitProductStepEnum.SCAN_LOCATION,
-  );
-  const [
-    productStoragesOnScannedLocation,
-    setProductStoragesOnScannedLocation,
-  ] = useState<ProductStorage[]>();
-  const { mutateAsync: mutateEntryMove } = useEntryExitMove();
   const { t } = useTranslation();
+
 
   const {
     data,
-    isLoading,
-    isRefetching,
+    isLoading: isLoadingRecordDetail,
+    isRefetching: isRefetchingRecordDetail,
     refetch: refetchExits,
   } = useRecordDetail<Exit>(exitId, 'exit');
-  const { mutateAsync: mutateAsyncChangeProductStorageState } =
-    useChangeProductStorageState({ onSuccessCallback: refetchExits });
-  const { mutateAsync: mutateExitMove } = useEntryExitMove();
 
-  const {
-    modal: PositionSkuNotFoundModal,
-    setOpen: openPositionSkuNotFoundModal,
-  } = useNotificationModal({
-    variant: 'danger',
-    title: t('exit-detail.position-not-found'),
-    description: t('exit-detail.position-not-found-description'),
-  });
-  const { modal: MoveErrorModal, setOpen: openMoveErrorModal } =
-    useNotificationModal({
-      variant: 'danger',
-      title: t('exit-detail.exit-error'),
-      description: t('exit-detail.exit-move-error-description'),
-    });
+  const summarizedProductCounts = useMemo(() => summarizeProductCounts(data?.productStorages ?? []), [data?.productStorages]);
 
-  const { modal: ExitDoneModal, setOpen: openExitDoneModal } =
-    useNotificationModal({
-      variant: 'default',
-      title: t('exit-detail.exit-successful'),
-      description: t('exit-detail.exit-successful-description'),
-      onClose: () => {
-        router.push({
-          pathname: '/logged-in',
-        });
-      },
-    });
+  const { data: storedProducts, isLoading: isLoadingStoredProducts, isRefetching: isRefetchingStoredProducts } = useGetStoredProductsQuery({
+    products: summarizedProductCounts,
+    productExpirationDateMap: data?.productExpirationDateMap,
+  }, { enabled: !!data?.productStorages });
 
-  const { modal: ExitErrorModal, setOpen: openExitErrorModal } =
-    useNotificationModal({
-      variant: 'danger',
-      title: t('exit-detail.exit-error'),
-      description: t('exit-detail.exit-error-description'),
-    });
+  const productPositionList = useMemo(() => storedProducts ? buildProductPositionList(storedProducts) : [], [storedProducts]);
 
-  useEffect(() => {
-    if (data?.state === EntryExitStatesEnum.CREATED) {
-      mutateEntryMove({
-        type: 'exit',
-        id: exitId,
-        state: EntryExitStatesEnum.REGISTERED,
-      });
-    }
-  }, [data]);
+  const isLoading = isLoadingRecordDetail || isLoadingStoredProducts;
+  const isRefetching = isRefetchingRecordDetail || isRefetchingStoredProducts;
 
-  const allProductsMoved = data?.productStorages?.every(
-    (storage) => storage.state === 'moved',
-  );
 
   if (isLoading || isRefetching) {
     return (
@@ -99,87 +57,34 @@ export default function DetailPage() {
       </View>
     );
   }
+
   return (
-    <View className="container h-full px-2">
-      <View className="m-2 flex flex-row gap-3">
-        <View className="flex-1">
-          {isFocused && step === ExitProductStepEnum.SCAN_LOCATION && (
-            <Scanner
-              label={t('exit-detail.scan-position')}
-              mockData="secondshelftontheleft123"
-              onScan={(skuCode) => {
-                const productStorages = data?.productStorages?.filter(
-                  (storage) =>
-                    storage.storage.position?.sku === skuCode &&
-                    storage.state === 'none',
-                );
-                if (productStorages?.length) {
-                  setProductStoragesOnScannedLocation(productStorages);
-                  setStep(ExitProductStepEnum.SCAN_PRODUCT);
-                } else {
-                  openPositionSkuNotFoundModal();
-                }
-              }}
-            />
-          )}
-        </View>
+    <View className="container h-full px-3 py-3">
+      <View className="mb-3">
+        <Text className="text-xl font-bold">{data?.name}</Text>
+        <Text className="text-sm text-neutral-500">{`Exit id: ${data?.id}`}</Text>
       </View>
-      {data?.productStorages && (
-        <ProductStorageList
-          variant="exit"
-          exitName={data.name}
-          data={data.productStorages}
-          state={data.state}
-          refetchProductStorages={refetchExits}
+
+      <View className="flex-row gap-3">
+        <StatsTile
+          label="Položky"
+          value={data?.productStorages?.length ?? 0}
+          emoji="📦"
         />
-      )}
-      {allProductsMoved && data?.state !== EntryExitStatesEnum.MOVED && (
-        <View className="absolute bottom-10 left-0 right-0 p-4">
-          <Button
-            className="w-full"
-            onPress={() => {
-              if (
-                data?.productStorages?.every(
-                  (storage) => storage.state === 'moved',
-                )
-              ) {
-                mutateExitMove({ type: 'exit', id: exitId })
-                  .then(openExitDoneModal)
-                  .catch(openExitErrorModal);
-              } else {
-                router.push({
-                  pathname: '/logged-in',
-                });
-              }
-            }}
-          >
-            <Text className="text-center">{t('exit-list.finish')}</Text>
-          </Button>
-        </View>
-      )}
-      <ExitProductModal
-        open={step !== ExitProductStepEnum.SCAN_LOCATION}
-        step={step}
-        setStep={setStep}
-        setClose={() => {
-          setProductStoragesOnScannedLocation(undefined);
-          setStep(ExitProductStepEnum.SCAN_LOCATION);
-        }}
-        productStoragesOnScannedLocation={productStoragesOnScannedLocation}
-        onConfirm={(productStorageIds, boxSku) => {
-          mutateAsyncChangeProductStorageState({
-            ids: productStorageIds,
-            change: 'moved',
-            storageSku: boxSku,
-          })
-            .then(() => setStep(ExitProductStepEnum.SCAN_LOCATION))
-            .catch(openMoveErrorModal);
-        }}
-      />
-      {PositionSkuNotFoundModal}
-      {MoveErrorModal}
-      {ExitDoneModal}
-      {ExitErrorModal}
+        <StatsTile
+          label="Produkty"
+          value={summarizedProductCounts.length}
+          emoji="🧾"
+        />
+        <StatsTile
+          label="Pozície"
+          value={productPositionList.length}
+          emoji="📍"
+        />
+      </View>
+      <View className="h-[1px] bg-neutral-200 dark:bg-neutral-800 my-4" />
+      <ExitWorkflow items={productPositionList} />
     </View>
   );
+
 }
