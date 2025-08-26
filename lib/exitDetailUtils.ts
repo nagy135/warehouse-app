@@ -23,6 +23,9 @@ export type ProductPosition = {
     id: number;
     name: string;
     sku: string;
+    ean: string;
+    isBox: boolean;
+    expirations: { value: string; count: number }[];
   };
   storage: {
     id: number;
@@ -50,6 +53,9 @@ export function buildProductPositionList(
       id: row.product?.id ?? -1,
       name: row.product?.name ?? '',
       sku: row.product?.sku ?? '',
+      ean: row.product?.ean ?? '',
+      isBox: !!row.product?.isBox,
+      expirations: [] as { value: string; count: number }[],
     };
 
     const storage = {
@@ -80,10 +86,28 @@ export function buildProductPositionList(
     const item = map.get(key)!;
     item.count += 1;
     item.productStoragesId.push(row.id);
+
+    if (row.expiration) {
+      const dateOnly = row.expiration.split('T')[0];
+      const found = item.product.expirations.find((e) => e.value === dateOnly);
+      if (found) {
+        found.count += 1;
+      } else {
+        item.product.expirations.push({ value: dateOnly, count: 1 });
+      }
+    }
   }
 
   return Array.from(map.values()).map((i) => ({
     ...i,
-    productStoragesId: i.productStoragesId.sort((a, b) => a - b),
+    productStoragesId: i.productStoragesId.slice().sort((a, b) => a - b),
+    product: {
+      ...i.product,
+      expirations: i.product.expirations
+        .slice()
+        .sort(
+          (a, b) => new Date(a.value).getTime() - new Date(b.value).getTime(),
+        ),
+    },
   }));
 }

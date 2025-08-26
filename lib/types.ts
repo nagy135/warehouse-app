@@ -65,6 +65,7 @@ export type StoredProduct = {
   productId: number;
   storage: Storage;
   product: Product;
+  expiration?: string;
 };
 
 export type Storage = {
@@ -116,9 +117,11 @@ export type Product = {
   id: number;
   name: string;
   sku: string;
+  ean: string;
   createdAt: string;
   createdById: string;
   productStorages: ProductStorage[];
+  isBox: boolean;
 };
 
 // cast every value to string or string[] that isnt that already

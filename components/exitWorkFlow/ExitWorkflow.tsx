@@ -5,17 +5,12 @@ import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
 import Scanner from "~/components/scanner";
 import { useIsFocused } from "@react-navigation/native";
+import { ProductPositionList } from "~/lib/exitDetailUtils";
+import { useTranslation } from "react-i18next";
+import { ProductBoxSign } from "../product-box-sign";
+import { Box } from "~/lib/icons/Box";
 
-export type ProductPositionItem = {
-  product: { id: number; name: string; sku: string };
-  storage: { id: number; name: string; sku: string };
-  position: { id: number; name: string; sku: string };
-  count: number;
-  productStoragesId: number[];
-};
-
-type Props = { items: ProductPositionItem[] };
-
+type Props = { items: ProductPositionList };
 
 type Step =
   | "position"
@@ -32,6 +27,7 @@ export default function ExitWorkflow({ items }: Props) {
   const [quantityInput, setQuantityInput] = useState<string>("");
   const [usedIds, setUsedIds] = useState<number[]>([]);
   const isFocused = useIsFocused();
+  const { t } = useTranslation();
 
   const current = items[index];
 
@@ -157,13 +153,13 @@ export default function ExitWorkflow({ items }: Props) {
     <View className="flex-1 p-4">
       <View className="mb-4">
         <Text className="text-lg font-bold text-center">
-          {index + 1} / {items.length} — {current.product.name}
+          {index + 1} / {items.length} — {current.product.name} ({current.productStoragesId.length} ks)
         </Text>
       </View>
       <View className="flex-1 items-center justify-center">
         {step === "position" && (
           <View>
-            <Text className="mb-1 text-center">Oskenuj pozíciu</Text>
+            <Text className="mb-1 text-center text-2xl">Oskenuj pozíciu</Text>
             <Text className="font-bold mb-3 text-center mb-4 text-2xl">{current.position.name}</Text>
             {isFocused && <Scanner label="Oskenuj pozíciu" onScan={handleScanPosition} />}
           </View>
@@ -171,7 +167,7 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "storage" && (
           <View>
-            <Text className="mb-1 text-center">Oskenuj úložisko</Text>
+            <Text className="mb-1 text-center text-2xl">Oskenuj úložisko</Text>
             <Text className="font-bold mb-3 text-center mb-4 text-2xl">{current.storage.name}</Text>
             {isFocused && <Scanner label="Oskenuj úložisko" onScan={handleScanStorage} />}
           </View>
@@ -179,7 +175,7 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "box" && (
           <View>
-            <Text className="mb-1 text-center">Oskenuj transport box</Text>
+            <Text className="mb-1 text-center text-2xl">Oskenuj transport box</Text>
             {isFocused && <Scanner label="Oskenuj transport box" onScan={handleScanBox} />}
             <View className="mt-4">
               <Text>Zostáva naložiť: {remainingCount}</Text>
@@ -189,8 +185,23 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "product" && (
           <View>
-            <Text className="mb-1 text-center">Oskenuj produkt</Text>
-            <Text className="font-bold mb-3 text-center mb-4">{current.product.name}</Text>
+            <Text className="mb-1 text-center text-2xl">Oskenuj produkt</Text>
+            {current.product.isBox && (
+              <View className="flex-row items-center justify-center mt-2">
+                <Box size={20} strokeWidth={1.25} className="text-foreground mr-1 bg-sky-200" />
+                <Text className="text-sm text-center">Kartónové balenie</Text>
+              </View>
+            )}
+            <Text className="font-bold mb-3 text-center mb-2">{current.product.name}</Text>
+            <Text className="text-center mb-1 text-sm">sku: <Text className="font-bold">{current.product.sku}</Text> | ean: <Text className="font-bold">{current.product.ean}</Text></Text>
+            {current.product.expirations.length > 0 && (
+              <Text className="text-center mb-4 text-sm">
+                Expirácie:{" "}
+                {current.product.expirations
+                  .map((e) => `${t('date', { date: new Date(e.value) })} (${e.count} ks)`)
+                  .join(", ")}
+              </Text>
+            )}
             {isFocused && <Scanner label="Oskenuj produkt" onScan={handleScanProduct} />}
           </View>
         )}
@@ -218,8 +229,8 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "rescanStorageToFinish" && (
           <View>
-            <Text className="mb-1 text-center">
-              Všetko naložené. Pre potvrdenie oskenuj pôvodné úložisko:
+            <Text className="mb-1 text-center text-2xl">
+              Pre potvrdenie oskenuj pôvodné úložisko:
             </Text>
             <Text className="font-bold mb-3 text-center mb-4 text-2xl">{current.storage.name}</Text>
             {isFocused && <Scanner
