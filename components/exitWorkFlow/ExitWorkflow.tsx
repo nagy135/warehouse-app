@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { Input } from '~/components/ui/input';
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
@@ -28,6 +28,8 @@ export default function ExitWorkflow({ items }: Props) {
   const [usedIds, setUsedIds] = useState<number[]>([]);
   const isFocused = useIsFocused();
   const { t } = useTranslation();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   const current = items[index];
 
@@ -150,27 +152,32 @@ export default function ExitWorkflow({ items }: Props) {
   }
 
   return (
-    <View className="flex-1 p-4">
-      <View className="mb-4">
+    <View className={`flex-1 ${isLandscape ? "p-2" : "p-4"}`}>
+      <View className={isLandscape ? "mb-2" : "mb-4"}>
         <Text className="text-lg font-bold text-center">
           {index + 1} / {items.length} — {current.product.name} ({current.productStoragesId.length} ks)
         </Text>
       </View>
       <View className="flex-1 items-center justify-center">
         {step === "position" && (
-          <View>
-            <Text className="mb-1 text-center text-2xl">Oskenuj pozíciu</Text>
-            <Text className="font-bold mb-3 text-center mb-4 text-2xl">{current.position.name}</Text>
+          <>
+            <View className={isLandscape ? "flex-row items-center justify-center gap-4 mb-4" : "mb-4"}>
+              <Text className="text-center text-2xl">Oskenuj pozíciu</Text>
+              <Text className="font-bold text-center text-2xl">{current.position.name}</Text>
+            </View>
+
             {isFocused && <Scanner label="Oskenuj pozíciu" onScan={handleScanPosition} />}
-          </View>
+          </>
         )}
 
         {step === "storage" && (
-          <View>
-            <Text className="mb-1 text-center text-2xl">Oskenuj úložisko</Text>
-            <Text className="font-bold mb-3 text-center mb-4 text-2xl">{current.storage.name}</Text>
+          <>
+            <View className={isLandscape ? "flex-row items-center justify-center gap-4 mb-4" : "mb-4"}>
+              <Text className="text-center text-2xl">Oskenuj úložisko</Text>
+              <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
+            </View>
             {isFocused && <Scanner label="Oskenuj úložisko" onScan={handleScanStorage} />}
-          </View>
+          </>
         )}
 
         {step === "box" && (
@@ -192,10 +199,15 @@ export default function ExitWorkflow({ items }: Props) {
                 <Text className="text-sm text-center">Kartónové balenie</Text>
               </View>
             )}
-            <Text className="font-bold mb-3 text-center mb-2">{current.product.name}</Text>
-            <Text className="text-center mb-1 text-sm">sku: <Text className="font-bold">{current.product.sku}</Text> | ean: <Text className="font-bold">{current.product.ean}</Text></Text>
+            <View className={isLandscape ? "flex-row items-center justify-center gap-4 mb-2" : "mb-3"}>
+              <Text className="font-bold text-center mb-2 text-xl">{current.product.name}</Text>
+              <Text className="text-center text-sm">
+                sku: <Text className="font-bold">{current.product.sku}</Text> | ean:{" "}
+                <Text className="font-bold">{current.product.ean}</Text>
+              </Text>
+            </View>
             {current.product.expirations.length > 0 && (
-              <Text className="text-center mb-4 text-sm">
+              <Text className="text-center mb-4">
                 Expirácie:{" "}
                 {current.product.expirations
                   .map((e) => `${t('date', { date: new Date(e.value) })} (${e.count} ks)`)
@@ -208,8 +220,7 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "quantity" && (
           <View>
-            <Text className="mb-2">Zadaj počet</Text>
-            <Text className="mb-1">Zostáva: {remainingCount}</Text>
+            <Text className="mb-2">Zadaj počet (zostáva {remainingCount} ks)</Text>
             <Input
               className="border border-neutral-300 rounded-lg p-2 mb-3"
               keyboardType="numeric"
@@ -229,10 +240,10 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "rescanStorageToFinish" && (
           <View>
-            <Text className="mb-1 text-center text-2xl">
-              Pre potvrdenie oskenuj pôvodné úložisko:
-            </Text>
-            <Text className="font-bold mb-3 text-center mb-4 text-2xl">{current.storage.name}</Text>
+            <View className={isLandscape ? "flex-row items-center justify-center gap-2 mb-4" : "mb-4"}>
+              <Text className="text-center text-2xl">Oskenuj pôvodné úložisko:</Text>
+              <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
+            </View>
             {isFocused && <Scanner
               label="Oskenuj úložisko na dokončenie"
               onScan={handleRescanStorageToFinish}

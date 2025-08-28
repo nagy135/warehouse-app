@@ -6,17 +6,30 @@ type Props = {
     label: string;
     value: number | string;
     emoji?: string;
+    isLandscape?: boolean;
 };
 
-export default function StatsTile({ label, value, emoji }: Props) {
+export default function StatsTile({ label, value, emoji, isLandscape }: Props) {
     return (
-        <View className="flex-1 rounded-2xl border border-neutral-200 bg-white/90 dark:bg-neutral-900/90 px-4 py-3 shadow-sm items-center justify-center">
-            <Text className="text-xs text-neutral-500 dark:text-neutral-400 mb-1">
-                {emoji ? `${emoji} ` : ""}{label}
-            </Text>
-            <Text className="text-3xl font-extrabold text-neutral-900 dark:text-neutral-50 text-center">
-                {value}
-            </Text>
+        <View
+            className={`flex-1 rounded-2xl border border-neutral-200 bg-white/90 dark:bg-neutral-900/90 shadow-sm items-center justify-center
+          ${isLandscape ? "px-3 py-1" : "px-4 py-3"}`}
+        >
+            <View
+                className={
+                    isLandscape
+                        ? "flex-row items-center gap-2"
+                        : "flex-col items-center"
+                }
+            >
+                <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {emoji ? `${emoji} ` : ""}
+                    {label}
+                </Text>
+                <Text className="text-3xl font-extrabold text-neutral-900 dark:text-neutral-50 text-center">
+                    {value}
+                </Text>
+            </View>
         </View>
     );
 }
