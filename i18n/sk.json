@@ -35,6 +35,7 @@
     "created": "Vytvorené",
     "registered": "Rozpracované",
     "moved": "Presunuté",
+    "partially_moved": "Čiastočne presunuté",
     "cancelled": "Zrušené",
     "sent": "Odoslané",
     "packaged": "Zabelené"

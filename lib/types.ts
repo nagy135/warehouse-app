@@ -25,6 +25,7 @@ export type Exit = {
   productStorages?: ProductStorage[];
   productExpirationDateMap?: Record<string, string>;
   state: EntryExitStatesEnum;
+  partnerId: number;
 };
 
 export type Package = {
@@ -86,6 +87,7 @@ export type ProductStorage = {
   id: number;
   product: Product;
   storage: Storage;
+  deletedAt: null | string;
   state: 'counted' | 'moved' | 'none';
 };
 

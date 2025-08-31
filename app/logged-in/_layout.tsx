@@ -41,35 +41,6 @@ export default function ActionLayout() {
           }}
         />
         <Stack.Screen
-          name="storages-group"
-          options={{
-            title: t('titles.storages'),
-            animation: 'fade_from_bottom',
-            presentation: 'fullScreenModal',
-          }}
-        />
-        <Stack.Screen
-          name="entries-index"
-          options={{
-            title: t('titles.entries'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="entry-detail-second-step"
-          options={{
-            title: t('titles.entry-select-storage'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="entry-detail"
-          options={{
-            title: t('titles.entry'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
           name="exits-index"
           options={{
             title: t('titles.exits'),
@@ -87,13 +58,6 @@ export default function ActionLayout() {
           name="move-index"
           options={{
             title: t('titles.move'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="claim-index"
-          options={{
-            title: t('titles.returnClaim'),
             animation: 'slide_from_right',
           }}
         />

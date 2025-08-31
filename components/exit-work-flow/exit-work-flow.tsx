@@ -1,15 +1,18 @@
 import React, { useMemo, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, useWindowDimensions, View } from "react-native";
 import { Input } from '~/components/ui/input';
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
 import Scanner from "~/components/scanner";
+import useCheckStorageExits from '~/lib/hooks/api/use-check-storage-exits';
 import { useIsFocused } from "@react-navigation/native";
 import { ProductPositionList } from "~/lib/exitDetailUtils";
 import { useTranslation } from "react-i18next";
 import { Box } from "~/lib/icons/Box";
+import useMoveProductStorage from "~/lib/hooks/api/use-change-product-storage-state";
+import { router } from "expo-router";
 
-type Props = { items: ProductPositionList };
+type Props = { items: ProductPositionList, exitId: number, partnerId: number };
 
 type Step =
   | "position"
@@ -19,17 +22,22 @@ type Step =
   | "quantity"
   | "rescanStorageToFinish";
 
-export default function ExitWorkflow({ items }: Props) {
+export default function ExitWorkflow({ items, exitId, partnerId }: Props) {
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState<Step>("position");
-  const [scannedBox, setScannedBox] = useState<string>("");
+  const [scannedBox, setScannedBox] = useState<number | null>(null);
   const [quantityInput, setQuantityInput] = useState<string>("");
   const [usedIds, setUsedIds] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [isDone, setIsDone] = useState(false);
   const isFocused = useIsFocused();
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
+  const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
+  const { mutateAsync: mutateMoveProductStorage } = useMoveProductStorage();
+
 
   const current = items[index];
 
@@ -41,21 +49,22 @@ export default function ExitWorkflow({ items }: Props) {
 
   const remainingCount = remainingIds.length;
 
-  if (!current) {
-    return (
-      <View className="p-4">
-        <Text>Hotovo 🎉 — prešli ste celý zoznam.</Text>
-      </View>
-    );
-  }
-
   function goNextItem() {
-    setIndex(i => i + 1);
-    setStep("position");
-    setScannedBox("");
-    setQuantityInput("");
-    setUsedIds([]);
-    setError("");
+    if (index + 1 >= items.length) {
+      setIsDone(true);
+      setTimeout(() => {
+        router.push({
+          pathname: "/logged-in/exits-index",
+        });
+      }, 1000);
+    } else {
+      setIndex(i => i + 1);
+      setStep("position");
+      setScannedBox(null);
+      setQuantityInput("");
+      setUsedIds([]);
+      setError("");
+    }
   }
 
   function takeFirstN(n: number): number[] {
@@ -64,6 +73,8 @@ export default function ExitWorkflow({ items }: Props) {
 
 
   function handleScanPosition(scan: string) {
+    setStep("storage");
+    return;
     if (scan === current.position.sku) {
       setStep("storage");
       setError("");
@@ -73,6 +84,8 @@ export default function ExitWorkflow({ items }: Props) {
   }
 
   function handleScanStorage(scan: string) {
+    setStep("box");
+    return;
     if (scan === current.storage.sku) {
       setStep("box");
       setError("");
@@ -82,14 +95,27 @@ export default function ExitWorkflow({ items }: Props) {
   }
 
   function handleScanBox(scan: string) {
-    setScannedBox(scan);
-    setStep("product");
-    setError("");
+    setIsLoading(true);
+    mutateCheckStorageExits({ sku: scan })
+      .then((data) => {
+        setScannedBox(data.id);
+        setStep("product");
+        setError("");
+      })
+      .catch(() => {
+        setError("Prenosný box nebol nájdený!");
+      }).finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function handleScanProduct(scan: string) {
+    setStep("quantity");
+    setQuantityInput(remainingCount.toString());
+    return;
     if (scan === current.product.sku || scan === current.product.ean) {
       setStep("quantity");
+      setQuantityInput(remainingCount.toString());
       setError("");
     } else {
       setError("Nesprávny produkt!");
@@ -110,29 +136,32 @@ export default function ExitWorkflow({ items }: Props) {
     const take = Math.min(qty, remainingCount);
     const chosenIds = takeFirstN(take);
 
-    // TODO: API volanie
-    console.log("[PARTIAL_MOVE]", {
-      transportBox: scannedBox,
-      productId: current.product.id,
-      productName: current.product.name,
-      fromStorage: current.storage,
-      fromPosition: current.position,
-      count: take,
-      productStoragesId: chosenIds,
-    });
-
-    setUsedIds(prev => [...prev, ...chosenIds]);
-    setQuantityInput("");
-    setError("");
-
-    if (remainingCount - take > 0) {
-      setStep("box");
-    } else {
-      setStep("rescanStorageToFinish");
+    if (!scannedBox) {
+      setError("Prenosný box nebol nájdený!");
+      return;
     }
+
+    setIsLoading(true);
+    mutateMoveProductStorage({ ids: chosenIds, storageId: scannedBox, exitId: exitId, partnerId: partnerId, productId: current.product.id }).then(() => {
+      setUsedIds(prev => [...prev, ...chosenIds]);
+      setQuantityInput("");
+      setError("");
+
+      if (remainingCount - take > 0) {
+        setStep("box");
+      } else {
+        setStep("rescanStorageToFinish");
+      }
+    }).catch(() => {
+      setError("Prenos produktov do prenosného boxu sa nepodaril!");
+    }).finally(() => {
+      setIsLoading(false);
+    });
   }
 
   function handleRescanStorageToFinish(scan: string) {
+    goNextItem();
+    return;
     if (scan === current.storage.sku) {
       console.log("[ITEM_DONE]", {
         productId: current.product.id,
@@ -158,6 +187,18 @@ export default function ExitWorkflow({ items }: Props) {
           <Text className="text-red-600 font-bold text-center">{error}</Text>
         </View>
       ) : null}
+
+      {isDone && (
+        <View className="mb-4 bg-green-100 p-2 rounded">
+          <Text className="text-green-600 font-bold text-center">{t('exit-detail.exit-successful')}</Text>
+        </View>
+      )}
+
+      {isLoading && (
+        <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
+          <ActivityIndicator size={60} color="#666666" />
+        </View>
+      )}
 
       <View className="flex-1 items-center justify-center">
         {step === "position" && (
@@ -220,17 +261,27 @@ export default function ExitWorkflow({ items }: Props) {
         )}
 
         {step === "quantity" && (
-          <View>
-            <Text className="mb-2">Zadaj počet (zostáva {remainingCount} ks)</Text>
+          <View
+            className={
+              isLandscape
+                ? "flex-row items-center justify-center gap-4"
+                : ""
+            }
+          >
+            <Text className={isLandscape ? "mb-0 mr-2" : "mb-2"}>
+              Zadaj počet (zostáva {remainingCount} ks)
+            </Text>
             <Input
-              className="border border-neutral-300 rounded-lg p-2 mb-3"
+              className={`border border-neutral-300 rounded-lg p-2 flex-1 max-w-[100px] ${isLandscape ? "mb-0" : "mb-3"}`}
               keyboardType="numeric"
               value={quantityInput}
               onChangeText={setQuantityInput}
               placeholder="Počet ks"
               autoFocus={true}
             />
-            <Button onPress={submitPartialMove}><Text>Potvrdiť</Text></Button>
+            <Button onPress={submitPartialMove} className="w-1/3">
+              <Text>Potvrdiť</Text>
+            </Button>
           </View>
         )}
 

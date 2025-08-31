@@ -17,7 +17,7 @@ export default function useScanner({
     if (scanning && process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true') {
       setTimeout(() => {
         const scanLabelType = randomString();
-        const scanData = '123billa';
+        const scanData = 'SB2';
 
         setData(scanData);
         setLabel(scanLabelType);

@@ -7,7 +7,7 @@ type checkStorageExits = {
 };
 
 export type checkStorageExitsResponse = {
-  id: string;
+  id: number;
   sku: string;
   name: string;
 };

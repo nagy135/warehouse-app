@@ -14,12 +14,6 @@ export default function LoggedInPage() {
       <Text className="text-md">{session?.email ?? '-'}</Text>
       <View className="w-full flex-1 justify-center gap-5 p-3">
         {/* @ts-ignore */}
-        <Link href="/logged-in/entries-index" asChild>
-          <Button className="text-2xl font-bold" size="lg">
-            <Text>{t('entries')}</Text>
-          </Button>
-        </Link>
-        {/* @ts-ignore */}
         <Link href="/logged-in/exits-index" asChild>
           <Button className="text-2xl font-bold" size="lg">
             <Text>{t('exits')}</Text>

@@ -35,6 +35,7 @@
     "created": "Created",
     "registered": "Registered",
     "moved": "Moved",
+    "partially_moved": "Partially moved",
     "canceled": "Canceled",
     "sent": "Sent",
     "packaged": "Packaged"
