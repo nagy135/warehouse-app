@@ -7,7 +7,6 @@ import Scanner from "~/components/scanner";
 import { useIsFocused } from "@react-navigation/native";
 import { ProductPositionList } from "~/lib/exitDetailUtils";
 import { useTranslation } from "react-i18next";
-import { ProductBoxSign } from "../product-box-sign";
 import { Box } from "~/lib/icons/Box";
 
 type Props = { items: ProductPositionList };
@@ -26,6 +25,7 @@ export default function ExitWorkflow({ items }: Props) {
   const [scannedBox, setScannedBox] = useState<string>("");
   const [quantityInput, setQuantityInput] = useState<string>("");
   const [usedIds, setUsedIds] = useState<number[]>([]);
+  const [error, setError] = useState<string>("");
   const isFocused = useIsFocused();
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
@@ -55,57 +55,62 @@ export default function ExitWorkflow({ items }: Props) {
     setScannedBox("");
     setQuantityInput("");
     setUsedIds([]);
+    setError("");
   }
 
   function takeFirstN(n: number): number[] {
     return remainingIds.slice(0, n);
   }
 
-  // --- handlery krokov ---
 
   function handleScanPosition(scan: string) {
-    setStep("storage");
-    return;
     if (scan === current.position.sku) {
       setStep("storage");
+      setError("");
     } else {
-      console.log("zla pozicia");
+      setError("Nesprávna pozícia!");
     }
   }
 
   function handleScanStorage(scan: string) {
-    setStep("box");
-    return;
     if (scan === current.storage.sku) {
       setStep("box");
+      setError("");
     } else {
-      console.log("zle ulozisko");
+      setError("Nesprávne úložisko!");
     }
   }
 
   function handleScanBox(scan: string) {
     setScannedBox(scan);
     setStep("product");
+    setError("");
   }
 
   function handleScanProduct(scan: string) {
-    setStep("quantity");
-    return;
-    if (scan === current.product.sku) {
+    if (scan === current.product.sku || scan === current.product.ean) {
       setStep("quantity");
+      setError("");
     } else {
-      console.log("zly produkt");
+      setError("Nesprávny produkt!");
     }
   }
 
   function submitPartialMove() {
     const qty = Math.max(0, Math.floor(Number(quantityInput) || 0));
-    if (!qty) return;
+    if (!qty) {
+      setError("Zadajte platné množstvo");
+      return;
+    }
+    if (qty > remainingCount) {
+      setError("Zadané množstvo je väčšie ako počet zostávajúcich produktov");
+      return;
+    }
 
     const take = Math.min(qty, remainingCount);
     const chosenIds = takeFirstN(take);
 
-    // TODO: tu bude volanie endpointu (zatím len log)
+    // TODO: API volanie
     console.log("[PARTIAL_MOVE]", {
       transportBox: scannedBox,
       productId: current.product.id,
@@ -116,30 +121,19 @@ export default function ExitWorkflow({ items }: Props) {
       productStoragesId: chosenIds,
     });
 
-    // označiť použité PS id
     setUsedIds(prev => [...prev, ...chosenIds]);
-
     setQuantityInput("");
+    setError("");
 
-    // ak ešte ostáva niečo naložiť -> späť na sken boxu
     if (remainingCount - take > 0) {
       setStep("box");
     } else {
-      // všetko hotovo -> potvrď rescanom pôvodného úložiska
       setStep("rescanStorageToFinish");
     }
   }
 
   function handleRescanStorageToFinish(scan: string) {
-    console.log("[ITEM_DONE]", {
-      productId: current.product.id,
-      productName: current.product.name,
-      totalMoved: usedIds.length,
-    });
-    goNextItem();
-    return;
     if (scan === current.storage.sku) {
-      // TODO: tu môže byť finálne potvrdenie itemu na backende
       console.log("[ITEM_DONE]", {
         productId: current.product.id,
         productName: current.product.name,
@@ -147,7 +141,7 @@ export default function ExitWorkflow({ items }: Props) {
       });
       goNextItem();
     } else {
-      console.log("zle ulozisko (finish)");
+      setError("Nesprávne úložisko");
     }
   }
 
@@ -158,6 +152,13 @@ export default function ExitWorkflow({ items }: Props) {
           {index + 1} / {items.length} — {current.product.name} ({current.productStoragesId.length} ks)
         </Text>
       </View>
+
+      {error ? (
+        <View className="mb-4 bg-red-100 p-2 rounded">
+          <Text className="text-red-600 font-bold text-center">{error}</Text>
+        </View>
+      ) : null}
+
       <View className="flex-1 items-center justify-center">
         {step === "position" && (
           <>
@@ -182,10 +183,10 @@ export default function ExitWorkflow({ items }: Props) {
 
         {step === "box" && (
           <View>
-            <Text className="mb-1 text-center text-2xl">Oskenuj transport box</Text>
-            {isFocused && <Scanner label="Oskenuj transport box" onScan={handleScanBox} />}
+            <Text className="mb-1 text-center text-2xl">Oskenuj prenosný box</Text>
+            {isFocused && <Scanner label="Oskenuj prenosný box" onScan={handleScanBox} />}
             <View className="mt-4">
-              <Text>Zostáva naložiť: {remainingCount}</Text>
+              <Text>Počet zostávajúcich produktov: {remainingCount}</Text>
             </View>
           </View>
         )}
@@ -229,12 +230,7 @@ export default function ExitWorkflow({ items }: Props) {
               placeholder="Počet ks"
               autoFocus={true}
             />
-            <View className="flex-row gap-2">
-              <Button onPress={submitPartialMove}><Text>Potvrdiť</Text></Button>
-              <Button onPress={() => { setQuantityInput(""); setStep("box"); }}>
-                <Text>Späť</Text>
-              </Button>
-            </View>
+            <Button onPress={submitPartialMove}><Text>Potvrdiť</Text></Button>
           </View>
         )}
 
@@ -245,7 +241,7 @@ export default function ExitWorkflow({ items }: Props) {
               <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
             </View>
             {isFocused && <Scanner
-              label="Oskenuj úložisko na dokončenie"
+              label="Oskenuj pôvodné úložisko"
               onScan={handleRescanStorageToFinish}
             />}
           </View>

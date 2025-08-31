@@ -48,6 +48,8 @@ export function buildProductPositionList(
 ): ProductPositionList {
   const map = new Map<string, ProductPosition>();
 
+  const orderMap = new Map<string, { id: number; date?: string }[]>();
+
   for (const row of data) {
     const product = {
       id: row.product?.id ?? -1,
@@ -81,14 +83,17 @@ export function buildProductPositionList(
         count: 0,
         productStoragesId: [],
       });
+      orderMap.set(key, []);
     }
 
     const item = map.get(key)!;
     item.count += 1;
-    item.productStoragesId.push(row.id);
 
-    if (row.expiration) {
-      const dateOnly = row.expiration.split('T')[0];
+    const dateOnly = row.expiration ? row.expiration.split('T')[0] : undefined;
+
+    orderMap.get(key)!.push({ id: row.id, date: dateOnly });
+
+    if (dateOnly) {
       const found = item.product.expirations.find((e) => e.value === dateOnly);
       if (found) {
         found.count += 1;
@@ -98,16 +103,35 @@ export function buildProductPositionList(
     }
   }
 
-  return Array.from(map.values()).map((i) => ({
-    ...i,
-    productStoragesId: i.productStoragesId.slice().sort((a, b) => a - b),
-    product: {
-      ...i.product,
-      expirations: i.product.expirations
-        .slice()
-        .sort(
-          (a, b) => new Date(a.value).getTime() - new Date(b.value).getTime(),
-        ),
-    },
-  }));
+  return Array.from(map.values()).map((i) => {
+    const expirationsSorted = i.product.expirations
+      .slice()
+      .sort(
+        (a, b) => new Date(a.value).getTime() - new Date(b.value).getTime(),
+      );
+
+    const idsSorted = orderMap
+      .get(`${i.product.id}#${i.storage.id}#${i.position.id}`)!
+      .slice()
+      .sort((a, b) => {
+        const ad = a.date
+          ? new Date(a.date).getTime()
+          : Number.POSITIVE_INFINITY;
+        const bd = b.date
+          ? new Date(b.date).getTime()
+          : Number.POSITIVE_INFINITY;
+        if (ad !== bd) return ad - bd;
+        return a.id - b.id;
+      })
+      .map((x) => x.id);
+
+    return {
+      ...i,
+      productStoragesId: idsSorted,
+      product: {
+        ...i.product,
+        expirations: expirationsSorted,
+      },
+    };
+  });
 }
