@@ -12,7 +12,7 @@ import { Box } from "~/lib/icons/Box";
 import useMoveProductStorage from "~/lib/hooks/api/use-change-product-storage-state";
 import { router } from "expo-router";
 
-type Props = { items: ProductPositionList, exitId: number, partnerId: number };
+type Props = { items: ProductPositionList, exitId: number, partnerId: number, refetchExit: () => void };
 
 type Step =
   | "position"
@@ -22,7 +22,7 @@ type Step =
   | "quantity"
   | "rescanStorageToFinish";
 
-export default function ExitWorkflow({ items, exitId, partnerId }: Props) {
+export default function ExitWorkflow({ items, exitId, partnerId, refetchExit }: Props) {
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState<Step>("position");
   const [scannedBox, setScannedBox] = useState<number | null>(null);
@@ -143,6 +143,7 @@ export default function ExitWorkflow({ items, exitId, partnerId }: Props) {
 
     setIsLoading(true);
     mutateMoveProductStorage({ ids: chosenIds, storageId: scannedBox, exitId: exitId, partnerId: partnerId, productId: current.product.id }).then(() => {
+      refetchExit();
       setUsedIds(prev => [...prev, ...chosenIds]);
       setQuantityInput("");
       setError("");

@@ -22,7 +22,7 @@ export default function DetailPage() {
     data,
     isLoading: isLoadingRecordDetail,
     isRefetching: isRefetchingRecordDetail,
-    refetch: refetchExits,
+    refetch: refetchExit,
   } = useRecordDetail<Exit>(exitId, 'exit');
 
   const onlyNotDeletedProductStorages = useMemo(() => data?.productStorages?.filter((productStorage) => productStorage.deletedAt === null) ?? [], [data?.productStorages]);
@@ -87,7 +87,7 @@ export default function DetailPage() {
           <View
             className={`bg-neutral-200 dark:bg-neutral-800 ${isLandscape ? "w-[1px] mx-4" : "h-[1px] my-4"}`}
           />
-          <ExitWorkflow items={productPositionList} exitId={exitId} partnerId={data?.partnerId ?? 0} />
+          <ExitWorkflow items={productPositionList} exitId={exitId} partnerId={data?.partnerId ?? 0} refetchExit={refetchExit} />
         </View>
       </View>
     </ScrollView>
