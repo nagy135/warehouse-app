@@ -41,7 +41,7 @@ export default function DetailPage() {
   const isLoading = isLoadingRecordDetail || isLoadingStoredProducts;
   const isRefetching = isRefetchingRecordDetail || isRefetchingStoredProducts;
 
-  if (isLoading || isRefetching) {
+  if (isLoading) {
     return (
       <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
         <ActivityIndicator size={60} color="#666666" />
@@ -58,14 +58,13 @@ export default function DetailPage() {
       <View className={isLandscape ? "mb-3 flex-row items-center gap-4" : "mb-3"}>
         <Text className="text-xl font-bold">{data?.name}</Text>
         <Text className="text-sm text-neutral-500">{`Exit id: ${data?.id}`}</Text>
-        {alreadyMovedProductStorages && <Text className="text-sm text-neutral-500">{`Presunuté položky: ${alreadyMovedProductStorages.length} / ${onlyNotDeletedProductStorages.length}`}</Text>}
       </View>
 
       <View className={isLandscape ? "flex-row gap-4" : ""}>
         <View className={isLandscape ? "flex-col w-1/5 gap-y-3" : "flex-row gap-3"}>
           <StatsTile
-            label="Zostávajúce položky"
-            value={notMovedProductStorages.length + '/' + onlyNotDeletedProductStorages.length}
+            label="Presunuté položky"
+            value={alreadyMovedProductStorages.length + '/' + onlyNotDeletedProductStorages.length}
             emoji="📦"
             isLandscape={isLandscape}
           />
@@ -87,7 +86,7 @@ export default function DetailPage() {
           <View
             className={`bg-neutral-200 dark:bg-neutral-800 ${isLandscape ? "w-[1px] mx-4" : "h-[1px] my-4"}`}
           />
-          <ExitWorkflow items={productPositionList} exitId={exitId} partnerId={data?.partnerId ?? 0} refetchExit={refetchExit} />
+          {productPositionList.length > 0 && <ExitWorkflow items={productPositionList} exitId={exitId} partnerId={data?.partnerId ?? 0} refetchExit={refetchExit} isRefetching={isRefetching} />}
         </View>
       </View>
     </ScrollView>

@@ -26,7 +26,7 @@ export default function StatsTile({ label, value, emoji, isLandscape }: Props) {
                     {emoji ? `${emoji} ` : ""}
                     {label}
                 </Text>
-                <Text className="text-3xl font-extrabold text-neutral-900 dark:text-neutral-50 text-center">
+                <Text className="text-xl font-extrabold text-neutral-900 dark:text-neutral-50 text-center">
                     {value}
                 </Text>
             </View>

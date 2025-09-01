@@ -12,7 +12,7 @@ import { Box } from "~/lib/icons/Box";
 import useMoveProductStorage from "~/lib/hooks/api/use-change-product-storage-state";
 import { router } from "expo-router";
 
-type Props = { items: ProductPositionList, exitId: number, partnerId: number, refetchExit: () => void };
+type Props = { items: ProductPositionList, exitId: number, partnerId: number, refetchExit: () => void, isRefetching: boolean };
 
 type Step =
   | "position"
@@ -22,7 +22,7 @@ type Step =
   | "quantity"
   | "rescanStorageToFinish";
 
-export default function ExitWorkflow({ items, exitId, partnerId, refetchExit }: Props) {
+export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, isRefetching }: Props) {
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState<Step>("position");
   const [scannedBox, setScannedBox] = useState<number | null>(null);
@@ -195,7 +195,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit }: 
         </View>
       )}
 
-      {isLoading && (
+      {(isLoading || isRefetching) && (
         <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
           <ActivityIndicator size={60} color="#666666" />
         </View>
