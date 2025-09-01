@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { Box } from "~/lib/icons/Box";
 import useMoveProductStorage from "~/lib/hooks/api/use-change-product-storage-state";
 import { router } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = { items: ProductPositionList, exitId: number, partnerId: number, refetchExit: () => void, isRefetching: boolean };
 
@@ -37,6 +38,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   const isLandscape = width > height;
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
   const { mutateAsync: mutateMoveProductStorage } = useMoveProductStorage();
+  const queryClient = useQueryClient();
 
 
   const current = items[index];
@@ -52,18 +54,14 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   function goNextItem() {
     if (index + 1 >= items.length) {
       setIsDone(true);
+      queryClient.invalidateQueries({ queryKey: ["exits"] });
       setTimeout(() => {
         router.push({
           pathname: "/logged-in/exits-index",
         });
-      }, 1000);
+      }, 800);
     } else {
-      setIndex(i => i + 1);
-      setStep("position");
-      setScannedBox(null);
-      setQuantityInput("");
-      setUsedIds([]);
-      setError("");
+      refetchExit();
     }
   }
 
@@ -143,7 +141,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
 
     setIsLoading(true);
     mutateMoveProductStorage({ ids: chosenIds, storageId: scannedBox, exitId: exitId, partnerId: partnerId, productId: current.product.id }).then(() => {
-      refetchExit();
       setUsedIds(prev => [...prev, ...chosenIds]);
       setQuantityInput("");
       setError("");
