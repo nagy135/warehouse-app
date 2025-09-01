@@ -9,6 +9,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start -c --web",
+    "typecheck": "tsc --noEmit",
     "build": "eas build -p android --profile preview",
     "clean": "rm -rf .expo node_modules",
     "clear-cache": "expo start -c",

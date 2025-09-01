@@ -1,185 +1,95 @@
-import { useIsFocused } from '@react-navigation/native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, View } from 'react-native';
-import ExitProductModal from '~/components/modal/exit-product-modal';
-import ProductStorageList from '~/components/product-storage-list';
-import Scanner from '~/components/scanner';
-import { Button } from '~/components/ui/button';
+import { useLocalSearchParams } from 'expo-router';
+import { useMemo } from 'react';
+import { ActivityIndicator, ScrollView, useWindowDimensions, View } from 'react-native';
+import ExitWorkflow from '~/components/exit-work-flow/exit-work-flow';
+import StatsTile from '~/components/exit-work-flow/stats-tile';
 import { Text } from '~/components/ui/text';
-import useChangeProductStorageState from '~/lib/hooks/api/use-change-product-storage-state';
-import useEntryExitMove from '~/lib/hooks/api/use-entry-exit-move';
+import { buildProductPositionList, summarizeProductCounts } from '~/lib/exitDetailUtils';
+import useGetStoredProductsQuery from '~/lib/hooks/api/use-get-stored-products-query';
 import useRecordDetail from '~/lib/hooks/api/use-record-detail';
-import useNotificationModal from '~/lib/hooks/use-notification-modal';
 import {
-  EntryExitStatesEnum,
   Exit,
-  ExitProductStepEnum,
-  ProductStorage,
-  type ToStringOrStringArray,
+  type ToStringOrStringArray
 } from '~/lib/types';
 
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
   const exitId = Number(exit.id);
-  const isFocused = useIsFocused();
-  const [step, setStep] = useState<ExitProductStepEnum>(
-    ExitProductStepEnum.SCAN_LOCATION,
-  );
-  const [
-    productStoragesOnScannedLocation,
-    setProductStoragesOnScannedLocation,
-  ] = useState<ProductStorage[]>();
-  const { mutateAsync: mutateEntryMove } = useEntryExitMove();
-  const { t } = useTranslation();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   const {
     data,
-    isLoading,
-    isRefetching,
-    refetch: refetchExits,
+    isLoading: isLoadingRecordDetail,
+    isRefetching: isRefetchingRecordDetail,
+    refetch: refetchExit,
   } = useRecordDetail<Exit>(exitId, 'exit');
-  const { mutateAsync: mutateAsyncChangeProductStorageState } =
-    useChangeProductStorageState({ onSuccessCallback: refetchExits });
-  const { mutateAsync: mutateExitMove } = useEntryExitMove();
 
-  const {
-    modal: PositionSkuNotFoundModal,
-    setOpen: openPositionSkuNotFoundModal,
-  } = useNotificationModal({
-    variant: 'danger',
-    title: t('exit-detail.position-not-found'),
-    description: t('exit-detail.position-not-found-description'),
-  });
-  const { modal: MoveErrorModal, setOpen: openMoveErrorModal } =
-    useNotificationModal({
-      variant: 'danger',
-      title: t('exit-detail.exit-error'),
-      description: t('exit-detail.exit-move-error-description'),
-    });
+  const onlyNotDeletedProductStorages = useMemo(() => data?.productStorages?.filter((productStorage) => productStorage.deletedAt === null) ?? [], [data?.productStorages]);
+  const alreadyMovedProductStorages = useMemo(() => onlyNotDeletedProductStorages.filter((productStorage) => productStorage.state === 'moved'), [onlyNotDeletedProductStorages]);
+  const notMovedProductStorages = useMemo(() => onlyNotDeletedProductStorages.filter((productStorage) => productStorage.state !== 'moved'), [onlyNotDeletedProductStorages]);
 
-  const { modal: ExitDoneModal, setOpen: openExitDoneModal } =
-    useNotificationModal({
-      variant: 'default',
-      title: t('exit-detail.exit-successful'),
-      description: t('exit-detail.exit-successful-description'),
-      onClose: () => {
-        router.push({
-          pathname: '/logged-in',
-        });
-      },
-    });
+  const summarizedProductCounts = useMemo(() => summarizeProductCounts(notMovedProductStorages), [notMovedProductStorages]);
 
-  const { modal: ExitErrorModal, setOpen: openExitErrorModal } =
-    useNotificationModal({
-      variant: 'danger',
-      title: t('exit-detail.exit-error'),
-      description: t('exit-detail.exit-error-description'),
-    });
+  const { data: storedProducts, isLoading: isLoadingStoredProducts, isRefetching: isRefetchingStoredProducts } = useGetStoredProductsQuery({
+    products: summarizedProductCounts,
+    productExpirationDateMap: data?.productExpirationDateMap,
+  }, { enabled: !!data?.productStorages });
 
-  useEffect(() => {
-    if (data?.state === EntryExitStatesEnum.CREATED) {
-      mutateEntryMove({
-        type: 'exit',
-        id: exitId,
-        state: EntryExitStatesEnum.REGISTERED,
-      });
-    }
-  }, [data]);
+  const productPositionList = useMemo(() => storedProducts ? buildProductPositionList(storedProducts) : [], [storedProducts]);
 
-  const allProductsMoved = data?.productStorages?.every(
-    (storage) => storage.state === 'moved',
-  );
+  const isLoading = isLoadingRecordDetail || isLoadingStoredProducts;
+  const isRefetching = isRefetchingRecordDetail || isRefetchingStoredProducts;
 
-  if (isLoading || isRefetching) {
+  if (isLoading) {
     return (
       <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
         <ActivityIndicator size={60} color="#666666" />
       </View>
     );
   }
+
   return (
-    <View className="container h-full px-2">
-      <View className="m-2 flex flex-row gap-3">
-        <View className="flex-1">
-          {isFocused && step === ExitProductStepEnum.SCAN_LOCATION && (
-            <Scanner
-              label={t('exit-detail.scan-position')}
-              mockData="secondshelftontheleft123"
-              onScan={(skuCode) => {
-                const productStorages = data?.productStorages?.filter(
-                  (storage) =>
-                    storage.storage.position?.sku === skuCode &&
-                    storage.state === 'none',
-                );
-                if (productStorages?.length) {
-                  setProductStoragesOnScannedLocation(productStorages);
-                  setStep(ExitProductStepEnum.SCAN_PRODUCT);
-                } else {
-                  openPositionSkuNotFoundModal();
-                }
-              }}
-            />
-          )}
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 12 }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View className={isLandscape ? "mb-3 flex-row items-center gap-4" : "mb-3"}>
+        <Text className="text-xl font-bold">{data?.name}</Text>
+        <Text className="text-sm text-neutral-500">{`Exit id: ${data?.id}`}</Text>
+      </View>
+
+      <View className={isLandscape ? "flex-row gap-4" : ""}>
+        <View className={isLandscape ? "flex-col w-1/5 gap-y-3" : "flex-row gap-3"}>
+          <StatsTile
+            label="Presunuté položky"
+            value={alreadyMovedProductStorages.length + '/' + onlyNotDeletedProductStorages.length}
+            emoji="📦"
+            isLandscape={isLandscape}
+          />
+          <StatsTile
+            label="Produkty"
+            value={summarizedProductCounts.length}
+            emoji="🧾"
+            isLandscape={isLandscape}
+          />
+          <StatsTile
+            label="Pozície"
+            value={productPositionList.length}
+            emoji="📍"
+            isLandscape={isLandscape}
+          />
+        </View>
+
+        <View className={isLandscape ? "flex-1 ml-4" : ""}>
+          <View
+            className={`bg-neutral-200 dark:bg-neutral-800 ${isLandscape ? "w-[1px] mx-4" : "h-[1px] my-4"}`}
+          />
+          {productPositionList.length > 0 && <ExitWorkflow items={productPositionList} exitId={exitId} partnerId={data?.partnerId ?? 0} refetchExit={refetchExit} isRefetching={isRefetching} />}
         </View>
       </View>
-      {data?.productStorages && (
-        <ProductStorageList
-          variant="exit"
-          exitName={data.name}
-          data={data.productStorages}
-          state={data.state}
-          refetchProductStorages={refetchExits}
-        />
-      )}
-      {allProductsMoved && data?.state !== EntryExitStatesEnum.MOVED && (
-        <View className="absolute bottom-10 left-0 right-0 p-4">
-          <Button
-            className="w-full"
-            onPress={() => {
-              if (
-                data?.productStorages?.every(
-                  (storage) => storage.state === 'moved',
-                )
-              ) {
-                mutateExitMove({ type: 'exit', id: exitId })
-                  .then(openExitDoneModal)
-                  .catch(openExitErrorModal);
-              } else {
-                router.push({
-                  pathname: '/logged-in',
-                });
-              }
-            }}
-          >
-            <Text className="text-center">{t('exit-list.finish')}</Text>
-          </Button>
-        </View>
-      )}
-      <ExitProductModal
-        open={step !== ExitProductStepEnum.SCAN_LOCATION}
-        step={step}
-        setStep={setStep}
-        setClose={() => {
-          setProductStoragesOnScannedLocation(undefined);
-          setStep(ExitProductStepEnum.SCAN_LOCATION);
-        }}
-        productStoragesOnScannedLocation={productStoragesOnScannedLocation}
-        onConfirm={(productStorageIds, boxSku) => {
-          mutateAsyncChangeProductStorageState({
-            ids: productStorageIds,
-            change: 'moved',
-            storageSku: boxSku,
-          })
-            .then(() => setStep(ExitProductStepEnum.SCAN_LOCATION))
-            .catch(openMoveErrorModal);
-        }}
-      />
-      {PositionSkuNotFoundModal}
-      {MoveErrorModal}
-      {ExitDoneModal}
-      {ExitErrorModal}
-    </View>
+    </ScrollView>
   );
+
 }

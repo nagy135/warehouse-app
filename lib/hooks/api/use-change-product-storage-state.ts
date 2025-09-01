@@ -2,36 +2,29 @@ import { useMutation } from '@tanstack/react-query';
 import { useSession } from '~/ctx';
 import { API_ROOT } from '~/lib/constants';
 
-export default function useChangeProductStorageState({
-  onSuccessCallback,
-}: {
-  onSuccessCallback: () => void;
-}): {
+type MoveProductStorage = {
+  ids: number[];
+  storageId: number;
+  exitId: number;
+  partnerId: number;
+  productId: number;
+};
+
+export default function useMoveProductStorage(): {
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutate: (args: {
-    ids: number[];
-    change: 'counted' | 'moved' | 'none';
-    storageSku?: string;
-  }) => void;
-  mutateAsync: (args: {
-    ids: number[];
-    change: 'counted' | 'moved' | 'none';
-    storageSku?: string;
-  }) => Promise<void>;
+  mutateAsync: (args: MoveProductStorage) => Promise<void>;
 } {
   const { session } = useSession();
   const mutateRecords = async ({
     ids,
-    change,
-    storageSku,
-  }: {
-    ids: number[];
-    change: 'counted' | 'moved' | 'none';
-    storageSku?: string;
-  }) => {
-    const path = `${API_ROOT}/product-storages/${change}`;
+    storageId,
+    exitId,
+    partnerId,
+    productId,
+  }: MoveProductStorage) => {
+    const path = `${API_ROOT}/product-storages/moved`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`changing: ${path}`);
     }
@@ -41,27 +34,26 @@ export default function useChangeProductStorageState({
         Authorization: `Bearer ${session?.accessToken}`,
         ContentType: 'application/json',
       },
-      body: JSON.stringify({ ids, storageSku }),
+      body: JSON.stringify({ ids, storageId, exitId, partnerId, productId }),
       method: 'POST',
     });
+
     const data = await res.json();
+    if (!res.ok) {
+      throw new Error(JSON.stringify(data.error ?? 'unknown'));
+    }
+
     return data;
   };
 
-  const { isPending, isError, isSuccess, mutate, mutateAsync } = useMutation({
+  const { isPending, isError, isSuccess, mutateAsync } = useMutation({
     mutationKey: [`reset-product-storages`],
     mutationFn: mutateRecords,
-    onSuccess: onSuccessCallback,
   });
   return {
     isPending,
     isError,
     isSuccess,
-    mutate: (args: { ids: number[]; change: 'counted' | 'moved' | 'none' }) =>
-      mutate(args),
-    mutateAsync: (args: {
-      ids: number[];
-      change: 'counted' | 'moved' | 'none';
-    }) => mutateAsync(args),
+    mutateAsync: (args: MoveProductStorage) => mutateAsync(args),
   };
 }
