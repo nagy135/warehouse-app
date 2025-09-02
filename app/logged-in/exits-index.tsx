@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -15,18 +15,27 @@ import { Text } from '~/components/ui/text';
 import useGetRecords from '~/lib/hooks/api/use-get-records';
 import useNotificationModal from '~/lib/hooks/use-notification-modal';
 import { Exit } from '~/lib/types';
+import useFindExitBySku from '~/lib/hooks/api/use-find-exit-by-sku';
 
 export default function ExitsPage() {
-  const isFocused = useIsFocused();
   const [searchValue, setSearchValue] = useState('');
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
+  const { mutateAsync: findExitBySku } = useFindExitBySku();
   const { setOpen: notificationModalOpen, modal: notificationModal } =
     useNotificationModal({
       title: t('not-found-title'),
       description: t('exit-list.not-found'),
     });
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
   const {
     data: exits,
@@ -55,16 +64,17 @@ export default function ExitsPage() {
                 size={'sm'}
                 label={t('scan')}
                 mockData="billadeliveryofpancakes123"
-                onScan={(data) => {
-                  const foundExit = exits?.find(
-                    (exit: Exit) => exit.sku === data,
-                  );
-                  if (foundExit) {
-                    setFoundExit(foundExit);
-                    setRedirectModalOpen(true);
-                  } else {
+                onScan={async (data) => {
+                  findExitBySku({ sku: data }).then((foundExit) => {
+                    if (foundExit) {
+                      setFoundExit(foundExit);
+                      setRedirectModalOpen(true);
+                    } else {
+                      notificationModalOpen();
+                    }
+                  }).catch(() => {
                     notificationModalOpen();
-                  }
+                  });
                 }}
               />
             )}

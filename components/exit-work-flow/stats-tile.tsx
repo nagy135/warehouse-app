@@ -13,7 +13,7 @@ export default function StatsTile({ label, value, emoji, isLandscape }: Props) {
     return (
         <View
             className={`flex-1 rounded-2xl border border-neutral-200 bg-white/90 dark:bg-neutral-900/90 shadow-sm items-center justify-center
-          ${isLandscape ? "px-3 py-1" : "px-4 py-3"}`}
+          ${isLandscape ? "px-3 py-2" : "px-4 py-3"}`}
         >
             <View
                 className={

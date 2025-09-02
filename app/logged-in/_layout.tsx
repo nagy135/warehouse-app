@@ -6,7 +6,6 @@ import { Redirect, Stack } from 'expo-router';
 import { useSession } from '../../ctx';
 import { MoveRight } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { NavigationContainer } from '@react-navigation/native';
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
@@ -27,66 +26,64 @@ export default function ActionLayout() {
 
   // This layout can be deferred because it's not the root layout.
   return (
-    <NavigationContainer>
-      <Stack
-        screenOptions={{
-          headerShown: true,
+    <Stack
+      screenOptions={{
+        headerShown: true,
+      }}
+    >
+      <Stack.Screen
+        name="index"
+        options={{
+          title: t('titles.home'),
+          animation: 'slide_from_right',
         }}
-      >
-        <Stack.Screen
-          name="index"
-          options={{
-            title: t('titles.home'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="exits-index"
-          options={{
-            title: t('titles.exits'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="exit-detail"
-          options={{
-            title: t('titles.exit'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="move-index"
-          options={{
-            title: t('titles.move'),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="move-storage"
-          options={{
-            headerTitle: () => (
-              <MoveArrowFromTo
-                from={t('titles.storage')}
-                to={t('titles.new-position')}
-              />
-            ),
-            animation: 'slide_from_right',
-          }}
-        />
-        <Stack.Screen
-          name="move-product"
-          options={{
-            headerTitle: () => (
-              <MoveArrowFromTo
-                from={t('titles.product')}
-                to={t('titles.new-storage')}
-              />
-            ),
-            animation: 'slide_from_right',
-          }}
-        />
-      </Stack>
-    </NavigationContainer>
+      />
+      <Stack.Screen
+        name="exits-index"
+        options={{
+          title: t('titles.exits'),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="exit-detail"
+        options={{
+          title: t('titles.exit'),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="move-index"
+        options={{
+          title: t('titles.move'),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="move-storage"
+        options={{
+          headerTitle: () => (
+            <MoveArrowFromTo
+              from={t('titles.storage')}
+              to={t('titles.new-position')}
+            />
+          ),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="move-product"
+        options={{
+          headerTitle: () => (
+            <MoveArrowFromTo
+              from={t('titles.product')}
+              to={t('titles.new-position')}
+            />
+          ),
+          animation: 'slide_from_right',
+        }}
+      />
+    </Stack>
   );
 }
 

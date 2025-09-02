@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import CountModal from '~/components/modal/count-modal';
@@ -15,7 +15,7 @@ import useNotificationModal from '~/lib/hooks/use-notification-modal';
 import { MoveProductStepEnum, Product, ProductStorage } from '~/lib/types';
 
 export default function MoveProductPage() {
-  const isFocused = useIsFocused();
+  const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
 
   const [step, setStep] = useState<MoveProductStepEnum>(
@@ -29,6 +29,13 @@ export default function MoveProductPage() {
 
   const { mutateAsync: mutateCheckProductExits } = useCheckProductExits();
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
   const { modal: productNotFoundModal, setOpen: openProductNotFoundModal } =
     useNotificationModal({

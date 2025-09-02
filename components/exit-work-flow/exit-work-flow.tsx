@@ -1,17 +1,16 @@
-import React, { useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, useWindowDimensions, View } from "react-native";
+import Scanner from "~/components/scanner";
+import { Button } from "~/components/ui/button";
 import { Input } from '~/components/ui/input';
 import { Text } from "~/components/ui/text";
-import { Button } from "~/components/ui/button";
-import Scanner from "~/components/scanner";
-import useCheckStorageExits from '~/lib/hooks/api/use-check-storage-exits';
-import { useIsFocused } from "@react-navigation/native";
 import { ProductPositionList } from "~/lib/exitDetailUtils";
-import { useTranslation } from "react-i18next";
-import { Box } from "~/lib/icons/Box";
 import useMoveProductStorage from "~/lib/hooks/api/use-change-product-storage-state";
-import { router } from "expo-router";
-import { useQueryClient } from "@tanstack/react-query";
+import useCheckStorageExits from '~/lib/hooks/api/use-check-storage-exits';
+import { Box } from "~/lib/icons/Box";
 
 type Props = { items: ProductPositionList, exitId: number, partnerId: number, refetchExit: () => void, isRefetching: boolean };
 
@@ -32,7 +31,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [isDone, setIsDone] = useState(false);
-  const isFocused = useIsFocused();
+  const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
@@ -40,6 +39,12 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   const { mutateAsync: mutateMoveProductStorage } = useMoveProductStorage();
   const queryClient = useQueryClient();
 
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
   const current = items[index];
 
@@ -71,8 +76,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
 
 
   function handleScanPosition(scan: string) {
-    setStep("storage");
-    return;
     if (scan === current.position.sku) {
       setStep("storage");
       setError("");
@@ -82,8 +85,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   }
 
   function handleScanStorage(scan: string) {
-    setStep("box");
-    return;
     if (scan === current.storage.sku) {
       setStep("box");
       setError("");
@@ -108,9 +109,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   }
 
   function handleScanProduct(scan: string) {
-    setStep("quantity");
-    setQuantityInput(remainingCount.toString());
-    return;
     if (scan === current.product.sku || scan === current.product.ean) {
       setStep("quantity");
       setQuantityInput(remainingCount.toString());
@@ -158,14 +156,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   }
 
   function handleRescanStorageToFinish(scan: string) {
-    goNextItem();
-    return;
     if (scan === current.storage.sku) {
-      console.log("[ITEM_DONE]", {
-        productId: current.product.id,
-        productName: current.product.name,
-        totalMoved: usedIds.length,
-      });
       goNextItem();
     } else {
       setError("Nesprávne úložisko");
@@ -206,7 +197,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
               <Text className="font-bold text-center text-2xl">{current.position.name}</Text>
             </View>
 
-            {isFocused && <Scanner label="Oskenuj pozíciu" onScan={handleScanPosition} />}
+            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj pozíciu" : ''} onScan={handleScanPosition} />}
           </>
         )}
 
@@ -216,14 +207,14 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
               <Text className="text-center text-2xl">Oskenuj úložisko</Text>
               <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
             </View>
-            {isFocused && <Scanner label="Oskenuj úložisko" onScan={handleScanStorage} />}
+            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj úložisko" : ''} onScan={handleScanStorage} />}
           </>
         )}
 
         {step === "box" && (
           <View>
             <Text className="mb-1 text-center text-2xl">Oskenuj prenosný box</Text>
-            {isFocused && <Scanner label="Oskenuj prenosný box" onScan={handleScanBox} />}
+            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj prenosný box" : ''} onScan={handleScanBox} />}
             <View className="mt-4">
               <Text>Počet zostávajúcich produktov: {remainingCount}</Text>
             </View>
@@ -254,7 +245,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
                   .join(", ")}
               </Text>
             )}
-            {isFocused && <Scanner label="Oskenuj produkt" onScan={handleScanProduct} />}
+            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj produkt" : ''} onScan={handleScanProduct} />}
           </View>
         )}
 
@@ -290,7 +281,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
               <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
             </View>
             {isFocused && <Scanner
-              label="Oskenuj pôvodné úložisko"
+              label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj pôvodné úložisko" : ''}
               onScan={handleRescanStorageToFinish}
             />}
           </View>

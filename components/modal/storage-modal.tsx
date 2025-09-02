@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import React from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import {
@@ -31,8 +31,15 @@ export default function StorageModal({
   openStorageNotFoundModal: () => void;
 }) {
   const { t } = useTranslation();
-  const isFocused = useIsFocused();
+  const [isFocused, setIsFocused] = useState(false);
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
+  );
 
   return (
     <AlertDialog open={open}>

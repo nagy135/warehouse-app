@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import Scanner from '~/components/scanner';
@@ -14,7 +14,7 @@ import useNotificationModal from '~/lib/hooks/use-notification-modal';
 import { MoveStorageStepEnum, PositionExits } from '~/lib/types';
 
 export default function MovePositionPage() {
-  const isFocused = useIsFocused();
+  const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
 
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
@@ -24,6 +24,13 @@ export default function MovePositionPage() {
   const [storage, setStorage] = useState<checkStorageExitsResponse>();
   const [step, setStep] = useState<MoveStorageStepEnum>(
     MoveStorageStepEnum.SCAN_STORAGE,
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsFocused(true);
+      return () => setIsFocused(false);
+    }, [])
   );
 
   const { modal: storageNotFoundModal, setOpen: openStorageNotFoundModal } =
