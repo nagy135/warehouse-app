@@ -72,6 +72,13 @@ export default function ActionLayout() {
         }}
       />
       <Stack.Screen
+        name="move-storage-items"
+        options={{
+          title: t('titles.move-items'),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
         name="move-product"
         options={{
           headerTitle: () => (

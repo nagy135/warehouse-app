@@ -162,3 +162,9 @@ export enum MoveStorageStepEnum {
   SCAN_POSITION = 'SCAN_POSITION',
   FINISH = 'FINISH',
 }
+
+export enum MoveStorageItemsStepEnum {
+  SCAN_ORIGINAL_STORAGE = 'SCAN_ORIGINAL_STORAGE',
+  SCAN_NEW_STORAGE = 'SCAN_NEW_STORAGE',
+  FINISH = 'FINISH',
+}

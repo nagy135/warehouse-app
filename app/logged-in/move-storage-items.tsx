@@ -5,25 +5,23 @@ import { View } from 'react-native';
 import Scanner from '~/components/scanner';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
-import useCheckPositionExits from '~/lib/hooks/api/use-check-position-exits';
 import useCheckStorageExits, {
   checkStorageExitsResponse,
 } from '~/lib/hooks/api/use-check-storage-exits';
-import useTransferStorageToPosition from '~/lib/hooks/api/use-transfer-storage-to-position';
+import useTransferStorageItems from '~/lib/hooks/api/use-transfer-storage-items';
 import useNotificationModal from '~/lib/hooks/use-notification-modal';
-import { MoveStorageStepEnum, PositionExits } from '~/lib/types';
+import { MoveStorageItemsStepEnum } from '~/lib/types';
 
 export default function MovePositionPage() {
   const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
 
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
-  const { mutateAsync: mutateCheckPositionExits } = useCheckPositionExits();
 
-  const [position, setPosition] = useState<PositionExits>();
-  const [storage, setStorage] = useState<checkStorageExitsResponse>();
-  const [step, setStep] = useState<MoveStorageStepEnum>(
-    MoveStorageStepEnum.SCAN_STORAGE,
+  const [originalStorage, setOriginalStorage] = useState<checkStorageExitsResponse>();
+  const [newStorage, setNewStorage] = useState<checkStorageExitsResponse>();
+  const [step, setStep] = useState<MoveStorageItemsStepEnum>(
+    MoveStorageItemsStepEnum.SCAN_ORIGINAL_STORAGE,
   );
 
   useFocusEffect(
@@ -40,28 +38,14 @@ export default function MovePositionPage() {
       description: t('move-section.storage-to-not-found'),
     });
 
-  const { modal: positionNotFoundModal, setOpen: openPositionNotFoundModal } =
-    useNotificationModal({
-      variant: 'danger',
-      title: t('move-section.position-not-found'),
-      description: t('move-section.position-not-found-description'),
-    });
-
-  const { modal: positionNotEmptyModal, setOpen: openPositionNotEmptyModal } =
-    useNotificationModal({
-      variant: 'danger',
-      title: t('move-section.position-not-empty'),
-      description: t('move-section.position-not-empty-description'),
-    });
-
   const { modal: successModal, setOpen: openSuccessModal } =
     useNotificationModal({
       title: t('move-section.transfer-successful'),
-      description: t('move-section.transfer-storage-successful-description'),
-      onClose: () => setStep(MoveStorageStepEnum.SCAN_STORAGE),
+      description: t('move-section.transfer-storage-items-successful-description'),
+      onClose: () => setStep(MoveStorageItemsStepEnum.SCAN_ORIGINAL_STORAGE),
     });
 
-  const { mutate, error } = useTransferStorageToPosition({
+  const { mutate, error } = useTransferStorageItems({
     onSuccessCallback: () => {
       resetProcess();
       openSuccessModal();
@@ -72,14 +56,14 @@ export default function MovePositionPage() {
   });
 
   const resetProcess = () => {
-    setPosition(undefined);
-    setStorage(undefined);
+    setOriginalStorage(undefined);
+    setNewStorage(undefined);
   };
 
   const { modal: errorModal, setOpen: openErrorModal } = useNotificationModal({
     variant: 'danger',
     title: t('move-section.transfer-error'),
-    description: t('move-section.transfer-storage-error-description', {
+    description: t('move-section.transfer-storage-items-error-description', {
       error,
     }),
   });
@@ -87,61 +71,65 @@ export default function MovePositionPage() {
   return (
     <View className="flex-1 items-center justify-center gap-5 bg-secondary/30 p-6">
       <View className="flex w-full justify-center gap-3">
-        {isFocused && step === MoveStorageStepEnum.SCAN_STORAGE && (
+        {isFocused && step === MoveStorageItemsStepEnum.SCAN_ORIGINAL_STORAGE && (
           <Scanner
-            label={t('move-section.scan-storage')}
-            mockData="TP994"
+            label={t('move-section.scan-original-storage')}
+            mockData="TP999"
             onScan={(data) => {
-              mutateCheckStorageExits({ sku: data })
+              mutateCheckStorageExits({ sku: data, includeItems: true })
                 .then((data) => {
-                  setStorage(data);
-                  setStep(MoveStorageStepEnum.SCAN_POSITION);
+                  setOriginalStorage(data);
+                  setStep(MoveStorageItemsStepEnum.SCAN_NEW_STORAGE);
                 })
                 .catch(openStorageNotFoundModal);
             }}
           />
         )}
-        {storage && (
-          <View>
+        {originalStorage && (
+          <View className='mb-4'>
             <Text className="text-xl">
-              {`${t('move-section.storage')}: `}
-              <Text className="text-xl font-bold">{storage.name}</Text>
+              {`${t('move-section.original-storage')}: `}
+              <Text className="text-xl font-bold">{originalStorage.name}</Text>
+            </Text>
+            <Text>
+              {`${t('move-section.items-count')}: `}
+              <Text className="text-xl font-bold">{originalStorage.productStorages?.length || 0}</Text>
             </Text>
           </View>
         )}
-        {isFocused && step === MoveStorageStepEnum.SCAN_POSITION && (
+        {isFocused && step === MoveStorageItemsStepEnum.SCAN_NEW_STORAGE && (
           <Scanner
-            label={t('move-section.scan-new-position')}
-            mockData="Z1-AA-099-F"
+            label={t('move-section.scan-new-storage')}
+            mockData="TP994"
             onScan={(data) => {
-              mutateCheckPositionExits({ sku: data })
+              mutateCheckStorageExits({ sku: data, includeItems: true })
                 .then((data) => {
-                  if (data.storages.length === 0) {
-                    setPosition(data);
-                    setStep(MoveStorageStepEnum.FINISH);
-                  } else {
-                    openPositionNotEmptyModal();
-                  }
+                  setNewStorage(data);
+                  setStep(MoveStorageItemsStepEnum.FINISH);
                 })
-                .catch(openPositionNotFoundModal);
+                .catch(openStorageNotFoundModal);
             }}
           />
         )}
-        {position && (
+        {newStorage && (
           <View>
             <Text className="text-xl">
-              {`${t('move-section.position')}: `}
-              <Text className="text-xl font-bold">{position.name}</Text>
+              {`${t('move-section.new-storage')}: `}
+              <Text className="text-xl font-bold">{newStorage.name}</Text>
+            </Text>
+            <Text>
+              {`${t('move-section.items-count')}: `}
+              <Text className="text-xl font-bold">{newStorage.productStorages?.length || 0}</Text>
             </Text>
           </View>
         )}
         <View className="mt-5 flex flex-row justify-center gap-3">
-          {position && storage && (
+          {originalStorage && newStorage && (
             <Button
               variant="secondary"
               className="flex-1 border"
               onPress={() => {
-                mutate({ positionSKU: position.sku, storageSKU: storage.sku });
+                mutate({ originalStorageId: originalStorage.id, newStorageId: newStorage.id });
               }}
             >
               <Text>{t('move-section.transfer')}</Text>
@@ -151,7 +139,7 @@ export default function MovePositionPage() {
             variant="destructive"
             className="w-1/3"
             onPress={() => {
-              setStep(MoveStorageStepEnum.SCAN_STORAGE);
+              setStep(MoveStorageItemsStepEnum.SCAN_ORIGINAL_STORAGE);
               resetProcess();
             }}
           >
@@ -160,8 +148,6 @@ export default function MovePositionPage() {
         </View>
       </View>
       {storageNotFoundModal}
-      {positionNotFoundModal}
-      {positionNotEmptyModal}
       {successModal}
       {errorModal}
     </View>

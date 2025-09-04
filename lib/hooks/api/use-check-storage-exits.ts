@@ -4,12 +4,16 @@ import { API_ROOT } from '~/lib/constants';
 
 type checkStorageExits = {
   sku: string;
+  includeItems?: boolean;
 };
 
 export type checkStorageExitsResponse = {
   id: number;
   sku: string;
   name: string;
+  productStorages?: Array<{
+    id: number;
+  }>;
 };
 
 export default function useCheckStorageExits(): {
@@ -19,8 +23,8 @@ export default function useCheckStorageExits(): {
   mutateAsync: (args: checkStorageExits) => Promise<checkStorageExitsResponse>;
 } {
   const { session } = useSession();
-  const mutateRecords = async ({ sku }: checkStorageExits) => {
-    const path = `${API_ROOT}/storage/sku?sku=${sku}`;
+  const mutateRecords = async ({ sku, includeItems }: checkStorageExits) => {
+    const path = `${API_ROOT}/storage/sku?sku=${sku}&includeItems=${includeItems}`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`changing: ${path}`);
     }

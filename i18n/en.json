@@ -29,6 +29,7 @@
     "new-storage": "New storage box",
     "storage": "Storage box",
     "new-position": "New position",
+    "move-items": "Move items",
     "entry-select-storage": "Entry - select storage box"
   },
   "state": {
@@ -139,8 +140,10 @@
   "move-section": {
     "product": "Product",
     "storage": "Storage box",
+    "storage-items": "Storage boxitems",
     "count": "Count",
     "scan-product": "Scan product",
+    "items-count": "Items count",
     "original-storage": "Original storage box",
     "new-storage": "New storage box",
     "scan-original-storage": "Scan original storage box",
@@ -165,6 +168,8 @@
     "transfer-error": "Error occurred",
     "transfer-product-error-description": "The product transfer failed. Error: {{error}}",
     "transfer-storage-error-description": "Storage box transfer failed. Error: {{error}}",
+    "transfer-storage-items-successful-description": "The storage box items have been transferred to the new storage box.",
+    "transfer-storage-items-error-description": "The storage box items transfer failed. Error: {{error}}",
     "scan-storage": "Scan storage box",
     "position": "Position",
     "scan-new-position": "Scan new position"
