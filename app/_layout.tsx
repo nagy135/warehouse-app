@@ -2,7 +2,7 @@ import '~/global.css';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Theme, ThemeProvider } from '@react-navigation/native';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack, router } from 'expo-router';
 import { View } from 'react-native';
 import { Text } from '~/components/ui/text';
 import * as React from 'react';
@@ -20,6 +20,7 @@ import { PageStateProvider } from './contexts/PageStateContext';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { initializeI18nInstance } from '~/i18n';
 import { LanguageSelector } from '~/components/language-selector/LanguageSelector';
+import { jwtDecode } from 'jwt-decode';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,37 @@ const DARK_THEME: Theme = {
   dark: true,
   colors: NAV_THEME.dark,
 };
+
+// Component to handle authentication routing
+function AuthenticationHandler() {
+  const { session, isLoading } = useSession();
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      if (session?.accessToken) {
+        // Check if token is still valid
+        try {
+          const payload = jwtDecode<{ exp: number }>(session.accessToken);
+          const currentTime = Math.floor(Date.now() / 1000);
+
+          if (payload.exp > currentTime) {
+            // Token is valid, redirect to logged-in area
+            router.replace('/logged-in');
+          } else {
+            // Token is expired, clear session and stay on login
+            console.log('Stored token is expired, clearing session');
+            // The session will be cleared by the context
+          }
+        } catch (error) {
+          console.error('Error parsing stored token:', error);
+          // Invalid token, stay on login
+        }
+      }
+    }
+  }, [session, isLoading]);
+
+  return null; // This component doesn't render anything
+}
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -79,6 +111,7 @@ export default function RootLayout() {
         <SessionProvider>
           <PageStateProvider>
             <QueryClientProvider client={queryClient}>
+              <AuthenticationHandler />
               <Stack>
                 <Stack.Screen
                   name="index"

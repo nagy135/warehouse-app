@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GroupByResult } from './types';
+import { jwtDecode } from 'jwt-decode';
 
 // NOTE: for testing slower fetches
 export const sleep = (ms: number) =>
@@ -34,3 +35,26 @@ export function groupBy<T>(array: T[], key: string): GroupByResult<T> {
 export function arrayCount<T>(array: T[], value: T): number {
   return array.filter((v) => v === value).length;
 }
+
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = jwtDecode<{ exp: number }>(token);
+    const currentTime = Math.floor(Date.now() / 1000);
+    // Token is expired if it expires in less than 1 hour (3600 seconds)
+    return payload.exp < currentTime + 3600;
+  } catch (error) {
+    console.error('Error parsing JWT token:', error);
+    return true; // Consider invalid tokens as expired
+  }
+};
+
+export const isTokenValid = (token: string): boolean => {
+  try {
+    const payload = jwtDecode<{ exp: number }>(token);
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp > currentTime;
+  } catch (error) {
+    console.error('Error parsing JWT token:', error);
+    return false;
+  }
+};
