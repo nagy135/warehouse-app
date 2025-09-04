@@ -167,7 +167,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
     <View className={`flex-1 ${isLandscape ? "p-2" : "p-4"}`}>
       <View className={isLandscape ? "mb-2" : "mb-4"}>
         <Text className="text-lg font-bold text-center">
-          {index + 1} / {items.length} — {current.product.name} ({current.productStoragesId.length} ks)
+          {current.product.name} ({current.productStoragesId.length} ks)
         </Text>
       </View>
 
