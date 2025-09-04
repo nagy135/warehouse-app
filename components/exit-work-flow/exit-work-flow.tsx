@@ -61,9 +61,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
       setIsDone(true);
       queryClient.invalidateQueries({ queryKey: ["exits"] });
       setTimeout(() => {
-        router.push({
-          pathname: "/logged-in/exits-index",
-        });
+        router.replace("/logged-in");
       }, 800);
     } else {
       refetchExit();
