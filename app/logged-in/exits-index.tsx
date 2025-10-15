@@ -1,27 +1,31 @@
 import { useFocusEffect } from 'expo-router';
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  FlatList,
   RefreshControl,
-  ScrollView,
   View,
+  ViewToken,
 } from 'react-native';
 import ExitCard from '~/components/exit/card';
 import RedirectModal from '~/components/modal/redirect-modal';
 import Scanner from '~/components/scanner';
 import { Input } from '~/components/ui/input';
 import { Text } from '~/components/ui/text';
+import useFindExitBySku from '~/lib/hooks/api/use-find-exit-by-sku';
 import useGetRecords from '~/lib/hooks/api/use-get-records';
 import useNotificationModal from '~/lib/hooks/use-notification-modal';
 import { Exit } from '~/lib/types';
-import useFindExitBySku from '~/lib/hooks/api/use-find-exit-by-sku';
 
 export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState('');
+  const [page, setPage] = useState(1);
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [lastVisibleId, setLastVisibleId] = useState<number | null>(null);
+
   const { t } = useTranslation();
   const { mutateAsync: findExitBySku } = useFindExitBySku();
   const { setOpen: notificationModalOpen, modal: notificationModal } =
@@ -30,6 +34,20 @@ export default function ExitsPage() {
       description: t('exit-list.not-found'),
     });
 
+  const {
+    data: exits,
+    isWaiting,
+    isLoading,
+    error,
+    refreshing,
+    isFetching,
+    onRefresh,
+  } = useGetRecords<Exit>({ search: searchValue, page });
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchValue]);
+
   useFocusEffect(
     useCallback(() => {
       setIsFocused(true);
@@ -37,14 +55,35 @@ export default function ExitsPage() {
     }, [])
   );
 
-  const {
-    data: exits,
-    isWaiting,
-    isLoading,
-    error,
-    refreshing,
-    onRefresh,
-  } = useGetRecords<Exit>('exits', searchValue);
+  const renderItem = useCallback(
+    ({ item }: { item: Exit }) => (
+      <View className="my-1">
+        <ExitCard exit={item} />
+      </View>
+    ),
+    []
+  );
+
+  const handleViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken<Exit>[] }) => {
+      if (viewableItems.length === 0 || !exits?.length) return;
+
+      const lastItem = viewableItems[viewableItems.length - 1];
+      const item = lastItem?.item;
+      const index = lastItem?.index ?? -1;
+
+      if (!item || index === -1) return;
+      if (item.id === lastVisibleId) return;
+
+      const isLastVisible = index === exits.length - 1;
+      if (isLastVisible && !isLoading && !isWaiting) {
+        setLastVisibleId(item.id);
+        setPage((prev) => prev + 1);
+      }
+    },
+    [exits, isLoading, isWaiting, lastVisibleId]
+  );
+
 
   if (error) return <Text>error</Text>;
 
@@ -65,39 +104,46 @@ export default function ExitsPage() {
                 label={t('scan')}
                 mockData="billadeliveryofpancakes123"
                 onScan={async (data) => {
-                  findExitBySku({ sku: data }).then((foundExit) => {
+                  try {
+                    const foundExit = await findExitBySku({ sku: data });
                     if (foundExit) {
                       setFoundExit(foundExit);
                       setRedirectModalOpen(true);
                     } else {
                       notificationModalOpen();
                     }
-                  }).catch(() => {
+                  } catch {
                     notificationModalOpen();
-                  });
+                  }
                 }}
               />
             )}
           </View>
         </View>
-        <ScrollView
+
+        <FlatList
+          data={exits}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-        >
-          {exits?.map((exit: Exit, i: number) => (
-            <View key={`exit-card-${i}`} className="my-1">
-              <ExitCard exit={exit} />
-            </View>
-          ))}
-        </ScrollView>
+          onViewableItemsChanged={handleViewableItemsChanged}
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 50, // spustí sa, keď je 50 % položky viditeľné
+          }}
+          ListFooterComponent={
+            (isLoading || isWaiting || isFetching) ? (
+              <View className="py-4 items-center">
+                <ActivityIndicator size="large" color="#666666" />
+              </View>
+            ) : null
+          }
+        />
       </View>
-      {(isWaiting || isLoading) && (
-        <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
-          <ActivityIndicator size={60} color="#666666" />
-        </View>
-      )}
+
       {notificationModal}
+
       <RedirectModal
         open={redirectModalOpen}
         title={t('exit-list.redirect-to-exit')}
