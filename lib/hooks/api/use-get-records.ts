@@ -107,10 +107,9 @@ export default function useGetRecords<T>(params?: {
     isLoading,
     isFetching,
     refreshing,
-    onRefresh: () => {
+    onRefresh: async () => {
       setRefreshing(true);
-      setAccumulatedData([]);
-      queryClient.invalidateQueries({ queryKey: [params] });
+      await queryClient.invalidateQueries({ queryKey: [params] });
       setRefreshing(false);
     },
   };
