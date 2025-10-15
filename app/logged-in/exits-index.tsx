@@ -16,10 +16,15 @@ import { Text } from '~/components/ui/text';
 import useFindExitBySku from '~/lib/hooks/api/use-find-exit-by-sku';
 import useGetRecords from '~/lib/hooks/api/use-get-records';
 import useNotificationModal from '~/lib/hooks/use-notification-modal';
-import { Exit } from '~/lib/types';
+import { Exit, Partner, Delivery } from '~/lib/types';
+import useGetPartners from '~/lib/hooks/api/use-get-partners';
+import useGetDeliveries from '~/lib/hooks/api/use-get-deliveries';
+import { Dropdown } from '~/components/ui/dropdown';
+import { usePageStateContext, PagesStateActions } from '../contexts/PageStateContext';
 
 export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState('');
+  const { state, dispatch } = usePageStateContext();
   const [page, setPage] = useState(1);
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
@@ -42,11 +47,19 @@ export default function ExitsPage() {
     refreshing,
     isFetching,
     onRefresh,
-  } = useGetRecords<Exit>({ search: searchValue, page });
+  } = useGetRecords<Exit>({
+    search: searchValue,
+    page,
+    partner: state.selectedPartner ?? undefined,
+    delivery: state.selectedDelivery ?? undefined
+  });
+
+  const { data: partners } = useGetPartners();
+  const { data: deliveries } = useGetDeliveries();
 
   useEffect(() => {
     setPage(1);
-  }, [searchValue]);
+  }, [searchValue, state.selectedPartner, state.selectedDelivery]);
 
   useFocusEffect(
     useCallback(() => {
@@ -58,10 +71,14 @@ export default function ExitsPage() {
   const renderItem = useCallback(
     ({ item }: { item: Exit }) => (
       <View className="my-1">
-        <ExitCard exit={item} />
+        <ExitCard
+          exit={item}
+          delivery={deliveries?.find((delivery) => delivery.id === item.deliveryId)?.name ?? ''}
+          partner={partners?.find((partner) => partner.id === item.partnerId)?.name ?? ''}
+        />
       </View>
     ),
-    []
+    [deliveries, partners]
   );
 
   const handleViewableItemsChanged = useCallback(
@@ -83,7 +100,6 @@ export default function ExitsPage() {
     },
     [exits, isLoading, isWaiting, lastVisibleId]
   );
-
 
   if (error) return <Text>error</Text>;
 
@@ -121,6 +137,20 @@ export default function ExitsPage() {
           </View>
         </View>
 
+        <Dropdown<number, Partner>
+          value={state.selectedPartner}
+          setValue={(value) => dispatch({ type: PagesStateActions.SET_SELECTED_PARTNER, value })}
+          data={partners}
+          placeholder={t('partner')}
+        />
+
+        <Dropdown<number, Delivery>
+          value={state.selectedDelivery}
+          setValue={(value) => dispatch({ type: PagesStateActions.SET_SELECTED_DELIVERY, value })}
+          data={deliveries}
+          placeholder={t('delivery')}
+        />
+
         <FlatList
           data={exits}
           keyExtractor={(item) => item.id.toString()}
@@ -130,12 +160,19 @@ export default function ExitsPage() {
           }
           onViewableItemsChanged={handleViewableItemsChanged}
           viewabilityConfig={{
-            itemVisiblePercentThreshold: 50, // spustí sa, keď je 50 % položky viditeľné
+            itemVisiblePercentThreshold: 50,
           }}
           ListFooterComponent={
             (isLoading || isWaiting || isFetching) ? (
               <View className="py-4 items-center">
                 <ActivityIndicator size="large" color="#666666" />
+              </View>
+            ) : null
+          }
+          ListEmptyComponent={
+            (exits?.length === 0 && !isLoading && !isWaiting && !isFetching) ? (
+              <View className="py-4 items-center">
+                <Text>{t('exit-list.no-results')}</Text>
               </View>
             ) : null
           }

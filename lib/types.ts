@@ -22,10 +22,11 @@ export type Exit = {
   isIncomplete: boolean;
   priority: boolean;
   createdById: string;
+  deliveryId: number;
+  partnerId: number;
   productStorages?: ProductStorage[];
   productExpirationDateMap?: Record<string, string>;
   state: EntryExitStatesEnum;
-  partnerId: number;
 };
 
 export type Package = {
@@ -124,6 +125,16 @@ export type Product = {
   createdById: string;
   productStorages: ProductStorage[];
   isBox: boolean;
+};
+
+export type Partner = {
+  id: number;
+  name: string;
+};
+
+export type Delivery = {
+  id: number;
+  name: string;
 };
 
 // cast every value to string or string[] that isnt that already

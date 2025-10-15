@@ -4,6 +4,9 @@
   "exits": "Výdaje",
   "exit": "Výdaj",
   "move": "Presun",
+  "search": "Hľadať",
+  "partner": "Partner",
+  "delivery": "Doprava",
   "returnClaim": "Vratka/Reklamácia",
   "entryNumber": "Číslo príjemky",
   "welcome": "Vitajte",
@@ -82,6 +85,7 @@
   "exit-list": {
     "not-found": "Výdaj nebol nájdený",
     "search-by-name": "Hľadať podľa mena...",
+    "no-results": "Nenašli sa žiadne výdaje",
     "exit-number": "Číslo výdaja",
     "redirect-to-exit": "Presmerovať na výdaj",
     "redirect-confirm": "Naozaj chcete presmerovať na:",

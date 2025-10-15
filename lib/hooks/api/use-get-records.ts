@@ -6,6 +6,8 @@ import { API_ROOT } from '~/lib/constants';
 export default function useGetRecords<T>(params?: {
   search?: string;
   page?: number;
+  partner?: number;
+  delivery?: number;
 }): {
   data: T[] | undefined;
   isWaiting: boolean;
@@ -21,6 +23,8 @@ export default function useGetRecords<T>(params?: {
   const [refreshing, setRefreshing] = useState(false);
   const [accumulatedData, setAccumulatedData] = useState<T[]>([]);
   const previousSearchRef = useRef(params?.search);
+  const previousPartnerRef = useRef(params?.partner);
+  const previousDeliveryRef = useRef(params?.delivery);
 
   const searchString = params?.search
     ? new URLSearchParams({
@@ -32,14 +36,26 @@ export default function useGetRecords<T>(params?: {
         page: params.page.toString(),
       }).toString()
     : '';
+  const partnerString = params?.partner
+    ? new URLSearchParams({
+        partnerId: params.partner.toString(),
+      }).toString()
+    : '';
+  const deliveryString = params?.delivery
+    ? new URLSearchParams({
+        deliveryId: params.delivery.toString(),
+      }).toString()
+    : '';
 
   const fetchRecords = async () => {
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
-      console.log(`fetching: ${API_ROOT}/exits?${searchString}&${pageString}`);
+      console.log(
+        `fetching: ${API_ROOT}/exits?${searchString}&${pageString}&${partnerString}&${deliveryString}`,
+      );
     }
 
     const res = await fetch(
-      `${API_ROOT}/exits?pageSize=10&${searchString}&${pageString}`,
+      `${API_ROOT}/exits?pageSize=10&${searchString}&${pageString}&${partnerString}&${deliveryString}`,
       {
         headers: {
           Authorization: `Bearer ${session?.accessToken}`,
@@ -58,11 +74,17 @@ export default function useGetRecords<T>(params?: {
 
   // Reset accumulated data when search changes
   useEffect(() => {
-    if (previousSearchRef.current !== params?.search) {
+    if (
+      previousSearchRef.current !== params?.search ||
+      previousPartnerRef.current !== params?.partner ||
+      previousDeliveryRef.current !== params?.delivery
+    ) {
       setAccumulatedData([]);
       previousSearchRef.current = params?.search;
+      previousPartnerRef.current = params?.partner;
+      previousDeliveryRef.current = params?.delivery;
     }
-  }, [params?.search]);
+  }, [params?.search, params?.partner, params?.delivery]);
 
   // Accumulate data when new data arrives
   useEffect(() => {

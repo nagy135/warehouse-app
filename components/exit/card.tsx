@@ -14,9 +14,9 @@ import { Text } from '~/components/ui/text';
 import { Badge } from '~/components/ui/badge';
 import { EntryExitStatesEnum, type Exit } from '~/lib/types';
 import { cn } from '~/lib/utils';
-import { ShieldCheck } from '~/lib/icons/ShieldCheck';
+import { ShieldCheck } from '~/lib/icons';
 
-function ExitCardComponent({ exit }: { exit: Exit }) {
+function ExitCardComponent({ exit, delivery, partner }: { exit: Exit, delivery: string, partner: string }) {
   const { t } = useTranslation();
 
   const cardClassName = useMemo(() => {
@@ -45,6 +45,10 @@ function ExitCardComponent({ exit }: { exit: Exit }) {
           <CardTitle>{exit.name}</CardTitle>
           <CardDescription>
             {t('exit-list.exit-number')}: {exit.id}
+            {'\n'}
+            {t('delivery')}: {delivery}
+            {'\n'}
+            {t('partner')}: {partner}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-row items-center justify-between">
