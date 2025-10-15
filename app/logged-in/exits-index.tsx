@@ -24,6 +24,7 @@ import { usePageStateContext, PagesStateActions } from '../contexts/PageStateCon
 
 export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const { state, dispatch } = usePageStateContext();
   const [page, setPage] = useState(1);
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
@@ -39,6 +40,14 @@ export default function ExitsPage() {
       description: t('exit-list.not-found'),
     });
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchValue);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchValue]);
+
   const {
     data: exits,
     isWaiting,
@@ -48,10 +57,10 @@ export default function ExitsPage() {
     isFetching,
     onRefresh,
   } = useGetRecords<Exit>({
-    search: searchValue,
+    search: debouncedSearch,
     page,
     partner: state.selectedPartner ?? undefined,
-    delivery: state.selectedDelivery ?? undefined
+    delivery: state.selectedDelivery ?? undefined,
   });
 
   const { data: partners } = useGetPartners();
@@ -59,7 +68,7 @@ export default function ExitsPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [searchValue, state.selectedPartner, state.selectedDelivery]);
+  }, [debouncedSearch, state.selectedPartner, state.selectedDelivery]);
 
   useFocusEffect(
     useCallback(() => {
@@ -139,14 +148,18 @@ export default function ExitsPage() {
 
         <Dropdown<number, Partner>
           value={state.selectedPartner}
-          setValue={(value) => dispatch({ type: PagesStateActions.SET_SELECTED_PARTNER, value })}
+          setValue={(value) =>
+            dispatch({ type: PagesStateActions.SET_SELECTED_PARTNER, value })
+          }
           data={partners}
           placeholder={t('partner')}
         />
 
         <Dropdown<number, Delivery>
           value={state.selectedDelivery}
-          setValue={(value) => dispatch({ type: PagesStateActions.SET_SELECTED_DELIVERY, value })}
+          setValue={(value) =>
+            dispatch({ type: PagesStateActions.SET_SELECTED_DELIVERY, value })
+          }
           data={deliveries}
           placeholder={t('delivery')}
         />
@@ -170,7 +183,10 @@ export default function ExitsPage() {
             ) : null
           }
           ListEmptyComponent={
-            (exits?.length === 0 && !isLoading && !isWaiting && !isFetching) ? (
+            (exits?.length === 0 &&
+              !isLoading &&
+              !isWaiting &&
+              !isFetching) ? (
               <View className="py-4 items-center">
                 <Text>{t('exit-list.no-results')}</Text>
               </View>

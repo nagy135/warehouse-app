@@ -264,7 +264,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
               value={quantityInput}
               onChangeText={setQuantityInput}
               placeholder="Počet ks"
-              autoFocus={true}
             />
             <Button onPress={submitPartialMove} className="w-1/3">
               <Text>Potvrdiť</Text>
