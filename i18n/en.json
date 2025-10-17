@@ -13,6 +13,7 @@
   "loading": "Loading",
   "scan": "Scan",
   "piece": "pc.",
+  "back": "Back",
   "not-found-title": "Not found",
   "total": "Total:",
   "count": "Count",
@@ -100,7 +101,8 @@
     "exit-successful-description": "All items have been successfully processed",
     "exit-error": "An Error Occurred",
     "exit-error-description": "The exit could not be moved to the 'Completed' status",
-    "exit-move-error-description": "The selected items could not be moved to the next status"
+    "exit-move-error-description": "The selected items could not be moved to the next status",
+    "exit-already-completed-description": "The exit has already been completed and cannot be completed again."
   },
   "return-detail": {
     "error": "An Error Occurred",

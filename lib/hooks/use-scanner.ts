@@ -29,8 +29,8 @@ export default function useScanner({
     // production mode
     // const listener = ExpoZebraScanner.addListener((event) => {
     //   const { scanData, scanLabelType } = event;
-    //   setData(scanData ?? "nothing data");
-    //   setLabel(scanLabelType ?? "nothing label");
+    //   setData(scanData ?? 'nothing data');
+    //   setLabel(scanLabelType ?? 'nothing label');
 
     //   setScanning(false);
     //   if (onScan) onScan(scanData, scanLabelType);

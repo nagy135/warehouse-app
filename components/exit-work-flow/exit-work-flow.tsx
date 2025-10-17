@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, ButtonProps, useWindowDimensions, View } from "react-native";
 import Scanner from "~/components/scanner";
 import { Button } from "~/components/ui/button";
 import { Input } from '~/components/ui/input';
@@ -38,6 +38,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
   const { mutateAsync: mutateMoveProductStorage } = useMoveProductStorage();
   const queryClient = useQueryClient();
+  const buttonRef = useRef<View>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -45,6 +46,12 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
       return () => setIsFocused(false);
     }, [])
   );
+
+  useEffect(() => {
+    if (step === "quantity" && buttonRef.current) {
+      buttonRef.current.focus?.();
+    }
+  }, [step, buttonRef.current]);
 
   const current = items[index];
 
@@ -109,6 +116,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   function handleScanProduct(scan: string) {
     if (scan === current.product.sku || scan === current.product.ean) {
       setStep("quantity");
+      buttonRef.current?.focus();
       setQuantityInput(remainingCount.toString());
       setError("");
     } else {
@@ -265,7 +273,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
               onChangeText={setQuantityInput}
               placeholder="Počet ks"
             />
-            <Button onPress={submitPartialMove} className="w-1/3">
+            <Button onPress={submitPartialMove} className="w-1/3" ref={buttonRef}>
               <Text>Potvrdiť</Text>
             </Button>
           </View>

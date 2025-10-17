@@ -13,6 +13,7 @@
   "loading": "Načitávanie",
   "scan": "Skenovať",
   "piece": "ks",
+  "back": "Späť",
   "not-found-title": "Nenájdené",
   "total": "Celkovo:",
   "count": "Počet",
@@ -100,7 +101,8 @@
     "exit-successful-description": "Všetky položky boli úspešne spracované",
     "exit-error": "Nastala chyba",
     "exit-error-description": "Výdaj sa nepodarilo presunúť do stavu 'Dokončené'",
-    "exit-move-error-description": "Zvolené položky sa nepodarilo presunúť do dalšieho stavu"
+    "exit-move-error-description": "Zvolené položky sa nepodarilo presunúť do dalšieho stavu",
+    "exit-already-completed-description": "Výdaj už bol dokončený a nemôže byť dokončený znova."
   },
   "return-detail": {
     "error": "Nastala chyba",

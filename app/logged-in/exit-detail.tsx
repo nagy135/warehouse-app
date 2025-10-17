@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, useWindowDimensions, View } from 'react-native';
 import ExitWorkflow from '~/components/exit-work-flow/exit-work-flow';
 import StatsTile from '~/components/exit-work-flow/stats-tile';
@@ -9,14 +9,21 @@ import useGetStoredProductsQuery from '~/lib/hooks/api/use-get-stored-products-q
 import useRecordDetail from '~/lib/hooks/api/use-record-detail';
 import {
   Exit,
+  EntryExitStatesEnum,
   type ToStringOrStringArray
 } from '~/lib/types';
+import { useTranslation } from 'react-i18next';
+import { Button } from '~/components/ui/button';
+import { router } from 'expo-router';
+
+const inProgressStates = [EntryExitStatesEnum.CREATED, EntryExitStatesEnum.REGISTERED, EntryExitStatesEnum.PARTIALLY_MOVED];
 
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
   const exitId = Number(exit.id);
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
+  const { t } = useTranslation();
 
   const {
     data,
@@ -45,6 +52,18 @@ export default function DetailPage() {
     return (
       <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
         <ActivityIndicator size={60} color="#666666" />
+      </View>
+    );
+  }
+
+  if (data?.state && !inProgressStates.includes(data.state)) {
+    return (
+      <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
+        <Text className="text-lg font-bold">{data.name}</Text>
+        <Text>{t('exit-detail.exit-already-completed-description')}</Text>
+        <Button size="lg" variant="outline" className="mt-4" onPress={() => router.back()}>
+          <Text>{t('back')}</Text>
+        </Button>
       </View>
     );
   }

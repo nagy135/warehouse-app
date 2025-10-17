@@ -146,6 +146,7 @@ export type ToStringOrStringArray<T> = {
 export enum EntryExitStatesEnum {
   CREATED = 'created',
   REGISTERED = 'registered',
+  PARTIALLY_MOVED = 'partially_moved',
   MOVED = 'moved',
   CANCELED = 'canceled',
   CLAIMED = 'claimed',

@@ -26,7 +26,6 @@ export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const { state, dispatch } = usePageStateContext();
-  const [page, setPage] = useState(1);
   const [foundExit, setFoundExit] = useState<Exit | null>(null);
   const [redirectModalOpen, setRedirectModalOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -41,10 +40,7 @@ export default function ExitsPage() {
     });
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(searchValue);
-    }, 500);
-
+    const handler = setTimeout(() => setDebouncedSearch(searchValue), 500);
     return () => clearTimeout(handler);
   }, [searchValue]);
 
@@ -54,21 +50,17 @@ export default function ExitsPage() {
     isLoading,
     error,
     refreshing,
-    isFetching,
     onRefresh,
+    fetchNextPage,
+    hasNextPage,
   } = useGetRecords<Exit>({
     search: debouncedSearch,
-    page,
     partner: state.selectedPartner ?? undefined,
-    delivery: state.selectedDelivery ?? undefined,
+    delivery: state.selectedDelivery ?? undefined
   });
 
   const { data: partners } = useGetPartners();
   const { data: deliveries } = useGetDeliveries();
-
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch, state.selectedPartner, state.selectedDelivery]);
 
   useFocusEffect(
     useCallback(() => {
@@ -82,8 +74,12 @@ export default function ExitsPage() {
       <View className="my-1">
         <ExitCard
           exit={item}
-          delivery={deliveries?.find((delivery) => delivery.id === item.deliveryId)?.name ?? ''}
-          partner={partners?.find((partner) => partner.id === item.partnerId)?.name ?? ''}
+          delivery={
+            deliveries?.find((delivery) => delivery.id === item.deliveryId)?.name ?? ''
+          }
+          partner={
+            partners?.find((partner) => partner.id === item.partnerId)?.name ?? ''
+          }
         />
       </View>
     ),
@@ -102,12 +98,12 @@ export default function ExitsPage() {
       if (item.id === lastVisibleId) return;
 
       const isLastVisible = index === exits.length - 1;
-      if (isLastVisible && !isLoading && !isWaiting) {
+      if (isLastVisible && hasNextPage && !isLoading && !isWaiting) {
         setLastVisibleId(item.id);
-        setPage((prev) => prev + 1);
+        fetchNextPage();
       }
     },
-    [exits, isLoading, isWaiting, lastVisibleId]
+    [exits, hasNextPage, isLoading, isWaiting, lastVisibleId, fetchNextPage]
   );
 
   if (error) return <Text>error</Text>;
@@ -125,7 +121,7 @@ export default function ExitsPage() {
           <View className="w-1/3 py-1">
             {isFocused && (
               <Scanner
-                size={'sm'}
+                size="sm"
                 label={t('scan')}
                 mockData="billadeliveryofpancakes123"
                 onScan={async (data) => {
@@ -176,17 +172,14 @@ export default function ExitsPage() {
             itemVisiblePercentThreshold: 50,
           }}
           ListFooterComponent={
-            (isLoading || isWaiting || isFetching) ? (
+            (isLoading || isWaiting) ? (
               <View className="py-4 items-center">
                 <ActivityIndicator size="large" color="#666666" />
               </View>
             ) : null
           }
           ListEmptyComponent={
-            (exits?.length === 0 &&
-              !isLoading &&
-              !isWaiting &&
-              !isFetching) ? (
+            (!isLoading && !isWaiting && exits?.length === 0) ? (
               <View className="py-4 items-center">
                 <Text>{t('exit-list.no-results')}</Text>
               </View>
