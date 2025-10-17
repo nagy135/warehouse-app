@@ -38,7 +38,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   const { mutateAsync: mutateCheckStorageExits } = useCheckStorageExits();
   const { mutateAsync: mutateMoveProductStorage } = useMoveProductStorage();
   const queryClient = useQueryClient();
-  const buttonRef = useRef<View>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -46,12 +45,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
       return () => setIsFocused(false);
     }, [])
   );
-
-  useEffect(() => {
-    if (step === "quantity" && buttonRef.current) {
-      buttonRef.current.focus?.();
-    }
-  }, [step, buttonRef.current]);
 
   const current = items[index];
 
@@ -116,7 +109,6 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   function handleScanProduct(scan: string) {
     if (scan === current.product.sku || scan === current.product.ean) {
       setStep("quantity");
-      buttonRef.current?.focus();
       setQuantityInput(remainingCount.toString());
       setError("");
     } else {
@@ -273,7 +265,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
               onChangeText={setQuantityInput}
               placeholder="Počet ks"
             />
-            <Button onPress={submitPartialMove} className="w-1/3" ref={buttonRef}>
+            <Button onPress={submitPartialMove} className="w-1/3">
               <Text>Potvrdiť</Text>
             </Button>
           </View>
