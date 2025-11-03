@@ -20,8 +20,6 @@ export default function useGetRecords<T>(params?: {
   const { session } = useSession();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
-  const [isWaiting, setIsWaiting] = useState(false);
-
   const pageSize = 10;
 
   const fetchRecords = async ({ pageParam = 1 }) => {
@@ -57,7 +55,6 @@ export default function useGetRecords<T>(params?: {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    setIsWaiting(false);
     return {
       data,
       nextPage: data.length === pageSize ? pageParam + 1 : undefined,

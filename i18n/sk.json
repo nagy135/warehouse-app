@@ -102,7 +102,8 @@
     "exit-error": "Nastala chyba",
     "exit-error-description": "Výdaj sa nepodarilo presunúť do stavu 'Dokončené'",
     "exit-move-error-description": "Zvolené položky sa nepodarilo presunúť do dalšieho stavu",
-    "exit-already-completed-description": "Výdaj už bol dokončený a nemôže byť dokončený znova."
+    "exit-already-completed-description": "Výdaj už bol dokončený a nemôže byť dokončený znova.",
+    "exit-incomplete-description": "Výdaj je neúplný a nemôže byť vyskladnený."
   },
   "return-detail": {
     "error": "Nastala chyba",

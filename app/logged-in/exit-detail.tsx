@@ -68,6 +68,18 @@ export default function DetailPage() {
     );
   }
 
+  if (data?.isIncomplete) {
+    return (
+      <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
+        <Text className="text-lg font-bold">{data.name}</Text>
+        <Text>{t('exit-detail.exit-incomplete-description')}</Text>
+        <Button size="lg" variant="outline" className="mt-4" onPress={() => router.back()}>
+          <Text>{t('back')}</Text>
+        </Button>
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={{ flex: 1 }}

@@ -102,7 +102,8 @@
     "exit-error": "An Error Occurred",
     "exit-error-description": "The exit could not be moved to the 'Completed' status",
     "exit-move-error-description": "The selected items could not be moved to the next status",
-    "exit-already-completed-description": "The exit has already been completed and cannot be completed again."
+    "exit-already-completed-description": "The exit has already been completed and cannot be completed again.",
+    "exit-incomplete-description": "The exit is incomplete and cannot be unloaded."
   },
   "return-detail": {
     "error": "An Error Occurred",
