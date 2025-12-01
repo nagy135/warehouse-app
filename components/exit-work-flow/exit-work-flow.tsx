@@ -46,6 +46,15 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
     }, [])
   );
 
+  useEffect(() => {
+    setIndex(0);
+    setStep("position");
+    setScannedBox(null);
+    setQuantityInput("");
+    setUsedIds([]);
+    setError("");
+  }, [items]);
+
   const current = items[index];
 
   const remainingIds = useMemo(() => {
@@ -55,6 +64,15 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   }, [current, usedIds]);
 
   const remainingCount = remainingIds.length;
+
+  // Safety check: if current item is undefined, show loading state
+  if (!current) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size={60} color="#666666" />
+      </View>
+    );
+  }
 
   function goNextItem() {
     if (index + 1 >= items.length) {

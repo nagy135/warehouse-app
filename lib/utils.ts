@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { GroupByResult } from './types';
 import { jwtDecode } from 'jwt-decode';
+import { DateTime } from 'luxon';
 
 // NOTE: for testing slower fetches
 export const sleep = (ms: number) =>
@@ -57,4 +58,12 @@ export const isTokenValid = (token: string): boolean => {
     console.error('Error parsing JWT token:', error);
     return false;
   }
+};
+
+export const formattedDate = (
+  date?: Date | null,
+  format = 'dd.MM.yyyy',
+) => {
+  if (!date) return '-';
+  return DateTime.fromJSDate(date).toFormat(format);
 };
