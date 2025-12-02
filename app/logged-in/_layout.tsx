@@ -90,6 +90,13 @@ export default function ActionLayout() {
           animation: 'slide_from_right',
         }}
       />
+      <Stack.Screen
+        name="inventory"
+        options={{
+          title: t('inventory.title'),
+          animation: 'slide_from_right',
+        }}
+      />
     </Stack>
   );
 }

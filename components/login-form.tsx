@@ -15,6 +15,7 @@ import { Text } from '~/components/ui/text';
 import { Input } from '~/components/ui/input';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import packageJson from '../package.json';
 
 const AVATAR_URI =
   'https://i.pinimg.com/736x/3f/94/70/3f9470b34a8e3f526dbdb022f9f19cf7.jpg';
@@ -77,6 +78,9 @@ export default function LoginForm() {
             </AvatarFallback>
           </Avatar>
           <View className="p-3" />
+          <Text className="text-xs text-muted-foreground">
+            Version {packageJson.version}
+          </Text>
         </CardHeader>
         <CardContent>
           <View className="flex gap-3">
