@@ -185,6 +185,7 @@
     "scan-position": "Oskenujte pozíciu",
     "scan-box": "Oskenujte box",
     "scan-product": "Oskenujte produkt",
+    "number-of-products": "Počet produktov {{count}}",
     "select-mode": "Vyberte režim inventúry",
     "mode-enter-quantity": "Zadať množstvo",
     "mode-scan-products": "Skenovať produkty",
@@ -195,6 +196,8 @@
     "optional": "voliteľné",
     "submit": "Uložiť",
     "add-product": "Pridať produkt",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
     "scanned-products-list": "Naskenované produkty",
     "position-not-found": "Oskenovaný SKU kód nepríslucha žiadnej pozícii",
     "box-not-found": "Oskenovaný SKU kód nepríslucha žiadnemu úložnému boxu",
@@ -209,7 +212,9 @@
     "already-inventoried-message": "Táto pozícia už bola skontrolovaná. Je tu zaznamenaný box {{boxName}}. Pokračovaním odstránite všetky údaje inventúry pre túto pozíciu a box.",
     "wrong-position-title": "Box patrí na inú pozíciu",
     "wrong-position-message": "Podľa systému tento box patrí na pozíciu {{positionName}}. Chcete napriek tomu pokračovať?",
-    "clear-date": "Vymazať dátum"
+    "clear-date": "Vymazať dátum",
+    "edit": "Upraviť",
+    "missing-expiration-date": "Jeden z produktov nemá zadaný dátum expirácie"
   },
   "count-modal": {
     "product": "Produkt",

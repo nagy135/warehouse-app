@@ -11,6 +11,8 @@ export type InventoryProduct = {
   id: string;
   name: string;
   expirationDate?: string;
+  hasExpirationDate: boolean;
+  hasBatchNumber: boolean;
   batchNumber?: string;
   count: number;
 };

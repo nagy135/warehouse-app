@@ -34,6 +34,8 @@ export default function EnterQuantityMode({
   const [hasBatchNumber, setHasBatchNumber] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [editingExpirationDateIndex, setEditingExpirationDateIndex] = useState<number | null>(null);
+  const [showEditDatePicker, setShowEditDatePicker] = useState(false);
 
   const { mutateAsync: mutateCheckProductSku } = useCheckProductSku();
 
@@ -55,6 +57,52 @@ export default function EnterQuantityMode({
 
   function handleRemoveProduct(index: number) {
     onProductsChange(products.filter((_, i) => i !== index));
+  }
+
+  function handleExpirationDateChange(index: number, date: Date) {
+    const newProducts = [...products];
+    const formattedDateStr = date.toISOString().split('T')[0];
+    newProducts[index] = {
+      ...newProducts[index],
+      expirationDate: formattedDateStr
+    };
+    onProductsChange(newProducts);
+    setEditingExpirationDateIndex(null);
+    setShowEditDatePicker(false);
+  }
+
+  function handleStartEditExpirationDate(index: number) {
+    const product = products[index];
+    setEditingExpirationDateIndex(index);
+    setShowEditDatePicker(true);
+  }
+
+  function handleClearExpirationDate(index: number) {
+    const newProducts = [...products];
+    newProducts[index] = {
+      ...newProducts[index],
+      expirationDate: undefined
+    };
+    onProductsChange(newProducts);
+  }
+
+  function handleSubmit() {
+    // Check if any product that requires expiration date is missing it
+    const productsWithMissingExpirationDate = products.filter((product) => {
+      // If hasExpirationDate is true, expirationDate must be present
+      if (product.hasExpirationDate && !product.expirationDate) {
+        return true;
+      }
+      return false;
+    });
+
+    if (productsWithMissingExpirationDate.length > 0) {
+      setError(t('inventory.missing-expiration-date'));
+      return;
+    }
+
+    setError("");
+    onSubmit();
   }
 
   function handleScanProduct(scan: string) {
@@ -90,7 +138,9 @@ export default function EnterQuantityMode({
       name: currentScannedProductName,
       expirationDate: tempExpirationDate,
       batchNumber: tempBatchNumber,
-      count: parseInt(tempQuantity, 10)
+      count: parseInt(tempQuantity, 10),
+      hasExpirationDate: hasExpirationDate,
+      hasBatchNumber: hasBatchNumber
     };
 
     onProductsChange([...products, newProduct]);
@@ -137,11 +187,6 @@ export default function EnterQuantityMode({
                 {tempExpirationDate ? formattedDate(new Date(tempExpirationDate)) : "YYYY-MM-DD"}
               </Text>
             </TouchableOpacity>
-            {tempExpirationDate && (
-              <TouchableOpacity onPress={() => setTempExpirationDate("")} className="mt-1">
-                <Text className="text-blue-600">{t('inventory.clear-date')}</Text>
-              </TouchableOpacity>
-            )}
             {showDatePicker && (
               <DateTimePicker
                 value={selectedDate}
@@ -190,13 +235,48 @@ export default function EnterQuantityMode({
 
       <Text className="text-lg font-bold mb-2">{t('inventory.products-list')}</Text>
       {products.map((product, index) => {
+        const isEditingExpirationDate = editingExpirationDateIndex === index;
         return (
           <View key={`enterQuantity_${index}`} className="mb-4 p-3 border border-gray-300 rounded">
             <View className="flex-row justify-between items-start mb-2">
               <View className="flex-1">
                 <Text className="font-bold">{product.name}</Text>
-                {product.expirationDate && (
-                  <Text className="text-sm">{t('inventory.expiration-date')}: {formattedDate(new Date(product.expirationDate))}</Text>
+                {(product.hasExpirationDate) && (
+                  <View className="mt-2">
+                    <Text className="mb-1 text-sm">{t('inventory.expiration-date')}:</Text>
+                    {product.hasExpirationDate ? (
+                      <View className="flex-row items-center flex-wrap">
+                        <Text className={`text-sm mr-2 ${!product.expirationDate ? 'text-red-600' : ''}`}>{product.expirationDate ? formattedDate(new Date(product.expirationDate)) : "YYYY-MM-DD"}</Text>
+                        <TouchableOpacity onPress={() => handleStartEditExpirationDate(index)}>
+                          <Text className="text-blue-600 text-sm">{t('inventory.edit')}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => handleStartEditExpirationDate(index)}
+                        className="border border-neutral-300 rounded-lg p-2 bg-white"
+                      >
+                        <Text className="text-gray-400">YYYY-MM-DD</Text>
+                      </TouchableOpacity>
+                    )}
+                    {isEditingExpirationDate && showEditDatePicker && (
+                      <DateTimePicker
+                        value={product.expirationDate ? new Date(product.expirationDate) : new Date()}
+                        mode="date"
+                        display="default"
+                        onChange={(event: any, date?: Date) => {
+                          setShowEditDatePicker(false);
+                          if (event.type === 'set' && date) {
+                            date?.setHours(12);
+                            handleExpirationDateChange(index, date);
+                          } else if (event.type === 'dismissed') {
+                            setEditingExpirationDateIndex(null);
+                            setShowEditDatePicker(false);
+                          }
+                        }}
+                      />
+                    )}
+                  </View>
                 )}
                 {product.batchNumber && (
                   <Text className="text-sm">{t('inventory.batch-number')}: {product.batchNumber}</Text>
@@ -231,7 +311,7 @@ export default function EnterQuantityMode({
         )}
       </View>
 
-      <Button onPress={onSubmit} className="mt-4">
+      <Button onPress={handleSubmit} className="mt-4">
         <Text>{t('inventory.submit')}</Text>
       </Button>
     </View>

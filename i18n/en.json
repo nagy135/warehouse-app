@@ -186,6 +186,7 @@
     "scan-position": "Scan position",
     "scan-box": "Scan box",
     "scan-product": "Scan product",
+    "number-of-products": "Number of products {{count}}",
     "select-mode": "Select inventory mode",
     "mode-enter-quantity": "Enter quantity",
     "mode-scan-products": "Scan products",
@@ -196,6 +197,8 @@
     "optional": "optional",
     "submit": "Submit",
     "add-product": "Add product",
+    "save": "Save",
+    "cancel": "Cancel",
     "scanned-products-list": "Scanned products",
     "position-not-found": "This position does not exist in the system",
     "box-not-found": "This box does not exist in the system",
@@ -210,7 +213,9 @@
     "already-inventoried-message": "This position has already been inventoried. There is a box {{boxName}} recorded. By continuing, you will delete all inventory data for this position and box.",
     "wrong-position-title": "Box belongs to a different position",
     "wrong-position-message": "According to the system, this box belongs to position {{positionName}}. Do you want to continue anyway?",
-    "clear-date": "Clear date"
+    "clear-date": "Clear date",
+    "edit": "Edit",
+    "missing-expiration-date": "One of the products has no expiration date"
   },
   "count-modal": {
     "product": "Product",
