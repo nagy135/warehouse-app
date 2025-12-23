@@ -310,7 +310,11 @@ export default function EnterQuantityMode({
           />
         )}
       </View>
-
+      <View className="mt-4 mb-4 p-3 bg-gray-100 rounded">
+        <Text className="text-lg font-bold text-center">
+          {t('inventory.number-of-products', { count: products.reduce((sum, product) => sum + product.count, 0) })}
+        </Text>
+      </View>
       <Button onPress={handleSubmit} className="mt-4">
         <Text>{t('inventory.submit')}</Text>
       </Button>
