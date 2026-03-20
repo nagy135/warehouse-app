@@ -1,4 +1,4 @@
-import React, { createContext, Reducer, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 import { ProductSkuVariant, ProductStorage } from '~/lib/types';
 
 export type ProductSkuVariantWithCount = ProductSkuVariant & {
@@ -59,7 +59,7 @@ const initialState: PagesStateContextState = {
   selectedDelivery: null,
 };
 
-const reducer = (state: PagesStateContextState, action: Actions) => {
+const reducer = (state: PagesStateContextState, action: Actions): PagesStateContextState => {
   switch (action.type) {
     case PagesStateActions.SET_PRODUCT_SKU_VARIANT:
       return {
@@ -116,9 +116,7 @@ const PagesStateContext = createContext<{
 }>({ state: initialState, dispatch: () => null });
 
 const PageStateProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [state, dispatch] = useReducer<
-    Reducer<PagesStateContextState, Actions>
-  >(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <PagesStateContext.Provider value={{ state, dispatch }}>
       {children}

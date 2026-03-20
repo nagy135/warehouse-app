@@ -17,7 +17,7 @@ export const initializeI18nInstance = () => {
   };
 
   i18nInstance.use(initReactI18next).init({
-    compatibilityJSON: 'v3',
+    compatibilityJSON: 'v4',
     resources,
     fallbackLng: Languages.SLOVAK,
     debug: true,

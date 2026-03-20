@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Platform, View } from 'react-native';
-import Animated, {
+import {
   Extrapolation,
+  createAnimatedComponent,
   interpolate,
   useAnimatedStyle,
   useDerivedValue,
@@ -9,6 +10,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as ProgressPrimitive from '@rn-primitives/progress';
 import { cn } from '~/lib/utils';
+
+const AnimatedProgressIndicator =
+  createAnimatedComponent(ProgressPrimitive.Indicator);
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
@@ -73,11 +77,9 @@ function Indicator({
   }
 
   return (
-    <ProgressPrimitive.Indicator asChild>
-      <Animated.View
-        style={indicator}
-        className={cn('h-full bg-foreground', className)}
-      />
-    </ProgressPrimitive.Indicator>
+    <AnimatedProgressIndicator
+      style={indicator}
+      className={cn('h-full bg-foreground', className)}
+    />
   );
 }

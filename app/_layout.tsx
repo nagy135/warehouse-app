@@ -1,7 +1,7 @@
 import '~/global.css';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Theme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from '@react-navigation/native';
 import { SplashScreen, Stack, router } from 'expo-router';
 import { View } from 'react-native';
 import { Text } from '~/components/ui/text';
@@ -25,12 +25,20 @@ import { jwtDecode } from 'jwt-decode';
 const queryClient = new QueryClient();
 
 const LIGHT_THEME: Theme = {
+  ...DefaultTheme,
   dark: false,
-  colors: NAV_THEME.light,
+  colors: {
+    ...DefaultTheme.colors,
+    ...NAV_THEME.light,
+  },
 };
 const DARK_THEME: Theme = {
+  ...DarkTheme,
   dark: true,
-  colors: NAV_THEME.dark,
+  colors: {
+    ...DarkTheme.colors,
+    ...NAV_THEME.dark,
+  },
 };
 
 // Component to handle authentication routing
