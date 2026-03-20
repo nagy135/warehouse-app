@@ -14,7 +14,6 @@ export default function ActionLayout() {
   const { session, isLoading } = useSession();
   const { t } = useTranslation();
 
-
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
     return <Text>{t('loading')}</Text>;
@@ -106,12 +105,20 @@ export default function ActionLayout() {
   );
 }
 
-const CompactHeader = ({ options, route, back, navigation }: NativeStackHeaderProps) => {
+const CompactHeader = ({
+  options,
+  route,
+  back,
+  navigation,
+}: NativeStackHeaderProps) => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
   const title =
-    options.title ?? (typeof options.headerTitle === 'string' ? options.headerTitle : route.name);
+    options.title ??
+    (typeof options.headerTitle === 'string'
+      ? options.headerTitle
+      : route.name);
 
   return (
     <View
@@ -141,7 +148,7 @@ const CompactHeader = ({ options, route, back, navigation }: NativeStackHeaderPr
               tintColor: colors.text,
             })
           ) : (
-            <Text className="text-lg font-semibold" numberOfLines={1}>
+            <Text className="text-2xl font-semibold" numberOfLines={1}>
               {title}
             </Text>
           )}
@@ -155,9 +162,9 @@ const CompactHeader = ({ options, route, back, navigation }: NativeStackHeaderPr
 const MoveArrowFromTo = ({ from, to }: { from: string; to: string }) => {
   return (
     <View className="flex flex-row items-center">
-      <Text className="text-lg font-semibold mr-1">{`${from} `}</Text>
+      <Text className="mr-1 text-lg font-semibold">{`${from} `}</Text>
       <MoveRight color="#ea6962" size={20} />
-      <Text className="text-lg font-semibold ml-1">{` ${to}`}</Text>
+      <Text className="ml-1 text-lg font-semibold">{` ${to}`}</Text>
     </View>
   );
 };

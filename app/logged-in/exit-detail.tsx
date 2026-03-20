@@ -1,22 +1,34 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo } from 'react';
-import { ActivityIndicator, ScrollView, useWindowDimensions, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import ExitWorkflow from '~/components/exit-work-flow/exit-work-flow';
 import StatsTile from '~/components/exit-work-flow/stats-tile';
 import { Text } from '~/components/ui/text';
-import { buildProductPositionList, summarizeProductCounts } from '~/lib/exitDetailUtils';
+import {
+  buildProductPositionList,
+  summarizeProductCounts,
+} from '~/lib/exitDetailUtils';
 import useGetStoredProductsQuery from '~/lib/hooks/api/use-get-stored-products-query';
 import useRecordDetail from '~/lib/hooks/api/use-record-detail';
 import {
   Exit,
   EntryExitStatesEnum,
-  type ToStringOrStringArray
+  type ToStringOrStringArray,
 } from '~/lib/types';
 import { useTranslation } from 'react-i18next';
 import { Button } from '~/components/ui/button';
 import { router } from 'expo-router';
 
-const inProgressStates = [EntryExitStatesEnum.CREATED, EntryExitStatesEnum.REGISTERED, EntryExitStatesEnum.PARTIALLY_MOVED];
+const inProgressStates = [
+  EntryExitStatesEnum.CREATED,
+  EntryExitStatesEnum.REGISTERED,
+  EntryExitStatesEnum.PARTIALLY_MOVED,
+];
 
 export default function DetailPage() {
   const exit = useLocalSearchParams<ToStringOrStringArray<Exit>>();
@@ -32,18 +44,49 @@ export default function DetailPage() {
     refetch: refetchExit,
   } = useRecordDetail<Exit>(exitId, 'exit');
 
-  const onlyNotDeletedProductStorages = useMemo(() => data?.productStorages?.filter((productStorage) => productStorage.deletedAt === null) ?? [], [data?.productStorages]);
-  const alreadyMovedProductStorages = useMemo(() => onlyNotDeletedProductStorages.filter((productStorage) => productStorage.state === 'moved'), [onlyNotDeletedProductStorages]);
-  const notMovedProductStorages = useMemo(() => onlyNotDeletedProductStorages.filter((productStorage) => productStorage.state !== 'moved'), [onlyNotDeletedProductStorages]);
+  const onlyNotDeletedProductStorages = useMemo(
+    () =>
+      data?.productStorages?.filter(
+        (productStorage) => productStorage.deletedAt === null,
+      ) ?? [],
+    [data?.productStorages],
+  );
+  const alreadyMovedProductStorages = useMemo(
+    () =>
+      onlyNotDeletedProductStorages.filter(
+        (productStorage) => productStorage.state === 'moved',
+      ),
+    [onlyNotDeletedProductStorages],
+  );
+  const notMovedProductStorages = useMemo(
+    () =>
+      onlyNotDeletedProductStorages.filter(
+        (productStorage) => productStorage.state !== 'moved',
+      ),
+    [onlyNotDeletedProductStorages],
+  );
 
-  const summarizedProductCounts = useMemo(() => summarizeProductCounts(notMovedProductStorages), [notMovedProductStorages]);
+  const summarizedProductCounts = useMemo(
+    () => summarizeProductCounts(notMovedProductStorages),
+    [notMovedProductStorages],
+  );
 
-  const { data: storedProducts, isLoading: isLoadingStoredProducts, isRefetching: isRefetchingStoredProducts } = useGetStoredProductsQuery({
-    products: summarizedProductCounts,
-    productExpirationDateMap: data?.productExpirationDateMap,
-  }, { enabled: !!data?.productStorages });
+  const {
+    data: storedProducts,
+    isLoading: isLoadingStoredProducts,
+    isRefetching: isRefetchingStoredProducts,
+  } = useGetStoredProductsQuery(
+    {
+      products: summarizedProductCounts,
+      productExpirationDateMap: data?.productExpirationDateMap,
+    },
+    { enabled: !!data?.productStorages },
+  );
 
-  const productPositionList = useMemo(() => storedProducts ? buildProductPositionList(storedProducts) : [], [storedProducts]);
+  const productPositionList = useMemo(
+    () => (storedProducts ? buildProductPositionList(storedProducts) : []),
+    [storedProducts],
+  );
 
   const isLoading = isLoadingRecordDetail || isLoadingStoredProducts;
   const isRefetching = isRefetchingRecordDetail || isRefetchingStoredProducts;
@@ -61,7 +104,12 @@ export default function DetailPage() {
       <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
         <Text className="text-lg font-bold">{data.name}</Text>
         <Text>{t('exit-detail.exit-already-completed-description')}</Text>
-        <Button size="lg" variant="outline" className="mt-4" onPress={() => router.back()}>
+        <Button
+          size="lg"
+          variant="outline"
+          className="mt-4"
+          onPress={() => router.back()}
+        >
           <Text>{t('back')}</Text>
         </Button>
       </View>
@@ -73,7 +121,12 @@ export default function DetailPage() {
       <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center">
         <Text className="text-lg font-bold">{data.name}</Text>
         <Text>{t('exit-detail.exit-incomplete-description')}</Text>
-        <Button size="lg" variant="outline" className="mt-4" onPress={() => router.back()}>
+        <Button
+          size="lg"
+          variant="outline"
+          className="mt-4"
+          onPress={() => router.back()}
+        >
           <Text>{t('back')}</Text>
         </Button>
       </View>
@@ -86,16 +139,24 @@ export default function DetailPage() {
       contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 12 }}
       keyboardShouldPersistTaps="handled"
     >
-      <View className={isLandscape ? "mb-3 flex-row items-center gap-4" : "mb-3"}>
+      <View
+        className={isLandscape ? 'mb-3 flex-row items-center gap-4' : 'mb-3'}
+      >
         <Text className="text-xl font-bold">{data?.name}</Text>
         <Text className="text-sm text-neutral-500">{`Exit id: ${data?.id}`}</Text>
       </View>
 
-      <View className={isLandscape ? "flex-row gap-4" : ""}>
-        <View className={isLandscape ? "flex-col w-1/5 gap-y-3" : "flex-row gap-3"}>
+      <View className={isLandscape ? 'flex-row gap-4' : ''}>
+        <View
+          className={isLandscape ? 'w-1/5 flex-col gap-y-3' : 'flex-row gap-3'}
+        >
           <StatsTile
             label="Presunuté položky"
-            value={alreadyMovedProductStorages.length + '/' + onlyNotDeletedProductStorages.length}
+            value={
+              alreadyMovedProductStorages.length +
+              '/' +
+              onlyNotDeletedProductStorages.length
+            }
             emoji="📦"
             isLandscape={isLandscape}
           />
@@ -113,14 +174,21 @@ export default function DetailPage() {
           />
         </View>
 
-        <View className={isLandscape ? "flex-1 ml-4" : ""}>
+        <View className={isLandscape ? 'ml-4 flex-1' : ''}>
           <View
-            className={`bg-neutral-200 dark:bg-neutral-800 ${isLandscape ? "w-[1px] mx-4" : "h-[1px] my-4"}`}
+            className={`bg-neutral-200 dark:bg-neutral-800 ${isLandscape ? 'mx-4 w-[1px]' : 'my-4 h-[1px]'}`}
           />
-          {productPositionList.length > 0 && <ExitWorkflow items={productPositionList} exitId={exitId} partnerId={data?.partnerId ?? 0} refetchExit={refetchExit} isRefetching={isRefetching} />}
+          {productPositionList.length > 0 && (
+            <ExitWorkflow
+              items={productPositionList}
+              exitId={exitId}
+              partnerId={data?.partnerId ?? 0}
+              refetchExit={refetchExit}
+              isRefetching={isRefetching}
+            />
+          )}
         </View>
       </View>
     </ScrollView>
   );
-
 }

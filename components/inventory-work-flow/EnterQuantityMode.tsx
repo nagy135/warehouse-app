@@ -1,15 +1,15 @@
-import React, { useCallback, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { useTranslation } from "react-i18next";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Scanner from "~/components/scanner";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Text } from "~/components/ui/text";
-import { InventoryProduct } from "~/lib/hooks/api/use-check-inventory-box";
-import { formattedDate } from "~/lib/utils";
-import { useFocusEffect } from "expo-router";
-import useCheckProductSku from "~/lib/hooks/api/use-check-product-sku";
+import React, { useCallback, useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Scanner from '~/components/scanner';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Text } from '~/components/ui/text';
+import { InventoryProduct } from '~/lib/hooks/api/use-check-inventory-box';
+import { formattedDate } from '~/lib/utils';
+import { useFocusEffect } from 'expo-router';
+import useCheckProductSku from '~/lib/hooks/api/use-check-product-sku';
 
 interface EnterQuantityModeProps {
   products: InventoryProduct[];
@@ -24,17 +24,21 @@ export default function EnterQuantityMode({
 }: EnterQuantityModeProps) {
   const { t } = useTranslation();
   const [isFocused, setIsFocused] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [currentScannedProductId, setCurrentScannedProductId] = useState<string>("");
-  const [currentScannedProductName, setCurrentScannedProductName] = useState<string>("");
-  const [tempQuantity, setTempQuantity] = useState<string>("");
-  const [tempExpirationDate, setTempExpirationDate] = useState<string>("");
-  const [tempBatchNumber, setTempBatchNumber] = useState<string>("");
+  const [error, setError] = useState<string>('');
+  const [currentScannedProductId, setCurrentScannedProductId] =
+    useState<string>('');
+  const [currentScannedProductName, setCurrentScannedProductName] =
+    useState<string>('');
+  const [tempQuantity, setTempQuantity] = useState<string>('');
+  const [tempExpirationDate, setTempExpirationDate] = useState<string>('');
+  const [tempBatchNumber, setTempBatchNumber] = useState<string>('');
   const [hasExpirationDate, setHasExpirationDate] = useState<boolean>(false);
   const [hasBatchNumber, setHasBatchNumber] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [editingExpirationDateIndex, setEditingExpirationDateIndex] = useState<number | null>(null);
+  const [editingExpirationDateIndex, setEditingExpirationDateIndex] = useState<
+    number | null
+  >(null);
   const [showEditDatePicker, setShowEditDatePicker] = useState(false);
 
   const { mutateAsync: mutateCheckProductSku } = useCheckProductSku();
@@ -43,14 +47,14 @@ export default function EnterQuantityMode({
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   function handleQuantityChange(index: number, value: string) {
     const newProducts = [...products];
     newProducts[index] = {
       ...newProducts[index],
-      count: parseInt(value, 10) || 0
+      count: parseInt(value, 10) || 0,
     };
     onProductsChange(newProducts);
   }
@@ -64,7 +68,7 @@ export default function EnterQuantityMode({
     const formattedDateStr = date.toISOString().split('T')[0];
     newProducts[index] = {
       ...newProducts[index],
-      expirationDate: formattedDateStr
+      expirationDate: formattedDateStr,
     };
     onProductsChange(newProducts);
     setEditingExpirationDateIndex(null);
@@ -81,7 +85,7 @@ export default function EnterQuantityMode({
     const newProducts = [...products];
     newProducts[index] = {
       ...newProducts[index],
-      expirationDate: undefined
+      expirationDate: undefined,
     };
     onProductsChange(newProducts);
   }
@@ -101,25 +105,25 @@ export default function EnterQuantityMode({
       return;
     }
 
-    setError("");
+    setError('');
     onSubmit();
   }
 
   function handleScanProduct(scan: string) {
-    setError("");
+    setError('');
     mutateCheckProductSku({ sku: scan })
       .then((data) => {
         setCurrentScannedProductId(data.id);
         setCurrentScannedProductName(data.name);
         setHasExpirationDate(data.hasExpirationDate);
         setHasBatchNumber(data.hasBatchNumber);
-        setTempQuantity("");
-        setTempExpirationDate("");
-        setTempBatchNumber("");
+        setTempQuantity('');
+        setTempExpirationDate('');
+        setTempBatchNumber('');
       })
       .catch(() => {
         setError(t('inventory.product-not-found'));
-      })
+      });
   }
 
   function handleAddProduct() {
@@ -140,16 +144,16 @@ export default function EnterQuantityMode({
       batchNumber: tempBatchNumber,
       count: parseInt(tempQuantity, 10),
       hasExpirationDate: hasExpirationDate,
-      hasBatchNumber: hasBatchNumber
+      hasBatchNumber: hasBatchNumber,
     };
 
     onProductsChange([...products, newProduct]);
-    setCurrentScannedProductId("");
-    setCurrentScannedProductName("");
-    setTempQuantity("");
-    setTempExpirationDate("");
-    setTempBatchNumber("");
-    setError("");
+    setCurrentScannedProductId('');
+    setCurrentScannedProductName('');
+    setTempQuantity('');
+    setTempExpirationDate('');
+    setTempBatchNumber('');
+    setError('');
     setHasExpirationDate(false);
     setHasBatchNumber(false);
   }
@@ -158,17 +162,19 @@ export default function EnterQuantityMode({
     return (
       <View>
         {error && (
-          <View className="mb-4 bg-red-100 p-2 rounded">
-            <Text className="text-red-600 font-bold text-center">{error}</Text>
+          <View className="mb-4 rounded bg-red-100 p-2">
+            <Text className="text-center font-bold text-red-600">{error}</Text>
           </View>
         )}
 
-        <Text className="text-lg font-bold mb-2">{currentScannedProductName}</Text>
+        <Text className="mb-2 text-lg font-bold">
+          {currentScannedProductName}
+        </Text>
 
         <View className="mb-3">
           <Text className="mb-1">{t('inventory.quantity')}:</Text>
           <Input
-            className="border border-neutral-300 rounded-lg p-2"
+            className="rounded-lg border border-neutral-300 p-2"
             keyboardType="numeric"
             value={tempQuantity}
             onChangeText={setTempQuantity}
@@ -181,10 +187,14 @@ export default function EnterQuantityMode({
             <Text className="mb-1">{t('inventory.expiration-date')}:</Text>
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
-              className="border border-neutral-300 rounded-lg p-2 bg-white"
+              className="rounded-lg border border-neutral-300 bg-white p-2"
             >
-              <Text className={tempExpirationDate ? "text-black" : "text-gray-400"}>
-                {tempExpirationDate ? formattedDate(new Date(tempExpirationDate)) : "YYYY-MM-DD"}
+              <Text
+                className={tempExpirationDate ? 'text-black' : 'text-gray-400'}
+              >
+                {tempExpirationDate
+                  ? formattedDate(new Date(tempExpirationDate))
+                  : 'YYYY-MM-DD'}
               </Text>
             </TouchableOpacity>
             {showDatePicker && (
@@ -208,9 +218,11 @@ export default function EnterQuantityMode({
 
         {hasBatchNumber && (
           <View className="mb-3">
-            <Text className="mb-1">{t('inventory.batch-number')} ({t('inventory.optional')}):</Text>
+            <Text className="mb-1">
+              {t('inventory.batch-number')} ({t('inventory.optional')}):
+            </Text>
             <Input
-              className="border border-neutral-300 rounded-lg p-2"
+              className="rounded-lg border border-neutral-300 p-2"
               value={tempBatchNumber}
               onChangeText={setTempBatchNumber}
               placeholder=""
@@ -228,40 +240,61 @@ export default function EnterQuantityMode({
   return (
     <View>
       {error && (
-        <View className="mb-4 bg-red-100 p-2 rounded">
-          <Text className="text-red-600 font-bold text-center">{error}</Text>
+        <View className="mb-4 rounded bg-red-100 p-2">
+          <Text className="text-center font-bold text-red-600">{error}</Text>
         </View>
       )}
 
-      <Text className="text-lg font-bold mb-2">{t('inventory.products-list')}</Text>
+      <Text className="mb-2 text-lg font-bold">
+        {t('inventory.products-list')}
+      </Text>
       {products.map((product, index) => {
         const isEditingExpirationDate = editingExpirationDateIndex === index;
         return (
-          <View key={`enterQuantity_${index}`} className="mb-4 p-3 border border-gray-300 rounded">
-            <View className="flex-row justify-between items-start mb-2">
+          <View
+            key={`enterQuantity_${index}`}
+            className="mb-4 rounded border border-gray-300 p-3"
+          >
+            <View className="mb-2 flex-row items-start justify-between">
               <View className="flex-1">
                 <Text className="font-bold">{product.name}</Text>
-                {(product.hasExpirationDate) && (
+                {product.hasExpirationDate && (
                   <View className="mt-2">
-                    <Text className="mb-1 text-sm">{t('inventory.expiration-date')}:</Text>
+                    <Text className="mb-1 text-sm">
+                      {t('inventory.expiration-date')}:
+                    </Text>
                     {product.hasExpirationDate ? (
-                      <View className="flex-row items-center flex-wrap">
-                        <Text className={`text-sm mr-2 ${!product.expirationDate ? 'text-red-600' : ''}`}>{product.expirationDate ? formattedDate(new Date(product.expirationDate)) : "YYYY-MM-DD"}</Text>
-                        <TouchableOpacity onPress={() => handleStartEditExpirationDate(index)}>
-                          <Text className="text-blue-600 text-sm">{t('inventory.edit')}</Text>
+                      <View className="flex-row flex-wrap items-center">
+                        <Text
+                          className={`mr-2 text-sm ${!product.expirationDate ? 'text-red-600' : ''}`}
+                        >
+                          {product.expirationDate
+                            ? formattedDate(new Date(product.expirationDate))
+                            : 'YYYY-MM-DD'}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => handleStartEditExpirationDate(index)}
+                        >
+                          <Text className="text-sm text-blue-600">
+                            {t('inventory.edit')}
+                          </Text>
                         </TouchableOpacity>
                       </View>
                     ) : (
                       <TouchableOpacity
                         onPress={() => handleStartEditExpirationDate(index)}
-                        className="border border-neutral-300 rounded-lg p-2 bg-white"
+                        className="rounded-lg border border-neutral-300 bg-white p-2"
                       >
                         <Text className="text-gray-400">YYYY-MM-DD</Text>
                       </TouchableOpacity>
                     )}
                     {isEditingExpirationDate && showEditDatePicker && (
                       <DateTimePicker
-                        value={product.expirationDate ? new Date(product.expirationDate) : new Date()}
+                        value={
+                          product.expirationDate
+                            ? new Date(product.expirationDate)
+                            : new Date()
+                        }
                         mode="date"
                         display="default"
                         onChange={(event: any, date?: Date) => {
@@ -279,17 +312,19 @@ export default function EnterQuantityMode({
                   </View>
                 )}
                 {product.batchNumber && (
-                  <Text className="text-sm">{t('inventory.batch-number')}: {product.batchNumber}</Text>
+                  <Text className="text-sm">
+                    {t('inventory.batch-number')}: {product.batchNumber}
+                  </Text>
                 )}
               </View>
               <TouchableOpacity onPress={() => handleRemoveProduct(index)}>
-                <Text className="text-red-600 font-bold text-xl">✕</Text>
+                <Text className="text-xl font-bold text-red-600">✕</Text>
               </TouchableOpacity>
             </View>
-            <View className="flex-row items-center mt-2">
+            <View className="mt-2 flex-row items-center">
               <Text className="mr-2">{t('inventory.quantity')}:</Text>
               <Input
-                className="border border-neutral-300 rounded-lg p-2 flex-1"
+                className="flex-1 rounded-lg border border-neutral-300 p-2"
                 keyboardType="numeric"
                 value={product.count.toString()}
                 onChangeText={(value) => handleQuantityChange(index, value)}
@@ -301,18 +336,26 @@ export default function EnterQuantityMode({
       })}
 
       <View className="mb-4">
-        <Text className="text-center text-lg mb-2">{t('inventory.scan-product')}</Text>
+        <Text className="mb-2 text-center text-lg">
+          {t('inventory.scan-product')}
+        </Text>
         {isFocused && (
           <Scanner
-            label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? t('inventory.scan-product') : ''}
+            label={
+              process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                ? t('inventory.scan-product')
+                : ''
+            }
             onScan={handleScanProduct}
             mockData={'2255489247417'}
           />
         )}
       </View>
-      <View className="mt-4 mb-4 p-3 bg-gray-100 rounded">
-        <Text className="text-lg font-bold text-center">
-          {t('inventory.number-of-products', { count: products.reduce((sum, product) => sum + product.count, 0) })}
+      <View className="mb-4 mt-4 rounded bg-gray-100 p-3">
+        <Text className="text-center text-lg font-bold">
+          {t('inventory.number-of-products', {
+            count: products.reduce((sum, product) => sum + product.count, 0),
+          })}
         </Text>
       </View>
       <Button onPress={handleSubmit} className="mt-4">

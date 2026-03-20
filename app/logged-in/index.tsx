@@ -24,7 +24,7 @@ export default function LoggedInPage() {
           </Button>
         </Link>
         <Link href="/logged-in/inventory" asChild>
-          <Button className="text-2xl font-bold bg-blue-500" size="lg">
+          <Button className="bg-blue-500 text-2xl font-bold" size="lg">
             <Text>{t('inventory.title')}</Text>
           </Button>
         </Link>

@@ -28,10 +28,15 @@ export default function useCheckInventoryBox(): {
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutateAsync: (args: CheckInventoryBoxParams) => Promise<CheckInventoryBoxResponse>;
+  mutateAsync: (
+    args: CheckInventoryBoxParams,
+  ) => Promise<CheckInventoryBoxResponse>;
 } {
   const { session } = useSession();
-  const mutateCheck = async ({ positionSku, boxSku }: CheckInventoryBoxParams) => {
+  const mutateCheck = async ({
+    positionSku,
+    boxSku,
+  }: CheckInventoryBoxParams) => {
     const path = `${API_ROOT}/inventory/check-box?positionSku=${positionSku}&boxSku=${boxSku}`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`checking inventory box: ${path}`);
@@ -65,4 +70,3 @@ export default function useCheckInventoryBox(): {
     mutateAsync: (args: CheckInventoryBoxParams) => mutateAsync(args),
   };
 }
-

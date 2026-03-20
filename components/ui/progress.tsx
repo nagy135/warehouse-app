@@ -11,8 +11,9 @@ import {
 import * as ProgressPrimitive from '@rn-primitives/progress';
 import { cn } from '~/lib/utils';
 
-const AnimatedProgressIndicator =
-  createAnimatedComponent(ProgressPrimitive.Indicator);
+const AnimatedProgressIndicator = createAnimatedComponent(
+  ProgressPrimitive.Indicator,
+);
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,

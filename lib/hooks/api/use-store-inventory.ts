@@ -54,4 +54,3 @@ export default function useStoreInventory(): {
     mutateAsync: (args: StoreInventoryParams) => mutateAsync(args),
   };
 }
-

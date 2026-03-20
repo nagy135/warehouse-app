@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import { useTranslation } from "react-i18next";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import Scanner from "~/components/scanner";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Text } from "~/components/ui/text";
-import { formattedDate } from "~/lib/utils";
-import { useFocusEffect } from "expo-router";
-import useCheckProductSku from "~/lib/hooks/api/use-check-product-sku";
+import React, { useCallback, useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Scanner from '~/components/scanner';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Text } from '~/components/ui/text';
+import { formattedDate } from '~/lib/utils';
+import { useFocusEffect } from 'expo-router';
+import useCheckProductSku from '~/lib/hooks/api/use-check-product-sku';
 
 export type ScannedProduct = {
   productId: string;
@@ -33,19 +33,21 @@ export default function ScanProductsMode({
 }: ScanProductsModeProps) {
   const { t } = useTranslation();
   const [isFocused, setIsFocused] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [currentScannedProductId, setCurrentScannedProductId] = useState<string>("");
-  const [currentScannedProductName, setCurrentScannedProductName] = useState<string>("");
-  const [tempExpirationDate, setTempExpirationDate] = useState<string>("");
-  const [tempBatchNumber, setTempBatchNumber] = useState<string>("");
+  const [error, setError] = useState<string>('');
+  const [currentScannedProductId, setCurrentScannedProductId] =
+    useState<string>('');
+  const [currentScannedProductName, setCurrentScannedProductName] =
+    useState<string>('');
+  const [tempExpirationDate, setTempExpirationDate] = useState<string>('');
+  const [tempBatchNumber, setTempBatchNumber] = useState<string>('');
   const [hasExpirationDate, setHasExpirationDate] = useState<boolean>(false);
   const [hasBatchNumber, setHasBatchNumber] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [editQuantity, setEditQuantity] = useState<string>("");
-  const [editExpirationDate, setEditExpirationDate] = useState<string>("");
-  const [editBatchNumber, setEditBatchNumber] = useState<string>("");
+  const [editQuantity, setEditQuantity] = useState<string>('');
+  const [editExpirationDate, setEditExpirationDate] = useState<string>('');
+  const [editBatchNumber, setEditBatchNumber] = useState<string>('');
   const [showEditDatePicker, setShowEditDatePicker] = useState(false);
   const [editSelectedDate, setEditSelectedDate] = useState<Date>(new Date());
 
@@ -55,11 +57,11 @@ export default function ScanProductsMode({
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   function handleScanProduct(scan: string) {
-    setError("");
+    setError('');
     mutateCheckProductSku({ sku: scan })
       .then((data) => {
         setCurrentScannedProductId(data.id);
@@ -68,26 +70,28 @@ export default function ScanProductsMode({
         setHasBatchNumber(data.hasBatchNumber);
 
         // Check if this product was already scanned and auto-fill from previous entry
-        const existingProduct = [...scannedProducts].reverse().find(p => p.productId === data.id);
+        const existingProduct = [...scannedProducts]
+          .reverse()
+          .find((p) => p.productId === data.id);
         if (existingProduct) {
-          setTempExpirationDate(existingProduct.expirationDate || "");
-          setTempBatchNumber(existingProduct.batchNumber || "");
+          setTempExpirationDate(existingProduct.expirationDate || '');
+          setTempBatchNumber(existingProduct.batchNumber || '');
           if (existingProduct.expirationDate) {
             setSelectedDate(new Date(existingProduct.expirationDate));
           }
         } else {
-          setTempExpirationDate("");
-          setTempBatchNumber("");
+          setTempExpirationDate('');
+          setTempBatchNumber('');
         }
 
         // Auto-add if product has no expiration date and no batch number
         if (!data.hasExpirationDate && !data.hasBatchNumber) {
-          addProductToList(data.id, data.name, "", "");
+          addProductToList(data.id, data.name, '', '');
         }
       })
       .catch(() => {
         setError(t('inventory.product-not-found'));
-      })
+      });
   }
 
   function handleAddProduct() {
@@ -96,16 +100,26 @@ export default function ScanProductsMode({
       return;
     }
 
-    addProductToList(currentScannedProductId, currentScannedProductName, tempExpirationDate, tempBatchNumber);
+    addProductToList(
+      currentScannedProductId,
+      currentScannedProductName,
+      tempExpirationDate,
+      tempBatchNumber,
+    );
   }
 
-  function addProductToList(productId: string, productName: string, expirationDate: string, batchNumber: string) {
+  function addProductToList(
+    productId: string,
+    productName: string,
+    expirationDate: string,
+    batchNumber: string,
+  ) {
     // Check if product with same ID, expiration date, and batch number already exists
     const existingProductIndex = scannedProducts.findIndex(
       (p) =>
         p.productId === productId &&
         p.expirationDate === expirationDate &&
-        p.batchNumber === batchNumber
+        p.batchNumber === batchNumber,
     );
 
     if (existingProductIndex !== -1) {
@@ -122,18 +136,18 @@ export default function ScanProductsMode({
         batchNumber: batchNumber,
         hasExpirationDate: hasExpirationDate,
         hasBatchNumber: hasBatchNumber,
-        count: 1
+        count: 1,
       };
       onScannedProductsChange([...scannedProducts, newProduct]);
     }
 
-    setCurrentScannedProductId("");
-    setCurrentScannedProductName("");
-    setTempExpirationDate("");
+    setCurrentScannedProductId('');
+    setCurrentScannedProductName('');
+    setTempExpirationDate('');
     setHasExpirationDate(false);
     setHasBatchNumber(false);
-    setTempBatchNumber("");
-    setError("");
+    setTempBatchNumber('');
+    setError('');
     setHasExpirationDate(false);
     setHasBatchNumber(false);
   }
@@ -146,8 +160,8 @@ export default function ScanProductsMode({
     const product = scannedProducts[index];
     setEditingIndex(index);
     setEditQuantity(product.count.toString());
-    setEditExpirationDate(product.expirationDate || "");
-    setEditBatchNumber(product.batchNumber || "");
+    setEditExpirationDate(product.expirationDate || '');
+    setEditBatchNumber(product.batchNumber || '');
     if (product.expirationDate) {
       setEditSelectedDate(new Date(product.expirationDate));
     }
@@ -165,9 +179,10 @@ export default function ScanProductsMode({
     const product = scannedProducts[editingIndex];
 
     // Check if product has expiration date requirement
-    const productHasExpirationDate = scannedProducts.some(
-      p => p.productId === product.productId && p.expirationDate
-    ) || product.expirationDate;
+    const productHasExpirationDate =
+      scannedProducts.some(
+        (p) => p.productId === product.productId && p.expirationDate,
+      ) || product.expirationDate;
 
     if (productHasExpirationDate && !editExpirationDate) {
       setError(t('inventory.expiration-date-required'));
@@ -184,18 +199,18 @@ export default function ScanProductsMode({
 
     onScannedProductsChange(updatedProducts);
     setEditingIndex(null);
-    setEditQuantity("");
-    setEditExpirationDate("");
-    setEditBatchNumber("");
-    setError("");
+    setEditQuantity('');
+    setEditExpirationDate('');
+    setEditBatchNumber('');
+    setError('');
   }
 
   function handleCancelEdit() {
     setEditingIndex(null);
-    setEditQuantity("");
-    setEditExpirationDate("");
-    setEditBatchNumber("");
-    setError("");
+    setEditQuantity('');
+    setEditExpirationDate('');
+    setEditBatchNumber('');
+    setError('');
   }
 
   function handleSubmit() {
@@ -209,17 +224,23 @@ export default function ScanProductsMode({
   return (
     <View className="w-full">
       {error && (
-        <View className="mb-4 bg-red-100 p-2 rounded">
-          <Text className="text-red-600 font-bold text-center">{error}</Text>
+        <View className="mb-4 rounded bg-red-100 p-2">
+          <Text className="text-center font-bold text-red-600">{error}</Text>
         </View>
       )}
 
       {!currentScannedProductId ? (
         <View>
-          <Text className="text-center text-lg mb-4">{t('inventory.scan-product')}</Text>
+          <Text className="mb-4 text-center text-lg">
+            {t('inventory.scan-product')}
+          </Text>
           {isFocused && (
             <Scanner
-              label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? t('inventory.scan-product') : ''}
+              label={
+                process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                  ? t('inventory.scan-product')
+                  : ''
+              }
               onScan={handleScanProduct}
               mockData={'9874510517157'}
             />
@@ -227,22 +248,35 @@ export default function ScanProductsMode({
         </View>
       ) : (
         <View>
-          <Text className="text-lg font-bold mb-2">{currentScannedProductName}</Text>
+          <Text className="mb-2 text-lg font-bold">
+            {currentScannedProductName}
+          </Text>
 
           {hasExpirationDate && (
             <View className="mb-3">
               <Text className="mb-1">{t('inventory.expiration-date')}:</Text>
               <TouchableOpacity
                 onPress={() => setShowDatePicker(true)}
-                className="border border-neutral-300 rounded-lg p-2 bg-white"
+                className="rounded-lg border border-neutral-300 bg-white p-2"
               >
-                <Text className={tempExpirationDate ? "text-black" : "text-gray-400"}>
-                  {tempExpirationDate ? formattedDate(new Date(tempExpirationDate)) : "YYYY-MM-DD"}
+                <Text
+                  className={
+                    tempExpirationDate ? 'text-black' : 'text-gray-400'
+                  }
+                >
+                  {tempExpirationDate
+                    ? formattedDate(new Date(tempExpirationDate))
+                    : 'YYYY-MM-DD'}
                 </Text>
               </TouchableOpacity>
               {tempExpirationDate && (
-                <TouchableOpacity onPress={() => setTempExpirationDate("")} className="mt-1">
-                  <Text className="text-blue-600">{t('inventory.clear-date')}</Text>
+                <TouchableOpacity
+                  onPress={() => setTempExpirationDate('')}
+                  className="mt-1"
+                >
+                  <Text className="text-blue-600">
+                    {t('inventory.clear-date')}
+                  </Text>
                 </TouchableOpacity>
               )}
               {showDatePicker && (
@@ -260,7 +294,12 @@ export default function ScanProductsMode({
 
                       // Auto-add if product has no batch number requirement
                       if (!hasBatchNumber) {
-                        addProductToList(currentScannedProductId, currentScannedProductName, formattedDateStr, "");
+                        addProductToList(
+                          currentScannedProductId,
+                          currentScannedProductName,
+                          formattedDateStr,
+                          '',
+                        );
                       }
                     }
                   }}
@@ -271,9 +310,11 @@ export default function ScanProductsMode({
 
           {hasBatchNumber && (
             <View className="mb-3">
-              <Text className="mb-1">{t('inventory.batch-number')} ({t('inventory.optional')}):</Text>
+              <Text className="mb-1">
+                {t('inventory.batch-number')} ({t('inventory.optional')}):
+              </Text>
               <Input
-                className="border border-neutral-300 rounded-lg p-2"
+                className="rounded-lg border border-neutral-300 p-2"
                 value={tempBatchNumber}
                 onChangeText={setTempBatchNumber}
                 placeholder=""
@@ -292,17 +333,22 @@ export default function ScanProductsMode({
       {/* List of scanned products */}
       {scannedProducts.length > 0 && (
         <View className="mt-4">
-          <Text className="text-lg font-bold mb-2">{t('inventory.scanned-products-list')}</Text>
+          <Text className="mb-2 text-lg font-bold">
+            {t('inventory.scanned-products-list')}
+          </Text>
           {scannedProducts.map((product, index) => (
-            <View key={index} className="mb-2 p-3 border border-gray-300 rounded">
+            <View
+              key={index}
+              className="mb-2 rounded border border-gray-300 p-3"
+            >
               {editingIndex === index ? (
                 <View>
-                  <Text className="font-bold mb-2">{product.productName}</Text>
+                  <Text className="mb-2 font-bold">{product.productName}</Text>
 
                   <View className="mb-3">
                     <Text className="mb-1">{t('inventory.quantity')}:</Text>
                     <Input
-                      className="border border-neutral-300 rounded-lg p-2"
+                      className="rounded-lg border border-neutral-300 p-2"
                       keyboardType="numeric"
                       value={editQuantity}
                       onChangeText={setEditQuantity}
@@ -312,18 +358,31 @@ export default function ScanProductsMode({
 
                   {product.hasExpirationDate && (
                     <View className="mb-3">
-                      <Text className="mb-1">{t('inventory.expiration-date')}:</Text>
+                      <Text className="mb-1">
+                        {t('inventory.expiration-date')}:
+                      </Text>
                       <TouchableOpacity
                         onPress={() => setShowEditDatePicker(true)}
-                        className="border border-neutral-300 rounded-lg p-2 bg-white"
+                        className="rounded-lg border border-neutral-300 bg-white p-2"
                       >
-                        <Text className={editExpirationDate ? "text-black" : "text-gray-400"}>
-                          {editExpirationDate ? formattedDate(new Date(editExpirationDate)) : "YYYY-MM-DD"}
+                        <Text
+                          className={
+                            editExpirationDate ? 'text-black' : 'text-gray-400'
+                          }
+                        >
+                          {editExpirationDate
+                            ? formattedDate(new Date(editExpirationDate))
+                            : 'YYYY-MM-DD'}
                         </Text>
                       </TouchableOpacity>
                       {editExpirationDate && (
-                        <TouchableOpacity onPress={() => setEditExpirationDate("")} className="mt-1">
-                          <Text className="text-blue-600">{t('inventory.clear-date')}</Text>
+                        <TouchableOpacity
+                          onPress={() => setEditExpirationDate('')}
+                          className="mt-1"
+                        >
+                          <Text className="text-blue-600">
+                            {t('inventory.clear-date')}
+                          </Text>
                         </TouchableOpacity>
                       )}
                       {showEditDatePicker && (
@@ -336,7 +395,9 @@ export default function ScanProductsMode({
                             if (event.type === 'set' && date) {
                               date?.setHours(12);
                               setEditSelectedDate(date);
-                              const formattedDateStr = date.toISOString().split('T')[0];
+                              const formattedDateStr = date
+                                .toISOString()
+                                .split('T')[0];
                               setEditExpirationDate(formattedDateStr);
                             }
                           }}
@@ -346,9 +407,12 @@ export default function ScanProductsMode({
                   )}
                   {product.hasBatchNumber && (
                     <View className="mb-3">
-                      <Text className="mb-1">{t('inventory.batch-number')} ({t('inventory.optional')}):</Text>
+                      <Text className="mb-1">
+                        {t('inventory.batch-number')} ({t('inventory.optional')}
+                        ):
+                      </Text>
                       <Input
-                        className="border border-neutral-300 rounded-lg p-2"
+                        className="rounded-lg border border-neutral-300 p-2"
                         value={editBatchNumber}
                         onChangeText={setEditBatchNumber}
                         placeholder=""
@@ -360,38 +424,59 @@ export default function ScanProductsMode({
                     <Button onPress={handleSaveEdit} className="flex-1">
                       <Text>{t('inventory.save')}</Text>
                     </Button>
-                    <Button onPress={handleCancelEdit} className="flex-1 bg-gray-500">
+                    <Button
+                      onPress={handleCancelEdit}
+                      className="flex-1 bg-gray-500"
+                    >
                       <Text>{t('inventory.cancel')}</Text>
                     </Button>
                   </View>
                 </View>
               ) : (
-                <View className="flex-row justify-between items-center">
+                <View className="flex-row items-center justify-between">
                   <View className="flex-1">
                     <Text className="font-bold">{product.productName}</Text>
-                    <Text className="text-sm">{t('inventory.quantity')}: {product.count}</Text>
+                    <Text className="text-sm">
+                      {t('inventory.quantity')}: {product.count}
+                    </Text>
                     {product.expirationDate && (
-                      <Text className="text-sm">{t('inventory.expiration-date')}: {formattedDate(new Date(product.expirationDate))}</Text>
+                      <Text className="text-sm">
+                        {t('inventory.expiration-date')}:{' '}
+                        {formattedDate(new Date(product.expirationDate))}
+                      </Text>
                     )}
                     {product.batchNumber && (
-                      <Text className="text-sm">{t('inventory.batch-number')}: {product.batchNumber}</Text>
+                      <Text className="text-sm">
+                        {t('inventory.batch-number')}: {product.batchNumber}
+                      </Text>
                     )}
                   </View>
                   <View className="flex-row gap-2">
-                    <TouchableOpacity onPress={() => handleEditProduct(index)} className="px-2">
-                      <Text className="text-blue-600 font-bold text-lg">✎</Text>
+                    <TouchableOpacity
+                      onPress={() => handleEditProduct(index)}
+                      className="px-2"
+                    >
+                      <Text className="text-lg font-bold text-blue-600">✎</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleRemoveProduct(index)} className="px-2">
-                      <Text className="text-red-600 font-bold text-lg">✕</Text>
+                    <TouchableOpacity
+                      onPress={() => handleRemoveProduct(index)}
+                      className="px-2"
+                    >
+                      <Text className="text-lg font-bold text-red-600">✕</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               )}
             </View>
           ))}
-          <View className="mt-4 mb-4 p-3 bg-gray-100 rounded">
-            <Text className="text-lg font-bold text-center">
-              {t('inventory.number-of-products', { count: scannedProducts.reduce((sum, product) => sum + product.count, 0) })}
+          <View className="mb-4 mt-4 rounded bg-gray-100 p-3">
+            <Text className="text-center text-lg font-bold">
+              {t('inventory.number-of-products', {
+                count: scannedProducts.reduce(
+                  (sum, product) => sum + product.count,
+                  0,
+                ),
+              })}
             </Text>
           </View>
           <Button onPress={handleSubmit} className="mt-4">

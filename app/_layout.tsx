@@ -1,7 +1,12 @@
 import '~/global.css';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  Theme,
+  ThemeProvider,
+} from '@react-navigation/native';
 import { SplashScreen, Stack, router } from 'expo-router';
 import { View } from 'react-native';
 import { Text } from '~/components/ui/text';

@@ -19,7 +19,9 @@ export default function useCheckProductSku(): {
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutateAsync: (args: CheckProductSkuParams) => Promise<CheckProductSkuResponse>;
+  mutateAsync: (
+    args: CheckProductSkuParams,
+  ) => Promise<CheckProductSkuResponse>;
 } {
   const { session } = useSession();
   const mutateCheck = async ({ sku }: CheckProductSkuParams) => {
@@ -56,4 +58,3 @@ export default function useCheckProductSku(): {
     mutateAsync: (args: CheckProductSkuParams) => mutateAsync(args),
   };
 }
-

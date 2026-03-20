@@ -16,15 +16,23 @@ import { EntryExitStatesEnum, type Exit } from '~/lib/types';
 import { cn } from '~/lib/utils';
 import { ShieldCheck } from '~/lib/icons';
 
-function ExitCardComponent({ exit, delivery, partner }: { exit: Exit, delivery: string, partner: string }) {
+function ExitCardComponent({
+  exit,
+  delivery,
+  partner,
+}: {
+  exit: Exit;
+  delivery: string;
+  partner: string;
+}) {
   const { t } = useTranslation();
 
   const cardClassName = useMemo(() => {
     return cn(
       'w-full',
-      (exit.state === EntryExitStatesEnum.MOVED ||
+      exit.state === EntryExitStatesEnum.MOVED ||
         exit.state === EntryExitStatesEnum.PACKAGED ||
-        exit.state === EntryExitStatesEnum.SENT)
+        exit.state === EntryExitStatesEnum.SENT
         ? 'bg-green-100'
         : '',
       exit.isIncomplete && 'bg-red-100',

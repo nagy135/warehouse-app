@@ -60,10 +60,7 @@ export const isTokenValid = (token: string): boolean => {
   }
 };
 
-export const formattedDate = (
-  date?: Date | null,
-  format = 'dd.MM.yyyy',
-) => {
+export const formattedDate = (date?: Date | null, format = 'dd.MM.yyyy') => {
   if (!date) return '-';
   return DateTime.fromJSDate(date).toFormat(format);
 };

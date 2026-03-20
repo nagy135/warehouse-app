@@ -1,35 +1,58 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useFocusEffect } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ActivityIndicator, ButtonProps, useWindowDimensions, View } from "react-native";
-import Scanner from "~/components/scanner";
-import { Button } from "~/components/ui/button";
+import { useQueryClient } from '@tanstack/react-query';
+import { router, useFocusEffect } from 'expo-router';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  ActivityIndicator,
+  ButtonProps,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import Scanner from '~/components/scanner';
+import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { Text } from "~/components/ui/text";
-import { ProductPositionList } from "~/lib/exitDetailUtils";
-import useMoveProductStorage from "~/lib/hooks/api/use-change-product-storage-state";
+import { Text } from '~/components/ui/text';
+import { ProductPositionList } from '~/lib/exitDetailUtils';
+import useMoveProductStorage from '~/lib/hooks/api/use-change-product-storage-state';
 import useCheckStorageExits from '~/lib/hooks/api/use-check-storage-exits';
-import { Box } from "~/lib/icons/Box";
+import { Box } from '~/lib/icons/Box';
 
-type Props = { items: ProductPositionList, exitId: number, partnerId: number, refetchExit: () => void, isRefetching: boolean };
+type Props = {
+  items: ProductPositionList;
+  exitId: number;
+  partnerId: number;
+  refetchExit: () => void;
+  isRefetching: boolean;
+};
 
 type Step =
-  | "position"
-  | "storage"
-  | "box"
-  | "product"
-  | "quantity"
-  | "rescanStorageToFinish";
+  | 'position'
+  | 'storage'
+  | 'box'
+  | 'product'
+  | 'quantity'
+  | 'rescanStorageToFinish';
 
-export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, isRefetching }: Props) {
+export default function ExitWorkflow({
+  items,
+  exitId,
+  partnerId,
+  refetchExit,
+  isRefetching,
+}: Props) {
   const [index, setIndex] = useState(0);
-  const [step, setStep] = useState<Step>("position");
+  const [step, setStep] = useState<Step>('position');
   const [scannedBox, setScannedBox] = useState<number | null>(null);
-  const [quantityInput, setQuantityInput] = useState<string>("");
+  const [quantityInput, setQuantityInput] = useState<string>('');
   const [usedIds, setUsedIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [isDone, setIsDone] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
@@ -43,16 +66,16 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
     setIndex(0);
-    setStep("position");
+    setStep('position');
     setScannedBox(null);
-    setQuantityInput("");
+    setQuantityInput('');
     setUsedIds([]);
-    setError("");
+    setError('');
   }, [items]);
 
   const current = items[index];
@@ -60,7 +83,7 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   const remainingIds = useMemo(() => {
     if (!current) return [];
     const used = new Set(usedIds);
-    return current.productStoragesId.filter(id => !used.has(id));
+    return current.productStoragesId.filter((id) => !used.has(id));
   }, [current, usedIds]);
 
   const remainingCount = remainingIds.length;
@@ -77,9 +100,9 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
   function goNextItem() {
     if (index + 1 >= items.length) {
       setIsDone(true);
-      queryClient.invalidateQueries({ queryKey: ["exits"] });
+      queryClient.invalidateQueries({ queryKey: ['exits'] });
       setTimeout(() => {
-        router.replace("/logged-in/exits-index");
+        router.replace('/logged-in/exits-index');
       }, 800);
     } else {
       refetchExit();
@@ -90,22 +113,21 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
     return remainingIds.slice(0, n);
   }
 
-
   function handleScanPosition(scan: string) {
     if (scan === current.position.sku) {
-      setStep("storage");
-      setError("");
+      setStep('storage');
+      setError('');
     } else {
-      setError("Nesprávna pozícia!");
+      setError('Nesprávna pozícia!');
     }
   }
 
   function handleScanStorage(scan: string) {
     if (scan === current.storage.sku) {
-      setStep("box");
-      setError("");
+      setStep('box');
+      setError('');
     } else {
-      setError("Nesprávne úložisko!");
+      setError('Nesprávne úložisko!');
     }
   }
 
@@ -114,34 +136,35 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
     mutateCheckStorageExits({ sku: scan })
       .then((data) => {
         setScannedBox(data.id);
-        setStep("product");
-        setError("");
+        setStep('product');
+        setError('');
       })
       .catch(() => {
-        setError("Prenosný box nebol nájdený!");
-      }).finally(() => {
+        setError('Prenosný box nebol nájdený!');
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   }
 
   function handleScanProduct(scan: string) {
     if (scan === current.product.sku || scan === current.product.ean) {
-      setStep("quantity");
+      setStep('quantity');
       setQuantityInput(remainingCount.toString());
-      setError("");
+      setError('');
     } else {
-      setError("Nesprávny produkt!");
+      setError('Nesprávny produkt!');
     }
   }
 
   function submitPartialMove() {
     const qty = Math.max(0, Math.floor(Number(quantityInput) || 0));
     if (!qty) {
-      setError("Zadajte platné množstvo");
+      setError('Zadajte platné množstvo');
       return;
     }
     if (qty > remainingCount) {
-      setError("Zadané množstvo je väčšie ako počet zostávajúcich produktov");
+      setError('Zadané množstvo je väčšie ako počet zostávajúcich produktov');
       return;
     }
 
@@ -149,53 +172,64 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
     const chosenIds = takeFirstN(take);
 
     if (!scannedBox) {
-      setError("Prenosný box nebol nájdený!");
+      setError('Prenosný box nebol nájdený!');
       return;
     }
 
     setIsLoading(true);
-    mutateMoveProductStorage({ ids: chosenIds, storageId: scannedBox, exitId: exitId, partnerId: partnerId, productId: current.product.id }).then(() => {
-      setUsedIds(prev => [...prev, ...chosenIds]);
-      setQuantityInput("");
-      setError("");
+    mutateMoveProductStorage({
+      ids: chosenIds,
+      storageId: scannedBox,
+      exitId: exitId,
+      partnerId: partnerId,
+      productId: current.product.id,
+    })
+      .then(() => {
+        setUsedIds((prev) => [...prev, ...chosenIds]);
+        setQuantityInput('');
+        setError('');
 
-      if (remainingCount - take > 0) {
-        setStep("box");
-      } else {
-        setStep("rescanStorageToFinish");
-      }
-    }).catch(() => {
-      setError("Prenos produktov do prenosného boxu sa nepodaril!");
-    }).finally(() => {
-      setIsLoading(false);
-    });
+        if (remainingCount - take > 0) {
+          setStep('box');
+        } else {
+          setStep('rescanStorageToFinish');
+        }
+      })
+      .catch(() => {
+        setError('Prenos produktov do prenosného boxu sa nepodaril!');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   function handleRescanStorageToFinish(scan: string) {
     if (scan === current.storage.sku) {
       goNextItem();
     } else {
-      setError("Nesprávne úložisko");
+      setError('Nesprávne úložisko');
     }
   }
 
   return (
-    <View className={`flex-1 ${isLandscape ? "p-2" : "p-4"}`}>
-      <View className={isLandscape ? "mb-2" : "mb-4"}>
-        <Text className="text-lg font-bold text-center">
+    <View className={`flex-1 ${isLandscape ? 'p-2' : 'p-4'}`}>
+      <View className={isLandscape ? 'mb-2' : 'mb-4'}>
+        <Text className="text-center text-lg font-bold">
           {current.product.name} ({current.productStoragesId.length} ks)
         </Text>
       </View>
 
       {error ? (
-        <View className="mb-4 bg-red-100 p-2 rounded">
-          <Text className="text-red-600 font-bold text-center">{error}</Text>
+        <View className="mb-4 rounded bg-red-100 p-2">
+          <Text className="text-center font-bold text-red-600">{error}</Text>
         </View>
       ) : null}
 
       {isDone && (
-        <View className="mb-4 bg-green-100 p-2 rounded">
-          <Text className="text-green-600 font-bold text-center">{t('exit-detail.exit-successful')}</Text>
+        <View className="mb-4 rounded bg-green-100 p-2">
+          <Text className="text-center font-bold text-green-600">
+            {t('exit-detail.exit-successful')}
+          </Text>
         </View>
       )}
 
@@ -206,78 +240,145 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
       )}
 
       <View className="flex-1 items-center justify-center">
-        {step === "position" && (
+        {step === 'position' && (
           <>
-            <View className={isLandscape ? "flex-row items-center justify-center gap-4 mb-4" : "mb-4"}>
+            <View
+              className={
+                isLandscape
+                  ? 'mb-4 flex-row items-center justify-center gap-4'
+                  : 'mb-4'
+              }
+            >
               <Text className="text-center text-2xl">Oskenuj pozíciu</Text>
-              <Text className="font-bold text-center text-2xl">{current.position.name}</Text>
+              <Text className="text-center text-2xl font-bold">
+                {current.position.name}
+              </Text>
             </View>
 
-            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj pozíciu" : ''} onScan={handleScanPosition} />}
+            {isFocused && (
+              <Scanner
+                label={
+                  process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                    ? 'Oskenuj pozíciu'
+                    : ''
+                }
+                onScan={handleScanPosition}
+              />
+            )}
           </>
         )}
 
-        {step === "storage" && (
+        {step === 'storage' && (
           <>
-            <View className={isLandscape ? "flex-row items-center justify-center gap-4 mb-4" : "mb-4"}>
+            <View
+              className={
+                isLandscape
+                  ? 'mb-4 flex-row items-center justify-center gap-4'
+                  : 'mb-4'
+              }
+            >
               <Text className="text-center text-2xl">Oskenuj úložisko</Text>
-              <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
+              <Text className="text-center text-2xl font-bold">
+                {current.storage.name}
+              </Text>
             </View>
-            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj úložisko" : ''} onScan={handleScanStorage} />}
+            {isFocused && (
+              <Scanner
+                label={
+                  process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                    ? 'Oskenuj úložisko'
+                    : ''
+                }
+                onScan={handleScanStorage}
+              />
+            )}
           </>
         )}
 
-        {step === "box" && (
+        {step === 'box' && (
           <View>
-            <Text className="mb-1 text-center text-2xl">Oskenuj prenosný box</Text>
-            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj prenosný box" : ''} onScan={handleScanBox} />}
+            <Text className="mb-1 text-center text-2xl">
+              Oskenuj prenosný box
+            </Text>
+            {isFocused && (
+              <Scanner
+                label={
+                  process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                    ? 'Oskenuj prenosný box'
+                    : ''
+                }
+                onScan={handleScanBox}
+              />
+            )}
             <View className="mt-4">
               <Text>Počet zostávajúcich produktov: {remainingCount}</Text>
             </View>
           </View>
         )}
 
-        {step === "product" && (
+        {step === 'product' && (
           <View>
             <Text className="mb-1 text-center text-2xl">Oskenuj produkt</Text>
             {current.product.isBox && (
-              <View className="flex-row items-center justify-center mt-2">
-                <Box size={20} strokeWidth={1.25} className="text-foreground mr-1 bg-sky-200" />
-                <Text className="text-sm text-center">Kartónové balenie</Text>
+              <View className="mt-2 flex-row items-center justify-center">
+                <Box
+                  size={20}
+                  strokeWidth={1.25}
+                  className="mr-1 bg-sky-200 text-foreground"
+                />
+                <Text className="text-center text-sm">Kartónové balenie</Text>
               </View>
             )}
-            <View className={isLandscape ? "flex-row items-center justify-center gap-4 mb-2" : "mb-3"}>
-              <Text className="font-bold text-center mb-2 text-xl">{current.product.name}</Text>
+            <View
+              className={
+                isLandscape
+                  ? 'mb-2 flex-row items-center justify-center gap-4'
+                  : 'mb-3'
+              }
+            >
+              <Text className="mb-2 text-center text-xl font-bold">
+                {current.product.name}
+              </Text>
               <Text className="text-center text-sm">
-                sku: <Text className="font-bold">{current.product.sku}</Text> | ean:{" "}
-                <Text className="font-bold">{current.product.ean}</Text>
+                sku: <Text className="font-bold">{current.product.sku}</Text> |
+                ean: <Text className="font-bold">{current.product.ean}</Text>
               </Text>
             </View>
             {current.product.expirations.length > 0 && (
-              <Text className="text-center mb-4">
-                Expirácie:{" "}
+              <Text className="mb-4 text-center">
+                Expirácie:{' '}
                 {current.product.expirations
-                  .map((e) => `${t('date', { date: new Date(e.value) })} (${e.count} ks)`)
-                  .join(", ")}
+                  .map(
+                    (e) =>
+                      `${t('date', { date: new Date(e.value) })} (${e.count} ks)`,
+                  )
+                  .join(', ')}
               </Text>
             )}
-            {isFocused && <Scanner label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj produkt" : ''} onScan={handleScanProduct} />}
+            {isFocused && (
+              <Scanner
+                label={
+                  process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                    ? 'Oskenuj produkt'
+                    : ''
+                }
+                onScan={handleScanProduct}
+              />
+            )}
           </View>
         )}
 
-        {step === "quantity" && (
+        {step === 'quantity' && (
           <View
             className={
-              isLandscape
-                ? "flex-row items-center justify-center gap-4"
-                : ""
+              isLandscape ? 'flex-row items-center justify-center gap-4' : ''
             }
           >
-            <Text className={isLandscape ? "mb-0 mr-2" : "mb-2"}>
+            <Text className={isLandscape ? 'mb-0 mr-2' : 'mb-2'}>
               Zadaj počet (zostáva {remainingCount} ks)
             </Text>
             <Input
-              className={`border border-neutral-300 rounded-lg p-2 flex-1 max-w-[100px] ${isLandscape ? "mb-0" : "mb-3"}`}
+              className={`max-w-[100px] flex-1 rounded-lg border border-neutral-300 p-2 ${isLandscape ? 'mb-0' : 'mb-3'}`}
               keyboardType="numeric"
               value={quantityInput}
               onChangeText={setQuantityInput}
@@ -289,16 +390,32 @@ export default function ExitWorkflow({ items, exitId, partnerId, refetchExit, is
           </View>
         )}
 
-        {step === "rescanStorageToFinish" && (
+        {step === 'rescanStorageToFinish' && (
           <View>
-            <View className={isLandscape ? "flex-row items-center justify-center gap-2 mb-4" : "mb-4"}>
-              <Text className="text-center text-2xl">Oskenuj pôvodné úložisko:</Text>
-              <Text className="font-bold text-center text-2xl">{current.storage.name}</Text>
+            <View
+              className={
+                isLandscape
+                  ? 'mb-4 flex-row items-center justify-center gap-2'
+                  : 'mb-4'
+              }
+            >
+              <Text className="text-center text-2xl">
+                Oskenuj pôvodné úložisko:
+              </Text>
+              <Text className="text-center text-2xl font-bold">
+                {current.storage.name}
+              </Text>
             </View>
-            {isFocused && <Scanner
-              label={process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true' ? "Oskenuj pôvodné úložisko" : ''}
-              onScan={handleRescanStorageToFinish}
-            />}
+            {isFocused && (
+              <Scanner
+                label={
+                  process.env.EXPO_PUBLIC_MOCK_SCANNER == 'true'
+                    ? 'Oskenuj pôvodné úložisko'
+                    : ''
+                }
+                onScan={handleRescanStorageToFinish}
+              />
+            )}
           </View>
         )}
       </View>

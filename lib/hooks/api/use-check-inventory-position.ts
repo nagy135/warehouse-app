@@ -19,7 +19,9 @@ export default function useCheckInventoryPosition(): {
   isPending: boolean;
   isError: boolean;
   isSuccess: boolean;
-  mutateAsync: (args: CheckInventoryPositionParams) => Promise<CheckInventoryPositionResponse>;
+  mutateAsync: (
+    args: CheckInventoryPositionParams,
+  ) => Promise<CheckInventoryPositionResponse>;
 } {
   const { session } = useSession();
   const mutateCheck = async ({ sku }: CheckInventoryPositionParams) => {
@@ -35,11 +37,11 @@ export default function useCheckInventoryPosition(): {
       },
       method: 'GET',
     });
-    
+
     if (!res.ok) {
       throw new Error('Position not found');
     }
-    
+
     const data = await res.json();
     return data;
   };
@@ -48,7 +50,7 @@ export default function useCheckInventoryPosition(): {
     mutationKey: [`check-inventory-position`],
     mutationFn: mutateCheck,
   });
-  
+
   return {
     isPending,
     isError,
@@ -56,4 +58,3 @@ export default function useCheckInventoryPosition(): {
     mutateAsync: (args: CheckInventoryPositionParams) => mutateAsync(args),
   };
 }
-

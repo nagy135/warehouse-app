@@ -20,7 +20,10 @@ import { Exit, Partner, Delivery } from '~/lib/types';
 import useGetPartners from '~/lib/hooks/api/use-get-partners';
 import useGetDeliveries from '~/lib/hooks/api/use-get-deliveries';
 import { Dropdown } from '~/components/ui/dropdown';
-import { usePageStateContext, PagesStateActions } from '../contexts/PageStateContext';
+import {
+  usePageStateContext,
+  PagesStateActions,
+} from '../contexts/PageStateContext';
 
 export default function ExitsPage() {
   const [searchValue, setSearchValue] = useState('');
@@ -56,7 +59,7 @@ export default function ExitsPage() {
   } = useGetRecords<Exit>({
     search: debouncedSearch,
     partner: state.selectedPartner ?? undefined,
-    delivery: state.selectedDelivery ?? undefined
+    delivery: state.selectedDelivery ?? undefined,
   });
 
   const { data: partners } = useGetPartners();
@@ -66,7 +69,7 @@ export default function ExitsPage() {
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   const renderItem = useCallback(
@@ -75,15 +78,17 @@ export default function ExitsPage() {
         <ExitCard
           exit={item}
           delivery={
-            deliveries?.find((delivery) => delivery.id === item.deliveryId)?.name ?? ''
+            deliveries?.find((delivery) => delivery.id === item.deliveryId)
+              ?.name ?? ''
           }
           partner={
-            partners?.find((partner) => partner.id === item.partnerId)?.name ?? ''
+            partners?.find((partner) => partner.id === item.partnerId)?.name ??
+            ''
           }
         />
       </View>
     ),
-    [deliveries, partners]
+    [deliveries, partners],
   );
 
   const handleViewableItemsChanged = useCallback(
@@ -103,7 +108,7 @@ export default function ExitsPage() {
         fetchNextPage();
       }
     },
-    [exits, hasNextPage, isLoading, isWaiting, lastVisibleId, fetchNextPage]
+    [exits, hasNextPage, isLoading, isWaiting, lastVisibleId, fetchNextPage],
   );
 
   if (error) return <Text>error</Text>;
@@ -172,15 +177,15 @@ export default function ExitsPage() {
             itemVisiblePercentThreshold: 50,
           }}
           ListFooterComponent={
-            (isLoading || isWaiting) ? (
-              <View className="py-4 items-center">
+            isLoading || isWaiting ? (
+              <View className="items-center py-4">
                 <ActivityIndicator size="large" color="#666666" />
               </View>
             ) : null
           }
           ListEmptyComponent={
-            (!isLoading && !isWaiting && exits?.length === 0) ? (
-              <View className="py-4 items-center">
+            !isLoading && !isWaiting && exits?.length === 0 ? (
+              <View className="items-center py-4">
                 <Text>{t('exit-list.no-results')}</Text>
               </View>
             ) : null

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
-import { useTranslation } from "react-i18next";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { InventoryProduct } from "~/lib/hooks/api/use-check-inventory-box";
-import EnterQuantityMode from "./EnterQuantityMode";
-import ScanProductsMode, { ScannedProduct } from "./ScanProductsMode";
+import React, { useState } from 'react';
+import { View, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Button } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
+import { InventoryProduct } from '~/lib/hooks/api/use-check-inventory-box';
+import EnterQuantityMode from './EnterQuantityMode';
+import ScanProductsMode, { ScannedProduct } from './ScanProductsMode';
 
-type InventoryMode = "enterQuantity" | "scanProducts";
+type InventoryMode = 'enterQuantity' | 'scanProducts';
 
 interface SelectModeStepProps {
   products: InventoryProduct[];
@@ -27,25 +27,27 @@ export default function SelectModeStep({
   onSubmitScanProducts,
 }: SelectModeStepProps) {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<InventoryMode>("enterQuantity");
+  const [mode, setMode] = useState<InventoryMode>('enterQuantity');
 
   return (
-    <ScrollView className="flex-1 w-full">
+    <ScrollView className="w-full flex-1">
       <View className="mb-4">
-        <Text className="text-xl font-bold text-center mb-2">{t('inventory.select-mode')}</Text>
+        <Text className="mb-2 text-center text-xl font-bold">
+          {t('inventory.select-mode')}
+        </Text>
 
         {/* Mode Switch */}
-        <View className="flex-row gap-2 justify-center mb-4">
+        <View className="mb-4 flex-row justify-center gap-2">
           <Button
-            variant={mode === "enterQuantity" ? "default" : "outline"}
-            onPress={() => setMode("enterQuantity")}
+            variant={mode === 'enterQuantity' ? 'default' : 'outline'}
+            onPress={() => setMode('enterQuantity')}
             className="flex-1"
           >
             <Text>{t('inventory.mode-enter-quantity')}</Text>
           </Button>
           <Button
-            variant={mode === "scanProducts" ? "default" : "outline"}
-            onPress={() => setMode("scanProducts")}
+            variant={mode === 'scanProducts' ? 'default' : 'outline'}
+            onPress={() => setMode('scanProducts')}
             className="flex-1"
           >
             <Text>{t('inventory.mode-scan-products')}</Text>
@@ -54,7 +56,7 @@ export default function SelectModeStep({
       </View>
 
       {/* Mode A: Enter Quantity */}
-      {mode === "enterQuantity" && (
+      {mode === 'enterQuantity' && (
         <View className="w-full">
           <EnterQuantityMode
             products={products}
@@ -65,7 +67,7 @@ export default function SelectModeStep({
       )}
 
       {/* Mode B: Scan Products */}
-      {mode === "scanProducts" && (
+      {mode === 'scanProducts' && (
         <ScanProductsMode
           scannedProducts={scannedProducts}
           onScannedProductsChange={onScannedProductsChange}

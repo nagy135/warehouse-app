@@ -1,4 +1,9 @@
-import { useContext, createContext, type PropsWithChildren, useEffect } from 'react';
+import {
+  useContext,
+  createContext,
+  type PropsWithChildren,
+  useEffect,
+} from 'react';
 import { SessionData, useStorageState } from './utils/use-storage-state';
 import { router } from 'expo-router';
 import { isTokenExpired, isTokenValid } from './lib/utils';
@@ -51,7 +56,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }
   }, [session?.accessToken]);
 
-
   const refreshToken = async (): Promise<boolean> => {
     if (!session?.refreshToken) {
       return false;
@@ -62,7 +66,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.accessToken}`,
+          Authorization: `Bearer ${session.accessToken}`,
         },
         body: JSON.stringify({ refreshToken: session.refreshToken }),
       });

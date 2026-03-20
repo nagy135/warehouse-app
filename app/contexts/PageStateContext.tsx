@@ -50,7 +50,13 @@ interface ClearSku {
   type: PagesStateActions.CLEAR_SKU;
 }
 
-type Actions = SetSku | ClearSku | SetSkus | SetProductStorages | SetSelectedPartner | SetSelectedDelivery;
+type Actions =
+  | SetSku
+  | ClearSku
+  | SetSkus
+  | SetProductStorages
+  | SetSelectedPartner
+  | SetSelectedDelivery;
 
 const initialState: PagesStateContextState = {
   scannedProductSkuVariants: [],
@@ -59,7 +65,10 @@ const initialState: PagesStateContextState = {
   selectedDelivery: null,
 };
 
-const reducer = (state: PagesStateContextState, action: Actions): PagesStateContextState => {
+const reducer = (
+  state: PagesStateContextState,
+  action: Actions,
+): PagesStateContextState => {
   switch (action.type) {
     case PagesStateActions.SET_PRODUCT_SKU_VARIANT:
       return {

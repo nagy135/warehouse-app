@@ -30,7 +30,7 @@ export default function MovePositionPage() {
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   const { modal: storageNotFoundModal, setOpen: openStorageNotFoundModal } =

@@ -34,7 +34,7 @@ export default function MoveProductPage() {
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   const { modal: productNotFoundModal, setOpen: openProductNotFoundModal } =

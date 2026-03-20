@@ -13,6 +13,12 @@ export type checkStorageExitsResponse = {
   name: string;
   productStorages?: Array<{
     id: number;
+    batchNumber?: string;
+    expiration?: string;
+    product: {
+      id: number;
+      name: string;
+    };
   }>;
 };
 

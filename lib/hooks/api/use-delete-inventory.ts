@@ -44,4 +44,3 @@ export default function useDeleteInventory(): {
     mutateAsync: (args: DeleteInventoryParams) => mutateAsync(args),
   };
 }
-

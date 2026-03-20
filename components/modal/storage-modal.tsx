@@ -38,7 +38,7 @@ export default function StorageModal({
     useCallback(() => {
       setIsFocused(true);
       return () => setIsFocused(false);
-    }, [])
+    }, []),
   );
 
   return (

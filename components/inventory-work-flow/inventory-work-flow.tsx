@@ -1,30 +1,32 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ActivityIndicator, useWindowDimensions, View } from "react-native";
-import { Text } from "~/components/ui/text";
-import { InventoryProduct } from "~/lib/hooks/api/use-check-inventory-box";
-import useStoreInventory, { StoreInventoryItem } from "~/lib/hooks/api/use-store-inventory";
-import ScanPositionStep from "./ScanPositionStep";
-import ScanBoxStep from "./ScanBoxStep";
-import SelectModeStep from "./SelectModeStep";
-import { ScannedProduct } from "./ScanProductsMode";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, useWindowDimensions, View } from 'react-native';
+import { Text } from '~/components/ui/text';
+import { InventoryProduct } from '~/lib/hooks/api/use-check-inventory-box';
+import useStoreInventory, {
+  StoreInventoryItem,
+} from '~/lib/hooks/api/use-store-inventory';
+import ScanPositionStep from './ScanPositionStep';
+import ScanBoxStep from './ScanBoxStep';
+import SelectModeStep from './SelectModeStep';
+import { ScannedProduct } from './ScanProductsMode';
 
-type Step = "scanPosition" | "scanBox" | "selectMode";
+type Step = 'scanPosition' | 'scanBox' | 'selectMode';
 
 export default function InventoryWorkflow() {
-  const [step, setStep] = useState<Step>("scanPosition");
+  const [step, setStep] = useState<Step>('scanPosition');
 
-  const [scannedPositionSku, setScannedPositionSku] = useState<string>("");
-  const [scannedPositionId, setScannedPositionId] = useState<string>("");
-  const [scannedBoxSku, setScannedBoxSku] = useState<string>("");
-  const [scannedBoxId, setScannedBoxId] = useState<string>("");
+  const [scannedPositionSku, setScannedPositionSku] = useState<string>('');
+  const [scannedPositionId, setScannedPositionId] = useState<string>('');
+  const [scannedBoxSku, setScannedBoxSku] = useState<string>('');
+  const [scannedBoxId, setScannedBoxId] = useState<string>('');
 
   const [products, setProducts] = useState<InventoryProduct[]>([]);
   const [scannedProducts, setScannedProducts] = useState<ScannedProduct[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const { t } = useTranslation();
   const { width, height } = useWindowDimensions();
@@ -33,27 +35,31 @@ export default function InventoryWorkflow() {
   const { mutateAsync: mutateStoreInventory } = useStoreInventory();
 
   function resetToStart() {
-    setStep("scanPosition");
-    setScannedPositionSku("");
-    setScannedPositionId("");
-    setScannedBoxSku("");
-    setScannedBoxId("");
+    setStep('scanPosition');
+    setScannedPositionSku('');
+    setScannedPositionId('');
+    setScannedBoxSku('');
+    setScannedBoxId('');
     setProducts([]);
     setScannedProducts([]);
-    setSuccessMessage("");
+    setSuccessMessage('');
   }
 
   function handlePositionScanned(positionSku: string, positionId: string) {
     setScannedPositionSku(positionSku);
     setScannedPositionId(positionId);
-    setStep("scanBox");
+    setStep('scanBox');
   }
 
-  function handleBoxScanned(boxSku: string, boxId: string, boxProducts: InventoryProduct[]) {
+  function handleBoxScanned(
+    boxSku: string,
+    boxId: string,
+    boxProducts: InventoryProduct[],
+  ) {
     setScannedBoxSku(boxSku);
     setScannedBoxId(boxId);
     setProducts(boxProducts);
-    setStep("selectMode");
+    setStep('selectMode');
   }
 
   function handleSubmitInventory(items: StoreInventoryItem[]) {
@@ -80,67 +86,73 @@ export default function InventoryWorkflow() {
       productId: product.id,
       expirationDate: product.expirationDate,
       batchNumber: product.batchNumber,
-      count: product.count
+      count: product.count,
     }));
     handleSubmitInventory(items);
   }
 
   function handleSubmitScanProducts() {
-    const items: StoreInventoryItem[] = scannedProducts.map(product => ({
+    const items: StoreInventoryItem[] = scannedProducts.map((product) => ({
       positionId: scannedPositionId,
       storageId: scannedBoxId,
       productId: product.productId,
       expirationDate: product.expirationDate,
       batchNumber: product.batchNumber,
-      count: product.count
+      count: product.count,
     }));
     handleSubmitInventory(items);
   }
 
   return (
-    <View className={`flex-1 ${isLandscape ? "p-2" : "p-4"}`}>
+    <View className={`flex-1 ${isLandscape ? 'p-2' : 'p-4'}`}>
       {scannedPositionSku && (
-        <View className="mb-4 bg-blue-100 p-2 rounded">
-          <Text className="text-blue-600 font-bold text-center">{t('storages.position')}: {scannedPositionSku}</Text>
+        <View className="mb-4 rounded bg-blue-100 p-2">
+          <Text className="text-center font-bold text-blue-600">
+            {t('storages.position')}: {scannedPositionSku}
+          </Text>
         </View>
       )}
       {scannedBoxSku && (
-        <View className="mb-4 bg-blue-100 p-2 rounded">
-          <Text className="text-blue-600 font-bold text-center">{t('move-section.storage')}: {scannedBoxSku}</Text>
+        <View className="mb-4 rounded bg-blue-100 p-2">
+          <Text className="text-center font-bold text-blue-600">
+            {t('move-section.storage')}: {scannedBoxSku}
+          </Text>
         </View>
       )}
 
       {successMessage ? (
-        <View className="mb-4 bg-green-100 p-2 rounded">
-          <Text className="text-green-600 font-bold text-center">{successMessage}</Text>
+        <View className="mb-4 rounded bg-green-100 p-2">
+          <Text className="text-center font-bold text-green-600">
+            {successMessage}
+          </Text>
         </View>
       ) : null}
 
       {error ? (
-        <View className="mb-4 bg-red-100 p-2 rounded">
-          <Text className="text-red-600 font-bold text-center">{error}</Text>
+        <View className="mb-4 rounded bg-red-100 p-2">
+          <Text className="text-center font-bold text-red-600">{error}</Text>
         </View>
       ) : null}
 
       {isLoading && (
-        <View className="absolute bottom-0 left-0 right-0 top-0 items-center justify-center z-50 bg-white/50">
+        <View className="absolute bottom-0 left-0 right-0 top-0 z-50 items-center justify-center bg-white/50">
           <ActivityIndicator size={60} color="#666666" />
         </View>
       )}
 
       <View className="flex-1 items-center justify-center">
-        {step === "scanPosition" && (
+        {step === 'scanPosition' && (
           <ScanPositionStep onPositionScanned={handlePositionScanned} />
         )}
 
-        {step === "scanBox" && (
+        {step === 'scanBox' && (
           <ScanBoxStep
             positionSku={scannedPositionSku}
             onBoxScanned={handleBoxScanned}
           />
         )}
 
-        {step === "selectMode" && (
+        {step === 'selectMode' && (
           <SelectModeStep
             products={products}
             scannedProducts={scannedProducts}
