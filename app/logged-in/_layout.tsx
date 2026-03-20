@@ -1,15 +1,19 @@
-import { View } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import { Redirect, Stack } from 'expo-router';
+import { ChevronLeft, MoveRight } from 'lucide-react-native';
+import { Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 import { Text } from '~/components/ui/text';
-import { Redirect, Stack } from 'expo-router';
 
 import { useSession } from '../../ctx';
-import { MoveRight } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
 export default function ActionLayout() {
   const { session, isLoading } = useSession();
   const { t } = useTranslation();
+
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
@@ -29,6 +33,7 @@ export default function ActionLayout() {
     <Stack
       screenOptions={{
         headerShown: true,
+        header: (props) => <CompactHeader {...props} />,
       }}
     >
       <Stack.Screen
@@ -101,12 +106,58 @@ export default function ActionLayout() {
   );
 }
 
+const CompactHeader = ({ options, route, back, navigation }: NativeStackHeaderProps) => {
+  const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+
+  const title =
+    options.title ?? (typeof options.headerTitle === 'string' ? options.headerTitle : route.name);
+
+  return (
+    <View
+      style={{
+        backgroundColor: colors.card,
+        borderBottomColor: colors.border,
+        borderBottomWidth: 1,
+        height: insets.top,
+        paddingHorizontal: 12,
+      }}
+    >
+      <View className="flex-1 flex-row items-center">
+        <View className="w-12 items-start justify-center">
+          {back ? (
+            <Pressable
+              className="h-10 w-10 items-center justify-center"
+              onPress={() => navigation.goBack()}
+            >
+              <ChevronLeft color={colors.text} size={22} />
+            </Pressable>
+          ) : null}
+        </View>
+        <View className="flex-1 items-center justify-center px-2">
+          {typeof options.headerTitle === 'function' ? (
+            options.headerTitle({
+              children: title,
+              tintColor: colors.text,
+            })
+          ) : (
+            <Text className="text-lg font-semibold" numberOfLines={1}>
+              {title}
+            </Text>
+          )}
+        </View>
+        <View className="w-12" />
+      </View>
+    </View>
+  );
+};
+
 const MoveArrowFromTo = ({ from, to }: { from: string; to: string }) => {
   return (
-    <View className="flex flex-row">
-      <Text className="text-2xl">{`${from} `}</Text>
-      <MoveRight color="#ea6962" size={32} />
-      <Text className="text-2xl">{` ${to}`}</Text>
+    <View className="flex flex-row items-center">
+      <Text className="text-lg font-semibold mr-1">{`${from} `}</Text>
+      <MoveRight color="#ea6962" size={20} />
+      <Text className="text-lg font-semibold ml-1">{` ${to}`}</Text>
     </View>
   );
 };
