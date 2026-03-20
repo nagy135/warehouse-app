@@ -114,19 +114,20 @@ export default function MovePositionPage() {
                     : originalStorage.productStorages?.length) || 0}
                 </Text>
               </Text>
-              {!newStorage && (<Button
-                variant={showSelectSpecificProducts ? 'outline' : 'default'}
-                className="mt-4"
-                onPress={() => {
-                  setShowSelectSpecificProducts((prev) => !prev);
-                }}
-              >
-                <Text>
-                  {showSelectSpecificProducts
-                    ? t('move-section.cancel')
-                    : t('move-section.select-specific-products')}
-                </Text>
-              </Button>
+              {!newStorage && (
+                <Button
+                  variant={showSelectSpecificProducts ? 'outline' : 'default'}
+                  className="mt-4"
+                  onPress={() => {
+                    setShowSelectSpecificProducts((prev) => !prev);
+                  }}
+                >
+                  <Text>
+                    {showSelectSpecificProducts
+                      ? t('move-section.cancel')
+                      : t('move-section.select-specific-products')}
+                  </Text>
+                </Button>
               )}
             </View>
           )}
