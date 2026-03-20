@@ -1,6 +1,6 @@
 import { checkStorageExitsResponse } from '~/lib/hooks/api/use-check-storage-exits';
 import { useGroupedProducts } from './useGroupedProducts';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Input } from '../ui/input';
