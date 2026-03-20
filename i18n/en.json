@@ -145,11 +145,15 @@
     "sku": "SKU"
   },
   "move-section": {
+    "select-specific-products": "Select specific products",
+    "cancel": "Cancel selection - move all products",
+    "number-selected-products": "Number of selected products: {{count}}",
     "product": "Product",
     "storage": "Storage box",
     "storage-items": "Storage boxitems",
     "count": "Count",
     "scan-product": "Scan product",
+    "items-count-to-move": "Items count to move",
     "items-count": "Items count",
     "original-storage": "Original storage box",
     "new-storage": "New storage box",

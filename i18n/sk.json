@@ -145,11 +145,15 @@
     "sku": "SKU"
   },
   "move-section": {
+    "select-specific-products": "Vybrať konkrétne produkty",
+    "cancel": "Zrušiť výber- presunúť všetky produkty",
+    "number-selected-products": "Počet vybraných produktov: {{count}}",
     "product": "Produkt",
     "storage": "Úložný box",
     "storage-items": "Obsah úložného boxu",
     "count": "Počet",
     "scan-product": "Oskenujte produkt",
+    "items-count-to-move": "Počet položiek na presun",
     "items-count": "Počet položiek",
     "original-storage": "Povôdný úložný box",
     "new-storage": "Nový úložný box",

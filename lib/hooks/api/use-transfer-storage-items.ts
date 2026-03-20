@@ -13,15 +13,21 @@ export default function useTransferStorageItems({
   isError: boolean;
   isSuccess: boolean;
   error: string;
-  mutate: (args: { originalStorageId: number; newStorageId: number }) => void;
+  mutate: (args: {
+    originalStorageId: number;
+    newStorageId: number;
+    productStorageIds?: number[];
+  }) => void;
 } {
   const { session } = useSession();
   const mutateRecords = async ({
     originalStorageId,
     newStorageId,
+    productStorageIds,
   }: {
     originalStorageId: number;
     newStorageId: number;
+    productStorageIds?: number[];
   }) => {
     const path = `${API_ROOT}/product-storages/storage-transfer`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
@@ -36,6 +42,7 @@ export default function useTransferStorageItems({
       body: JSON.stringify({
         originalStorageId,
         newStorageId,
+        productStorageIds,
       }),
       method: 'POST',
     });
