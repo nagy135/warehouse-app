@@ -33,10 +33,11 @@ export const useGroupedProducts = (
             name: ps.product.name ?? '',
             batchNumber: ps.batchNumber,
             expirationDate,
-            productStorageIds: [ps.id],
+            productStorageIds: [],
             count: 0,
           };
         }
+
         acc[key].productStorageIds.push(ps.id);
         acc[key].count += 1;
 
