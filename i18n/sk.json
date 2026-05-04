@@ -184,6 +184,25 @@
     "position": "Pozícia",
     "scan-new-position": "Oskenujte novú pozíciu"
   },
+  "info": {
+    "title": "Informácie",
+    "storage": "Úložný box",
+    "position": "Pozícia",
+    "product": "Produkt",
+    "scan-code": "Oskenujte kód",
+    "name": "Názov",
+    "not-found": "Pre naskenovaný kód sa nenašli žiadne informácie.",
+    "no-products": "Nenašli sa žiadne produkty",
+    "no-locations": "Nenašli sa žiadne lokácie",
+    "quantity": "Množstvo",
+    "expiration-date": "Dátum expirácie",
+    "state": "Stav",
+    "states": {
+      "stored": "Uložené",
+      "moved": "Presunuté",
+      "none": "Žiadny"
+    }
+  },
   "inventory": {
     "title": "Inventúra",
     "scan-position": "Oskenujte pozíciu",

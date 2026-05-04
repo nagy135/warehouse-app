@@ -24,8 +24,13 @@ export default function LoggedInPage() {
           </Button>
         </Link>
         <Link href="/logged-in/inventory" asChild>
-          <Button className="bg-blue-500 text-2xl font-bold" size="lg">
+          <Button className="bg-yellow-500 text-2xl font-bold" size="lg">
             <Text>{t('inventory.title')}</Text>
+          </Button>
+        </Link>
+        <Link href="/logged-in/info" asChild>
+          <Button className="bg-blue-500 text-2xl font-bold" size="lg">
+            <Text>{t('info.title')}</Text>
           </Button>
         </Link>
       </View>

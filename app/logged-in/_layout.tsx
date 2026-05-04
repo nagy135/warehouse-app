@@ -101,6 +101,13 @@ export default function ActionLayout() {
           animation: 'slide_from_right',
         }}
       />
+      <Stack.Screen
+        name="info"
+        options={{
+          title: t('info.title'),
+          animation: 'slide_from_right',
+        }}
+      />
     </Stack>
   );
 }

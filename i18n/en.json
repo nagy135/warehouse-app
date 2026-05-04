@@ -185,6 +185,25 @@
     "position": "Position",
     "scan-new-position": "Scan new position"
   },
+  "info": {
+    "title": "Info",
+    "storage": "Storage box",
+    "position": "Position",
+    "product": "Product",
+    "scan-code": "Scan code",
+    "name": "Name",
+    "not-found": "No information found for the scanned code.",
+    "no-products": "No products found",
+    "no-locations": "No locations found",
+    "quantity": "Quantity",
+    "expiration-date": "Expiration date",
+    "state": "State",
+    "states": {
+      "stored": "Stored",
+      "moved": "Moved",
+      "none": "None"
+    }
+  },
   "inventory": {
     "title": "Inventory",
     "scan-position": "Scan position",
