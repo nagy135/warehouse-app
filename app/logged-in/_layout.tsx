@@ -50,9 +50,23 @@ export default function ActionLayout() {
         }}
       />
       <Stack.Screen
+        name="cross-dock-index"
+        options={{
+          title: t('titles.cross-dock'),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
         name="exit-detail"
         options={{
           title: t('titles.exit'),
+          animation: 'slide_from_right',
+        }}
+      />
+      <Stack.Screen
+        name="cross-dock-detail"
+        options={{
+          title: t('titles.cross-dock'),
           animation: 'slide_from_right',
         }}
       />

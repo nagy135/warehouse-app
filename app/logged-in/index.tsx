@@ -18,6 +18,11 @@ export default function LoggedInPage() {
             <Text>{t('exits')}</Text>
           </Button>
         </Link>
+        <Link href="/logged-in/cross-dock-index" asChild>
+          <Button className="bg-gray-500 text-2xl font-bold" size="lg">
+            <Text>{t('cross-dock')}</Text>
+          </Button>
+        </Link>
         <Link href="/logged-in/move-index" asChild>
           <Button className="text-2xl font-bold" variant="outline" size="lg">
             <Text>{t('move')}</Text>

@@ -29,6 +29,56 @@ export type Exit = {
   state: EntryExitStatesEnum;
 };
 
+export type CrossDock = {
+  id: number;
+  name: string;
+  sku: string;
+  processed: boolean;
+  createdAt: string;
+  isIncomplete: boolean;
+  priority: boolean;
+  createdById: string;
+  deliveryId: number;
+  partnerId: number;
+  state: EntryExitStatesEnum;
+};
+
+export type CrossDockDimensions = {
+  width: number | null;
+  height: number | null;
+  depth: number | null;
+  weight: number | null;
+};
+
+export type CrossDockProductStorage = {
+  id: number;
+  sku: string | null;
+  state: 'counted' | 'moved' | 'none' | null;
+  virtual: boolean | null;
+  productId: number;
+  product: {
+    id: number;
+    name: string | null;
+    sku: string | null;
+    ean: string | null;
+  };
+  dimensions: CrossDockDimensions;
+};
+
+export type CrossDockDetail = {
+  id: number;
+  name: string | null;
+  sku: string | null;
+  externalId: string | null;
+  state: EntryExitStatesEnum;
+  isIncomplete: boolean | null;
+  quantityMismatch: boolean | null;
+  deliveryId: number | null;
+  partnerId: number;
+  createdAt: string;
+  productStorages: CrossDockProductStorage[];
+};
+
 export type Package = {
   id: number;
   name: string;

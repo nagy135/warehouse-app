@@ -27,20 +27,20 @@ export default function useScanner({
       }, 500);
     }
     // production mode
-    // const listener = ExpoZebraScanner.addListener((event) => {
-    //   const { scanData, scanLabelType } = event;
-    //   setData(scanData ?? 'nothing data');
-    //   setLabel(scanLabelType ?? 'nothing label');
+    const listener = ExpoZebraScanner.addListener((event) => {
+      const { scanData, scanLabelType } = event;
+      setData(scanData ?? 'nothing data');
+      setLabel(scanLabelType ?? 'nothing label');
 
-    //   setScanning(false);
-    //   if (onScan) onScan(scanData, scanLabelType);
-    // });
-    // ExpoZebraScanner.startScan();
+      setScanning(false);
+      if (onScan) onScan(scanData, scanLabelType);
+    });
+    ExpoZebraScanner.startScan();
 
-    // return () => {
-    //   ExpoZebraScanner.stopScan();
-    //   listener.remove();
-    // };
+    return () => {
+      ExpoZebraScanner.stopScan();
+      listener.remove();
+    };
   }, [scanning]);
 
   return {
