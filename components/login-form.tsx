@@ -1,11 +1,6 @@
 import * as React from 'react';
-import {
-  Alert,
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import { Alert, View, Platform, ScrollView, Keyboard } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import { useSession } from '~/ctx';
@@ -19,7 +14,7 @@ import {
 import { Progress } from '~/components/ui/progress';
 import { Text } from '~/components/ui/text';
 import { Input } from '~/components/ui/input';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import packageJson from '../package.json';
 
@@ -35,8 +30,29 @@ export default function LoginForm() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { signIn } = useSession();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
+  const [keyboardVisible, setKeyboardVisible] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, () =>
+      setKeyboardVisible(true),
+    );
+    const hideSubscription = Keyboard.addListener(hideEvent, () =>
+      setKeyboardVisible(false),
+    );
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!loggingIn) return;
 
     if (progress >= 100) {
@@ -77,79 +93,79 @@ export default function LoginForm() {
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={20}
+    <ScrollView
+      className="flex-1 bg-secondary/30"
+      contentContainerStyle={{
+        flexGrow: 1,
+        padding: 24,
+        paddingBottom: insets.bottom + 24,
+        ...(keyboardVisible
+          ? { paddingTop: 16 }
+          : { justifyContent: 'center' }),
+      }}
+      keyboardShouldPersistTaps="handled"
+      automaticallyAdjustKeyboardInsets
+      showsVerticalScrollIndicator={false}
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="flex-1 items-center justify-center gap-5 bg-secondary/30 p-6">
-          <Card className="w-full max-w-sm rounded-2xl p-6">
-            <CardHeader className="items-center">
-              <Avatar alt="Rick Sanchez's Avatar" className="h-24 w-24">
-                <AvatarImage source={{ uri: AVATAR_URI }} />
-                <AvatarFallback>
-                  <Text>USER</Text>
-                </AvatarFallback>
-              </Avatar>
-              <View className="p-3" />
-              <Text className="text-xs text-muted-foreground">
-                Version {packageJson.version}
-              </Text>
-            </CardHeader>
+      <Card className="w-full max-w-sm self-center rounded-2xl p-6">
+        <CardHeader className="items-center">
+          <Avatar alt="Rick Sanchez's Avatar" className="h-24 w-24">
+            <AvatarImage source={{ uri: AVATAR_URI }} />
+            <AvatarFallback>
+              <Text>USER</Text>
+            </AvatarFallback>
+          </Avatar>
+          <View className="p-3" />
+          <Text className="text-xs text-muted-foreground">
+            Version {packageJson.version}
+          </Text>
+        </CardHeader>
 
-            <CardContent>
-              <View className="flex gap-3">
-                <Input
-                  value={email}
-                  onChangeText={setEmail}
-                  placeholder="example@test.com"
-                />
+        <CardContent>
+          <View className="flex gap-3">
+            <Input
+              value={email}
+              onChangeText={setEmail}
+              placeholder="example@test.com"
+            />
 
-                <View className="flex-row justify-end gap-3">
-                  <Input
-                    className="flex-1"
-                    secureTextEntry={showPassword}
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="password"
-                  />
-                  <Button
-                    variant="outline"
-                    className="shadow shadow-foreground/5"
-                    onPress={() => setShowPassword((prev) => !prev)}
-                  >
-                    <Text>
-                      {!showPassword ? t('login.hide') : t('login.show')}
-                    </Text>
-                  </Button>
-                </View>
-              </View>
-            </CardContent>
-
-            <CardFooter className="flex-col gap-3 pb-0">
-              {progress > 0 ? (
-                <Progress
-                  value={progress}
-                  className="h-2"
-                  indicatorClassName="bg-sky-600"
-                />
-              ) : null}
-
+            <View className="flex-row justify-end gap-3">
+              <Input
+                className="flex-1"
+                secureTextEntry={showPassword}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="password"
+              />
               <Button
                 variant="outline"
                 className="shadow shadow-foreground/5"
-                onPress={handleLogInPress}
+                onPress={() => setShowPassword((prev) => !prev)}
               >
-                <Text>{t('login.log-in')}</Text>
+                <Text>{!showPassword ? t('login.hide') : t('login.show')}</Text>
               </Button>
-            </CardFooter>
-          </Card>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            </View>
+          </View>
+        </CardContent>
+
+        <CardFooter className="flex-col gap-3 pb-0">
+          {progress > 0 ? (
+            <Progress
+              value={progress}
+              className="h-2"
+              indicatorClassName="bg-sky-600"
+            />
+          ) : null}
+
+          <Button
+            variant="outline"
+            className="shadow shadow-foreground/5"
+            onPress={handleLogInPress}
+          >
+            <Text>{t('login.log-in')}</Text>
+          </Button>
+        </CardFooter>
+      </Card>
+    </ScrollView>
   );
 }
