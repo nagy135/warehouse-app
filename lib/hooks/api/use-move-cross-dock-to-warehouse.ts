@@ -4,6 +4,7 @@ import { API_ROOT } from '~/lib/constants';
 
 type MoveCrossDockToWarehouse = {
   sku: string;
+  crossDockId: number;
 };
 
 type MoveCrossDockToWarehouseResponse = {
@@ -21,7 +22,10 @@ export default function useMoveCrossDockToWarehouse(): {
   ) => Promise<MoveCrossDockToWarehouseResponse>;
 } {
   const { session } = useSession();
-  const mutateRecords = async ({ sku }: MoveCrossDockToWarehouse) => {
+  const mutateRecords = async ({
+    sku,
+    crossDockId,
+  }: MoveCrossDockToWarehouse) => {
     const path = `${API_ROOT}/cross-dock/move-to-warehouse`;
     if (process.env.EXPO_PUBLIC_CUSTOM_DEBUG == 'true') {
       console.log(`changing: ${path}`);
@@ -32,7 +36,7 @@ export default function useMoveCrossDockToWarehouse(): {
         Authorization: `Bearer ${session?.accessToken}`,
         ContentType: 'application/json',
       },
-      body: JSON.stringify({ sku }),
+      body: JSON.stringify({ sku, crossDockId }),
       method: 'POST',
     });
 

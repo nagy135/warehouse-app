@@ -72,28 +72,6 @@ function formatProductStorageSku(
   return sku;
 }
 
-function parseTransportUnitSku(sku: string): {
-  crossDockId: number;
-  transportUnitId: string;
-} | null {
-  const separatorIndex = sku.indexOf('_');
-  if (separatorIndex <= 0) {
-    return null;
-  }
-
-  const transportUnitId = sku.slice(separatorIndex + 1);
-  if (!transportUnitId) {
-    return null;
-  }
-
-  const crossDockId = Number(sku.slice(0, separatorIndex));
-  if (!Number.isInteger(crossDockId) || crossDockId <= 0) {
-    return null;
-  }
-
-  return { crossDockId, transportUnitId };
-}
-
 function CrossDockProductStorageRow({
   productStorage,
   crossDockId,
@@ -181,27 +159,13 @@ export default function CrossDockDetailPage() {
   const handleScan = useCallback(
     async (sku: string) => {
       const trimmedSku = sku.trim();
-      const parsedSku = parseTransportUnitSku(trimmedSku);
-
-      if (!parsedSku) {
-        showError(
-          t('cross-dock-detail.scan-error'),
-          t('cross-dock-detail.invalid-transport-unit-sku'),
-        );
-        return;
-      }
-
-      if (parsedSku.crossDockId !== crossDockId) {
-        showError(
-          t('cross-dock-detail.scan-error'),
-          t('cross-dock-detail.wrong-cross-dock-transport-unit'),
-        );
-        return;
-      }
 
       setIsMoving(true);
       try {
-        const moveResult = await moveCrossDockToWarehouse({ sku: trimmedSku });
+        const moveResult = await moveCrossDockToWarehouse({
+          sku: trimmedSku,
+          crossDockId,
+        });
 
         if (moveResult.state === EntryExitStatesEnum.MOVED) {
           setIsDone(true);
@@ -326,7 +290,7 @@ export default function CrossDockDetailPage() {
                   <Scanner
                     size="lg"
                     label={t('cross-dock-detail.scan-transport-unit')}
-                    mockData="19504_7420924661300"
+                    mockData="7995979644450"
                     onScan={(data) => handleScan(data)}
                   />
                 )}
